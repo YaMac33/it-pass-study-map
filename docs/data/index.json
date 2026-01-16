@@ -1,5 +1,19 @@
 [
   {
+    "timestamp": "2026-01-16T16:19:50.485Z",
+    "raw": "スプシDBとNotionDBはどちらが良いか。検討中。",
+    "AI_JSON": "{\"title\":\"スプシDB vs NotionDB 比較\",\"sparse_note\":[\"スプシDB: シンプル\",\"NotionDB: カスタマイズ性\",\"共同編集: どちらも可能\",\"API連携: Notionが強い\",\"費用: スプシ無料、Notion有料プラン\",\"UX: Notionが直感的\",\"データ容量: Notionが多い\",\"プラットフォーム: 両方Web対応\",\"モバイル対応: Notion優位\",\"機能追加: Notion頻繁\"]}",
+    "title": "スプシDB vs NotionDB 比較",
+    "sparse_note": "- スプシDB: シンプル\n- NotionDB: カスタマイズ性\n- 共同編集: どちらも可能\n- API連携: Notionが強い\n- 費用: スプシ無料、Notion有料プラン\n- UX: Notionが直感的\n- データ容量: Notionが多い\n- プラットフォーム: 両方Web対応\n- モバイル対応: Notion優位\n- 機能追加: Notion頻繁",
+    "Genre": "",
+    "Tags": "",
+    "CreatedAt": "2026-01-16T16:19:55.510Z",
+    "Source": "Form",
+    "dir": "2026-01-17_db-vs-notiondb",
+    "id": "4fc4346917",
+    "status": ""
+  },
+  {
     "timestamp": "2026-01-16T15:56:14.315Z",
     "raw": "OPENAI_APIの使い分けのコツが知りたい",
     "AI_JSON": "{\"title\":\"OPENAI_APIの使い分け\",\"sparse_note\":[\"用途別に選ぶ\",\"GPT-3: 自然言語生成\",\"Codex: コード生成\",\"DALL-E: 画像生成\",\"音声API: 音声合成\",\"タスクに応じたAPI選定\",\"結果の精度を考慮\",\"コスト対効果の評価\",\"プロトタイプと本番環境の違い\",\"APIの制限を理解\",\"ドキュメント参照\",\"使用事例の確認\"]}",
@@ -11,20 +25,6 @@
     "Source": "Form",
     "dir": "2026-01-17_openai_api",
     "id": "f62d795097",
-    "status": ""
-  },
-  {
-    "timestamp": "2026-01-16T15:49:30.398Z",
-    "raw": "自動送信テストです",
-    "AI_JSON": "",
-    "title": "",
-    "sparse_note": "",
-    "Genre": "",
-    "Tags": "",
-    "CreatedAt": "2026-01-16T15:49:33.017Z",
-    "Source": "Form",
-    "dir": "",
-    "id": "dae7fa8b77",
-    "status": "NG: OpenAI API Error (401): {\n    \"error\": {\n        \"message\": \"You didn't provide an API key. You need to provide your API key in an Authorization header using Bearer auth (i.e. Authorization: Bearer YO"
+    "status": "OK"
   }
 ]
