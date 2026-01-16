@@ -1,27 +1,30 @@
 [
-    {
-        "id": 3,
-        "title": "静的サイトでの高速なブログ構築手法",
-        "date": "2024-03-15",
-        "dir": "static-site-speed",
-        "summary": "JSONとVanilla JSを使って、画像を一切使わずに爆速なブログを作るための設計と思想について。",
-        "tags": ["HTML", "Performance"]
-    },
-    {
-        "id": 2,
-        "title": "Gitコマンドの基本と応用",
-        "date": "2024-02-28",
-        "dir": "git-basic-usage",
-        "summary": "開発フローで頻出するGitコマンドのまとめ。rebaseとmergeの使い分けなど。",
-        "tags": ["Git", "Workflow"]
-    },
-    {
-        "id": 1,
-        "title": "Hello World: ブログを開設しました",
-        "date": "2024-01-10",
-        "dir": "hello-world",
-        "summary": "最初の投稿です。このブログの趣旨と今後の更新予定について。",
-        "tags": ["Misc"]
-    }
+  {
+    "timestamp": "2026-01-16T15:56:14.315Z",
+    "raw": "OPENAI_APIの使い分けのコツが知りたい",
+    "AI_JSON": "{\"title\":\"OPENAI_APIの使い分け\",\"sparse_note\":[\"用途別に選ぶ\",\"GPT-3: 自然言語生成\",\"Codex: コード生成\",\"DALL-E: 画像生成\",\"音声API: 音声合成\",\"タスクに応じたAPI選定\",\"結果の精度を考慮\",\"コスト対効果の評価\",\"プロトタイプと本番環境の違い\",\"APIの制限を理解\",\"ドキュメント参照\",\"使用事例の確認\"]}",
+    "title": "OPENAI_APIの使い分け",
+    "sparse_note": "- 用途別に選ぶ\n- GPT-3: 自然言語生成\n- Codex: コード生成\n- DALL-E: 画像生成\n- 音声API: 音声合成\n- タスクに応じたAPI選定\n- 結果の精度を考慮\n- コスト対効果の評価\n- プロトタイプと本番環境の違い\n- APIの制限を理解\n- ドキュメント参照\n- 使用事例の確認",
+    "Genre": "",
+    "Tags": "",
+    "CreatedAt": "2026-01-16T15:56:20.040Z",
+    "Source": "Form",
+    "dir": "2026-01-17_openai_api",
+    "id": "f62d795097",
+    "status": ""
+  },
+  {
+    "timestamp": "2026-01-16T15:49:30.398Z",
+    "raw": "自動送信テストです",
+    "AI_JSON": "",
+    "title": "",
+    "sparse_note": "",
+    "Genre": "",
+    "Tags": "",
+    "CreatedAt": "2026-01-16T15:49:33.017Z",
+    "Source": "Form",
+    "dir": "",
+    "id": "dae7fa8b77",
+    "status": "NG: OpenAI API Error (401): {\n    \"error\": {\n        \"message\": \"You didn't provide an API key. You need to provide your API key in an Authorization header using Bearer auth (i.e. Authorization: Bearer YO"
+  }
 ]
-
