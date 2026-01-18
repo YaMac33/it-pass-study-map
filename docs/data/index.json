@@ -1,5 +1,22 @@
 [
   {
+    "timestamp": "2026-01-18T21:44:22+09:00",
+    "title": "キャッシュレス決済のコスト比較ガイド",
+    "summary": "キャッシュレス決済の導入コストと手数料について、QRコード決済とクレジットカード決済を比較した内容です。初期費用や手数料の違いを詳しく解説しています。",
+    "tags": [
+      "キャッシュレス",
+      "決済",
+      "コスト",
+      "比較",
+      "QRコード",
+      "クレジットカード",
+      "手数料"
+    ],
+    "dir": "2026-01-18_cashless-payment-costs-comparison",
+    "repo_path": "/docs/2026-01-18_cashless-payment-costs-comparison/index.html",
+    "public_url": "https://yamac33.github.io/sidenote/2026-01-18_cashless-payment-costs-comparison"
+  },
+  {
     "timestamp": "2026-01-18T15:36:21+09:00",
     "title": "レントゲンとCTの違いの解説",
     "summary": "レントゲンは2D画像、CTは3D画像を提供します。違いと使い分けについて詳しく説明します。",
