@@ -173,40 +173,7 @@
                 allPosts.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
                 
                 renderPosts(allPosts);
-            } catch (error) {
-                console.warn('Failed to fetch data, loading sample data for preview...', error);
-                
-                // フォールバック用サンプルデータ（プレビュー確認用）
-                // 実際の本番環境でJSONがない場合はエラー表示または空表示になります
-                const sampleData = [
-                    {
-                        "timestamp": "2026/01/18 15:36:22",
-                        "title": "レントゲンとCTの違いの解説",
-                        "summary": "レントゲンは2D画像、CTは3D画像を提供します。違いと使い分けについて詳しく説明します。医療現場での実際の活用事例を含めて解説。",
-                        "tags": "医療, レントゲン, CT, 検査, 比較",
-                        "public_url": "#" // 実際は https://...
-                    },
-                    {
-                        "timestamp": "2026/01/15 10:00:00",
-                        "title": "GitHub PagesでのJSON活用術",
-                        "summary": "静的サイトジェネレーターを使わずに、SpreadsheetとJSONだけでブログを管理する方法。軽量で高速なサイト構築のベストプラクティス。",
-                        "tags": "GitHub, Web, JSON, Tutorial",
-                        "public_url": "#"
-                    },
-                    {
-                        "timestamp": "2026/01/10 09:15:00",
-                        "title": "Tailwind CSS Design System",
-                        "summary": "Utility-first CSSフレームワークを使用した、スケーラブルなデザインシステムの構築について。",
-                        "tags": "Design, CSS, Tailwind",
-                        "public_url": "#"
-                    }
-                ];
-                allPosts = sampleData;
-                renderPosts(allPosts);
-                
-                // JSON読み込み失敗のエラー表示（デバッグ用）
-                // grid.innerHTML = `<div class="text-red-400 p-4 border border-red-900 rounded bg-red-900/20">Data load failed. Please ensure ${DATA_URL} exists.</div>`;
-            }
+            } 
         }
 
         // --- Render Function ---
