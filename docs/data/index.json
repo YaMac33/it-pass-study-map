@@ -1,5 +1,21 @@
 [
   {
+    "timestamp": "2026-01-19T12:42:47+09:00",
+    "title": "疑問解決のための3層戦略",
+    "summary": "疑問を迅速に処理するための3層戦略を紹介。思考の流れを途切れさせないメソッドを探ります。",
+    "tags": [
+      "問題解決",
+      "思考法",
+      "戦略",
+      "メモ",
+      "日本語",
+      "生産性"
+    ],
+    "dir": "2026-01-19_problem-solving-strategy",
+    "repo_path": "/docs/2026-01-19_problem-solving-strategy/index.html",
+    "public_url": "https://yamac33.github.io/sidenote/2026-01-19_problem-solving-strategy"
+  },
+  {
     "timestamp": "2026-01-19T12:18:35+09:00",
     "title": "AIを活用した優先順位付け",
     "summary": "AIを利用して意思決定の質を向上させる手法を解説します。人間のバイアスを減らし、効果的な選択をサポートするシステムです。",
