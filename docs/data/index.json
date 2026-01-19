@@ -1,5 +1,21 @@
 [
   {
+    "timestamp": "2026-01-19T19:04:03+09:00",
+    "title": "記憶定着を促す復習法",
+    "summary": "脳科学に基づく効果的な復習法を紹介します。AnkiやSuperMemoなどのツールを活用し、忘却曲線に沿った学習法を解説します。",
+    "tags": [
+      "記憶",
+      "復習",
+      "間隔反復",
+      "Anki",
+      "SuperMemo",
+      "脳科学"
+    ],
+    "dir": "2026-01-19_memory-retention-review",
+    "repo_path": "/docs/2026-01-19_memory-retention-review/index.html",
+    "public_url": "https://yamac33.github.io/sidenote/2026-01-19_memory-retention-review"
+  },
+  {
     "timestamp": "2026-01-19T18:47:50+09:00",
     "title": "疑問解決の新戦略 | 3レイヤー思考法",
     "summary": "3レイヤー思考法に基づいた効果的な問題解決のアプローチを説明します。処理方式の見直しが重要です。",
