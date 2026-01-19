@@ -1,5 +1,22 @@
 [
   {
+    "timestamp": "2026-01-20T07:44:48+09:00",
+    "title": "Markdown風のシンプルなWebデザイン",
+    "summary": "可読性を最大化するためのタイポグラフィと、HTML/CSS設計のベストプラクティスを解説します。デザインがどう機能するかに焦点を当てた考察です。",
+    "tags": [
+      "Webデザイン",
+      "Markdown",
+      "タイポグラフィ",
+      "CSS",
+      "可読性",
+      "HTML",
+      "ベストプラクティス"
+    ],
+    "dir": "2026-01-20_markdown-web-design",
+    "repo_path": "/docs/2026-01-20_markdown-web-design/index.html",
+    "public_url": "https://yamac33.github.io/sidenote/2026-01-20_markdown-web-design"
+  },
+  {
     "timestamp": "2026-01-19T19:40:24+09:00",
     "title": "生成AIが自殺予防に及ぼす影響",
     "summary": "生成AIは自殺予防において重要な役割を果たす。特に日本において、AIが感情的サポートを提供することで社会的孤立を緩和する可能性がある。",
