@@ -1,5 +1,22 @@
 [
   {
+    "timestamp": "2026-01-19T12:18:35+09:00",
+    "title": "AIを活用した優先順位付け",
+    "summary": "AIを利用して意思決定の質を向上させる手法を解説します。人間のバイアスを減らし、効果的な選択をサポートするシステムです。",
+    "tags": [
+      "AI",
+      "意思決定",
+      "優先順位",
+      "タスク管理",
+      "支援システム",
+      "思考",
+      "時間管理"
+    ],
+    "dir": "2026-01-19_ai-prioritization-system",
+    "repo_path": "/docs/2026-01-19_ai-prioritization-system/index.html",
+    "public_url": "https://yamac33.github.io/sidenote/2026-01-19_ai-prioritization-system"
+  },
+  {
     "timestamp": "2026-01-19T08:15:10+09:00",
     "title": "インフレ対策と行動戦略",
     "summary": "インフレ下での有利な行動戦略を提案します。現金を減らし、資産に連動した行動を取りましょう。",
