@@ -1,5 +1,21 @@
 [
   {
+    "timestamp": "2026-01-19T19:29:15+09:00",
+    "title": "HTML生成のためのガイドライン",
+    "summary": "このガイドラインは、Markdown風のHTMLを書くためのルールを示しています。出力には特定のタグとフォーマットが求められます。",
+    "tags": [
+      "HTML",
+      "Markdown",
+      "ガイドライン",
+      "コード",
+      "出力",
+      "ルール"
+    ],
+    "dir": "2026-01-19_html-generation-guide",
+    "repo_path": "/docs/2026-01-19_html-generation-guide/index.html",
+    "public_url": "https://yamac33.github.io/sidenote/2026-01-19_html-generation-guide"
+  },
+  {
     "timestamp": "2026-01-19T19:04:03+09:00",
     "title": "記憶定着を促す復習法",
     "summary": "脳科学に基づく効果的な復習法を紹介します。AnkiやSuperMemoなどのツールを活用し、忘却曲線に沿った学習法を解説します。",
