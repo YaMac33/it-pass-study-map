@@ -1,5 +1,21 @@
 [
   {
+    "timestamp": "2026-01-20T08:24:55+09:00",
+    "title": "KPIの基礎と重要性についての解説",
+    "summary": "KPIは目標達成度を数値で測る指標で、業務改善に役立ちます。KGIとの関係性も重要です。",
+    "tags": [
+      "KPI",
+      "KGI",
+      "業績評価",
+      "ITパスポート",
+      "指標",
+      "ビジネス"
+    ],
+    "dir": "2026-01-20_kpi-introduction-and-importance",
+    "repo_path": "/docs/2026-01-20_kpi-introduction-and-importance/index.html",
+    "public_url": "https://yamac33.github.io/sidenote/2026-01-20_kpi-introduction-and-importance"
+  },
+  {
     "timestamp": "2026-01-20T08:03:47+09:00",
     "title": "コアコンピタンスの重要性",
     "summary": "コアコンピタンスが企業における競争優位性の源泉であることを解説します。成功するための条件や重要性について触れました。",
