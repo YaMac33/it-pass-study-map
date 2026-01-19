@@ -1,5 +1,22 @@
 [
   {
+    "timestamp": "2026-01-19T16:49:52+09:00",
+    "title": "サーバーの基本と活用法",
+    "summary": "本記事ではサーバーの定義や種類、Webアプリ開発のための環境について概説します。サーバーを理解することで、効果的な開発が可能になります。",
+    "tags": [
+      "サーバー",
+      "Webアプリ",
+      "クラウド",
+      "開発環境",
+      "基本概念",
+      "種類",
+      "ネットワーク"
+    ],
+    "dir": "2026-01-19_server-basics-and-utilization",
+    "repo_path": "/docs/2026-01-19_server-basics-and-utilization/index.html",
+    "public_url": "https://yamac33.github.io/sidenote/2026-01-19_server-basics-and-utilization"
+  },
+  {
     "timestamp": "2026-01-19T12:42:47+09:00",
     "title": "疑問解決のための3層戦略",
     "summary": "疑問を迅速に処理するための3層戦略を紹介。思考の流れを途切れさせないメソッドを探ります。",
