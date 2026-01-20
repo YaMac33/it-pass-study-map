@@ -1,5 +1,21 @@
 [
   {
+    "timestamp": "2026-01-20T12:57:11+09:00",
+    "title": "エッジコンピューティングの理解",
+    "summary": "エッジコンピューティングの意味とIoTにおける重要性を解説します。データ処理を端末の近くで行うメリットについても触れます。",
+    "tags": [
+      "エッジコンピューティング",
+      "IoT",
+      "データ処理",
+      "リアルタイム性",
+      "通信コスト",
+      "ITパスポート"
+    ],
+    "dir": "2026-01-20_edge-computing-introduction",
+    "repo_path": "/docs/2026-01-20_edge-computing-introduction/index.html",
+    "public_url": "https://yamac33.github.io/sidenote/2026-01-20_edge-computing-introduction"
+  },
+  {
     "timestamp": "2026-01-20T12:19:12+09:00",
     "title": "変更管理委員会の重要性",
     "summary": "変更管理委員会(CAB)は、システム変更に伴うリスクを審議・承認する重要な組織です。ITILに基づくベストプラクティスが反映されています。",
