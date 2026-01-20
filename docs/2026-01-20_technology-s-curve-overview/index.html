@@ -1,278 +1,378 @@
 <!DOCTYPE html>
 <html lang="ja" class="scroll-smooth">
 <head>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-MQ9ZB4LYWP"></script>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>技術のSカーブの概要</title>
-  <meta name="description" content="技術の成長段階を示すS字型モデル。導入期から停滞期までの変遷を解説。">
+    <!-- 指定されたスクリプト -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-MQ9ZB4LYWP"></script>
 
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['"Helvetica Neue"', 'Arial', '"Hiragino Kaku Gothic ProN"', '"Hiragino Sans"', 'Meiryo', 'sans-serif'],
-            mono: ['"Menlo"', '"Monaco"', '"Consolas"', '"Courier New"', 'monospace'],
-          },
-          colors: {
-            primary: '#3b82f6',
-            dark: {
-              bg: '#0d1117',
-              card: '#161b22',
-              border: '#30363d',
-              text: '#c9d1d9'
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>技術のSカーブの概要</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Helvetica Neue"', 'Arial', '"Hiragino Kaku Gothic ProN"', '"Hiragino Sans"', 'Meiryo', 'sans-serif'],
+                        mono: ['"Menlo"', '"Monaco"', '"Consolas"', '"Courier New"', 'monospace'],
+                    },
+                    colors: {
+                        primary: '#3b82f6',
+                        dark: {
+                            bg: '#0d1117',
+                            card: '#161b22',
+                            border: '#30363d',
+                            text: '#c9d1d9'
+                        }
+                    }
+                }
             }
-          }
         }
-      }
-    }
-  </script>
+    </script>
+    <style>
+        /* カスタムスクロールバー */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #30363d;
+        }
 
-  <style>
-    /* カスタムスクロールバー */
-    ::-webkit-scrollbar { width: 8px; height: 8px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-    .dark ::-webkit-scrollbar-thumb { background: #30363d; }
-
-    /* リンクのホバーアニメーション */
-    .hover-underline-animation { display: inline-block; position: relative; }
-    .hover-underline-animation::after {
-      content: '';
-      position: absolute;
-      width: 100%;
-      transform: scaleX(0);
-      height: 1px;
-      bottom: 0;
-      left: 0;
-      background-color: currentColor;
-      transform-origin: bottom right;
-      transition: transform 0.25s ease-out;
-    }
-    .hover-underline-animation:hover::after {
-      transform: scaleX(1);
-      transform-origin: bottom left;
-    }
-  </style>
+        /* リンクのホバーアニメーション */
+        .hover-underline-animation {
+            display: inline-block;
+            position: relative;
+        }
+        .hover-underline-animation::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            transform: scaleX(0);
+            height: 1px;
+            bottom: 0;
+            left: 0;
+            background-color: currentColor;
+            transform-origin: bottom right;
+            transition: transform 0.25s ease-out;
+        }
+        .hover-underline-animation:hover::after {
+            transform: scaleX(1);
+            transform-origin: bottom left;
+        }
+    </style>
 </head>
-
 <body class="bg-white text-slate-800 antialiased transition-colors duration-300 dark:bg-dark-bg dark:text-dark-text min-h-screen flex flex-col">
 
-  <!-- ヘッダー -->
-  <header class="sticky top-0 z-50 backdrop-blur-md bg-white/80 dark:bg-dark-bg/80 border-b border-slate-200 dark:border-dark-border">
-    <div class="max-w-3xl mx-auto px-6 h-16 flex items-center justify-between">
-      <!-- Back to Home -->
-      <a href="../" class="font-bold text-xl tracking-tight hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-        ← Back to Home
-      </a>
-
-      <!-- ダークモード切り替え -->
-      <button id="theme-toggle" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-dark-border transition-colors focus:outline-none" aria-label="Toggle Dark Mode">
-        <!-- Sun Icon -->
-        <svg id="sun-icon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
-        </svg>
-        <!-- Moon Icon -->
-        <svg id="moon-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
-        </svg>
-      </button>
-    </div>
-  </header>
-
-  <!-- メインコンテンツ -->
-  <main class="flex-grow w-full max-w-3xl mx-auto px-6 py-12">
-    <article class="prose prose-slate dark:prose-invert max-w-none">
-      
-      <!-- タイトルとメタ情報 -->
-      <div class="mb-8 not-prose">
-        <h1 class="text-3xl md:text-4xl font-bold mb-4 text-slate-900 dark:text-white">技術のSカーブの概要</h1>
-        <div class="flex flex-wrap items-center gap-4 text-sm text-slate-500 dark:text-slate-400">
-          <time datetime="2026-01-20">2026-01-20 13:38</time>
-          <div class="flex flex-wrap gap-2">
-            <span class="bg-slate-100 dark:bg-dark-card px-2 py-1 rounded">#Sカーブ</span>
-            <span class="bg-slate-100 dark:bg-dark-card px-2 py-1 rounded">#技術</span>
-            <span class="bg-slate-100 dark:bg-dark-card px-2 py-1 rounded">#成長</span>
-            <span class="bg-slate-100 dark:bg-dark-card px-2 py-1 rounded">#成熟</span>
-            <span class="bg-slate-100 dark:bg-dark-card px-2 py-1 rounded">#停滞</span>
-            <span class="bg-slate-100 dark:bg-dark-card px-2 py-1 rounded">#R&D戦略</span>
-          </div>
+    <!-- ヘッダー -->
+    <header class="sticky top-0 z-50 backdrop-blur-md bg-white/80 dark:bg-dark-bg/80 border-b border-slate-200 dark:border-dark-border">
+        <div class="max-w-3xl mx-auto px-6 h-16 flex items-center justify-between">
+            <!-- Back to Home Link -->
+            <a href="https://yamac33.github.io/sidenote/" class="font-medium text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center gap-2 group">
+                <span class="group-hover:-translate-x-1 transition-transform duration-200">←</span>
+                Back to Home
+            </a>
+            
+            <button id="theme-toggle" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-dark-border transition-colors focus:outline-none" aria-label="Toggle Dark Mode">
+                <!-- Sun Icon -->
+                <svg id="sun-icon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                <!-- Moon Icon -->
+                <svg id="moon-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+            </button>
         </div>
-      </div>
+    </header>
 
-      <!-- リード文 -->
-      <p class="lead">技術の成長段階を示すS字型モデル。導入期から停滞期までの変遷を解説。</p>
+    <!-- メインコンテンツ -->
+    <main class="flex-grow w-full max-w-3xl mx-auto px-6 py-12">
+        
+        <!-- 記事ヘッダー -->
+        <article class="prose prose-slate dark:prose-invert max-w-none">
+            <div class="mb-8 border-b border-slate-200 dark:border-dark-border pb-8">
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <span class="text-xs font-mono text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded">2026-01-20</span>
+                    <span class="text-xs font-mono text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">#Sカーブ</span>
+                    <span class="text-xs font-mono text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">#技術経営</span>
+                    <span class="text-xs font-mono text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">#R&D戦略</span>
+                    <span class="text-xs font-mono text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">#イノベーション</span>
+                </div>
+                <h1 class="text-3xl sm:text-4xl font-extrabold mt-4 mb-4 tracking-tight text-slate-900 dark:text-white leading-tight">
+                    技術のSカーブの概要
+                </h1>
+                <p class="text-slate-500 dark:text-slate-400 text-lg leading-relaxed">
+                    技術の進化には寿命がある。導入から成熟、そして停滞へ至るプロセスを「S字型」のモデルで解説します。
+                </p>
+            </div>
 
-      <hr class="my-8 border-slate-200 dark:border-dark-border" />
+            <!-- 本文 -->
+            <div class="space-y-12">
+                
+                <!-- ① 1行定義 -->
+                <section>
+                    <h2 class="text-2xl font-bold flex items-center text-slate-900 dark:text-white mb-4 group">
+                        <span class="text-slate-300 dark:text-slate-600 mr-2 group-hover:text-blue-500 transition-colors">#</span>
+                        1. 定義（結論）
+                    </h2>
+                    <div class="p-6 bg-blue-50 dark:bg-blue-900/20 rounded-lg border-l-4 border-blue-500">
+                        <p class="text-lg font-bold text-slate-800 dark:text-slate-100 m-0">
+                            <span class="text-2xl mr-2">👉</span>
+                            技術の性能や普及度が「導入期 → 成長期 → 成熟期 → 停滞期」と<span class="text-blue-600 dark:text-blue-400">S字型に推移</span>することを示すモデル
+                        </p>
+                    </div>
+                </section>
 
-      <!-- 1行要約 -->
-      <div class="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 my-6 rounded-r">
-        <p class="font-bold m-0 text-blue-900 dark:text-blue-100">
-          1行要約：技術のSカーブとは、技術の性能や普及度が「導入期→成長期→成熟期→停滞期」とS字型に推移することを示すモデルである。
-        </p>
-      </div>
+                <!-- ② 技術のSカーブとは -->
+                <section>
+                    <h2 class="text-2xl font-bold border-b border-slate-200 dark:border-dark-border pb-2 mb-6 mt-8 flex items-center text-slate-900 dark:text-white group">
+                        <span class="text-slate-300 dark:text-slate-600 mr-2 group-hover:text-blue-500 transition-colors">#</span>
+                        2. どのような考え方か
+                    </h2>
+                    <ul class="list-disc list-outside pl-6 space-y-2 mb-6 text-slate-700 dark:text-slate-300">
+                        <li class="pl-2">技術の発展を<strong>時間の経過</strong>（横軸）と<strong>性能・価値</strong>（縦軸）の関係で捉えたもの。</li>
+                        <li class="pl-2">最初はゆっくり、途中から急激に伸び、最後は頭打ちになる。この形がアルファベットの<strong>「S」</strong>に見える。</li>
+                        <li class="pl-2">企業が「いつ新技術に投資すべきか」「いつ撤退すべきか」を判断する材料になる。</li>
+                    </ul>
+                </section>
 
-      <h2>技術のSカーブとは何か</h2>
-      <ul>
-        <li>技術の発展を<strong>時間の経過</strong>で捉えた考え方</li>
-        <li>技術性能・生産性・普及度などが<strong>S字（Sカーブ）</strong>を描く</li>
-        <li>技術戦略や研究開発投資の判断に使われる</li>
-      </ul>
+                <!-- ③ Sカーブ（図解） -->
+                <section>
+                    <h2 class="text-2xl font-bold border-b border-slate-200 dark:border-dark-border pb-2 mb-6 mt-8 flex items-center text-slate-900 dark:text-white group">
+                        <span class="text-slate-300 dark:text-slate-600 mr-2 group-hover:text-blue-500 transition-colors">#</span>
+                        3. Sカーブの図解
+                    </h2>
+                    
+                    <div class="p-6 bg-slate-50 dark:bg-dark-card rounded-xl border border-slate-200 dark:border-dark-border flex flex-col items-center">
+                        <div class="relative w-full max-w-lg h-64">
+                            <!-- Axes -->
+                            <div class="absolute left-0 bottom-0 w-full h-0.5 bg-slate-400 dark:bg-slate-500"></div> <!-- X -->
+                            <div class="absolute left-0 bottom-0 w-0.5 h-full bg-slate-400 dark:bg-slate-500"></div> <!-- Y -->
+                            
+                            <!-- Labels -->
+                            <div class="absolute -left-8 top-0 text-xs font-bold text-slate-500 dark:text-slate-400">性能<br>価値</div>
+                            <div class="absolute right-0 -bottom-6 text-xs font-bold text-slate-500 dark:text-slate-400">時間</div>
 
-      <hr class="my-8 border-slate-200 dark:border-dark-border" />
+                            <!-- S-Curve SVG -->
+                            <svg class="absolute bottom-0 left-0 w-full h-full overflow-visible" preserveAspectRatio="none">
+                                <path d="M 0 250 C 100 250, 150 200, 250 125 S 400 0, 500 10" 
+                                      fill="none" stroke="#3b82f6" stroke-width="4" stroke-linecap="round" />
+                                
+                                <!-- Points -->
+                                <circle cx="50" cy="245" r="4" fill="#64748b" />
+                                <circle cx="250" cy="125" r="4" fill="#3b82f6" />
+                                <circle cx="450" cy="20" r="4" fill="#f59e0b" />
+                            </svg>
 
-      <h2>Sカーブの4段階</h2>
+                            <!-- Annotations -->
+                            <div class="absolute bottom-4 left-4 text-xs text-slate-500">導入期</div>
+                            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-sm font-bold text-blue-600 dark:text-blue-400 bg-white/80 dark:bg-dark-bg/80 px-2 rounded">成長期</div>
+                            <div class="absolute top-4 right-16 text-xs text-slate-500">成熟期</div>
+                            <div class="absolute top-0 right-0 text-xs text-slate-500">停滞期</div>
+                        </div>
+                    </div>
+                </section>
 
-      <h3>① 導入期</h3>
-      <ul>
-        <li>技術が誕生したばかり</li>
-        <li>性能向上は小さいが、将来性あり</li>
-        <li>研究開発コストが高い</li>
-      </ul>
+                <!-- ④ 4つの段階 -->
+                <section>
+                    <h2 class="text-2xl font-bold border-b border-slate-200 dark:border-dark-border pb-2 mb-6 mt-8 flex items-center text-slate-900 dark:text-white group">
+                        <span class="text-slate-300 dark:text-slate-600 mr-2 group-hover:text-blue-500 transition-colors">#</span>
+                        4. 成長の4段階
+                    </h2>
+                    
+                    <div class="space-y-4">
+                        <div class="flex gap-4 p-4 rounded-lg bg-white dark:bg-dark-bg border border-slate-200 dark:border-slate-700 items-start">
+                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-bold text-slate-500">1</div>
+                            <div>
+                                <h3 class="font-bold text-slate-800 dark:text-white mb-1">導入期 (Introduction)</h3>
+                                <p class="text-sm text-slate-600 dark:text-slate-400">
+                                    技術が誕生したばかり。性能向上はまだ小さく、研究開発コストが高い時期。
+                                </p>
+                            </div>
+                        </div>
 
-      <h3>② 成長期</h3>
-      <ul>
-        <li>技術が急速に進歩</li>
-        <li>性能・効率が大きく向上</li>
-        <li>市場が拡大し競争が激化</li>
-      </ul>
+                        <div class="flex gap-4 p-4 rounded-lg bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/30 items-start">
+                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-800 flex items-center justify-center font-bold text-blue-600 dark:text-blue-200">2</div>
+                            <div>
+                                <h3 class="font-bold text-blue-800 dark:text-blue-200 mb-1">成長期 (Growth)</h3>
+                                <p class="text-sm text-slate-600 dark:text-slate-400">
+                                    技術的なブレークスルーにより急速に進歩する時期。性能・効率が大きく向上し、市場が拡大する。
+                                </p>
+                            </div>
+                        </div>
 
-      <h3>③ 成熟期</h3>
-      <ul>
-        <li>技術が安定</li>
-        <li>改良による性能向上が頭打ち</li>
-        <li>コスト削減・効率化が中心</li>
-      </ul>
+                        <div class="flex gap-4 p-4 rounded-lg bg-yellow-50 dark:bg-yellow-900/10 border border-yellow-100 dark:border-yellow-900/30 items-start">
+                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-yellow-100 dark:bg-yellow-800 flex items-center justify-center font-bold text-yellow-600 dark:text-yellow-200">3</div>
+                            <div>
+                                <h3 class="font-bold text-yellow-800 dark:text-yellow-200 mb-1">成熟期 (Maturity)</h3>
+                                <p class="text-sm text-slate-600 dark:text-slate-400">
+                                    技術が安定し、普及する。改良による性能向上は頭打ちになり、コスト削減や効率化が中心となる。
+                                </p>
+                            </div>
+                        </div>
 
-      <h3>④ 停滞期（衰退期）</h3>
-      <ul>
-        <li>技術進歩がほぼ止まる</li>
-        <li>代替技術の登場</li>
-        <li>撤退・転換を検討</li>
-      </ul>
+                        <div class="flex gap-4 p-4 rounded-lg bg-white dark:bg-dark-bg border border-slate-200 dark:border-slate-700 items-start">
+                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-bold text-slate-500">4</div>
+                            <div>
+                                <h3 class="font-bold text-slate-800 dark:text-white mb-1">停滞期・衰退期 (Decline)</h3>
+                                <p class="text-sm text-slate-600 dark:text-slate-400">
+                                    技術進歩が限界に達する。代替となる新しい技術が登場し、主役の座を譲る時期。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
 
-      <hr class="my-8 border-slate-200 dark:border-dark-border" />
+                <!-- ⑤ 試験でのポイント -->
+                <section>
+                    <h2 class="text-2xl font-bold border-b border-slate-200 dark:border-dark-border pb-2 mb-6 mt-8 flex items-center text-slate-900 dark:text-white group">
+                        <span class="text-slate-300 dark:text-slate-600 mr-2 group-hover:text-blue-500 transition-colors">#</span>
+                        5. ITパスポート試験でのポイント
+                    </h2>
+                    <div class="mb-6 p-4 bg-slate-50 dark:bg-dark-card border border-slate-200 dark:border-slate-700 rounded-lg">
+                        <ul class="list-none space-y-2 text-sm text-slate-700 dark:text-slate-300">
+                            <li class="flex items-start gap-2">
+                                <span class="text-red-500 font-bold">！</span>
+                                <span><strong>「技術の限界」</strong>という言葉がキーワード。</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-red-500 font-bold">！</span>
+                                <span>成熟期以降は、既存技術に固執せず<strong>「次世代技術（新しいSカーブ）」への移行</strong>が必要。</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-red-500 font-bold">！</span>
+                                <span>この移行に失敗すると「イノベーションのジレンマ」に陥る可能性がある。</span>
+                            </li>
+                        </ul>
+                    </div>
 
-      <h2>テキスト図：技術のSカーブ</h2>
-      <pre class="bg-slate-100 dark:bg-dark-card p-4 rounded-lg overflow-x-auto text-sm font-mono leading-relaxed">
-性能・価値  ▲
-  │            成長期
-  │          ／￣￣￣￣＼
-  │        ／              ＼  成熟期
-  │      ／                  ＼＿＿＿
-  │   導入期                       停滞期
-  │
-  └──────────────────▶ 時間
-</pre>
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div class="p-5 bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/30 rounded-lg">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-xl">❌</span>
+                                <span class="font-bold text-red-800 dark:text-red-300">よくある間違い</span>
+                            </div>
+                            <p class="text-sm text-red-700 dark:text-red-200">
+                                「成熟期になっても、投資さえ増やせば性能は無限に伸び続ける」
+                            </p>
+                        </div>
+                        <div class="p-5 bg-green-50 dark:bg-green-900/10 border border-green-100 dark:border-green-900/30 rounded-lg">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-xl">⭕</span>
+                                <span class="font-bold text-green-800 dark:text-green-300">正解</span>
+                            </div>
+                            <p class="text-sm text-green-700 dark:text-green-200">
+                                「どんな技術にも物理的・理論的な<strong>限界</strong>があり、いずれ頭打ちになる」
+                            </p>
+                        </div>
+                    </div>
+                </section>
 
-      <hr class="my-8 border-slate-200 dark:border-dark-border" />
+                <!-- ⑥ 技術ポートフォリオとの違い -->
+                <section>
+                    <h2 class="text-2xl font-bold border-b border-slate-200 dark:border-dark-border pb-2 mb-6 mt-8 flex items-center text-slate-900 dark:text-white group">
+                        <span class="text-slate-300 dark:text-slate-600 mr-2 group-hover:text-blue-500 transition-colors">#</span>
+                        6. 比較：Sカーブ vs 技術ポートフォリオ
+                    </h2>
+                    
+                    <div class="overflow-x-auto rounded-lg border border-slate-200 dark:border-dark-border mb-6">
+                        <table class="min-w-full text-left text-sm">
+                            <thead class="bg-slate-50 dark:bg-dark-card border-b border-slate-200 dark:border-dark-border">
+                                <tr>
+                                    <th class="px-6 py-3 font-semibold text-slate-900 dark:text-white">観点</th>
+                                    <th class="px-6 py-3 font-semibold text-blue-600 dark:text-blue-400">技術のSカーブ</th>
+                                    <th class="px-6 py-3 font-semibold text-slate-500 dark:text-slate-400">技術ポートフォリオ</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-200 dark:divide-dark-border bg-white dark:bg-dark-bg">
+                                <tr>
+                                    <td class="px-6 py-4 font-bold text-slate-600 dark:text-slate-300">見る方向</td>
+                                    <td class="px-6 py-4 font-bold text-blue-600 dark:text-blue-400">時系列（過去〜未来）</td>
+                                    <td class="px-6 py-4 text-slate-500">同時点の比較（今どう配分するか）</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 font-bold text-slate-600 dark:text-slate-300">主目的</td>
+                                    <td class="px-6 py-4">技術の寿命・限界を知る</td>
+                                    <td class="px-6 py-4">研究開発リソースの配分</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 font-bold text-slate-600 dark:text-slate-300">判断内容</td>
+                                    <td class="px-6 py-4">「いつ技術を乗り換えるか」</td>
+                                    <td class="px-6 py-4">「どの技術に重点投資するか」</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
 
-      <h2>ITパスポート試験での重要ポイント</h2>
-      <ul>
-        <li><strong>「技術の限界」「次世代技術への移行」</strong>がキーワード</li>
-        <li>成熟期以降は<strong>別のSカーブへ移る必要</strong>がある</li>
-        <li>技術ポートフォリオやR&D戦略と関連</li>
-      </ul>
+                <!-- まとめ -->
+                <section class="mt-16 pt-8 border-t border-slate-200 dark:border-dark-border">
+                    <h3 class="text-xl font-bold mb-4 text-slate-900 dark:text-white">まとめ（一言）</h3>
+                    <p class="leading-8 text-lg mb-6">
+                        <span class="font-bold bg-yellow-100 dark:bg-yellow-900/40 px-1 rounded">「技術にも寿命がある。S字を描いて、いつかは止まる。」</span>
+                    </p>
+                    <div class="flex gap-4">
+                        <button class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md font-medium transition-colors shadow-sm shadow-blue-500/30">
+                            シェアする
+                        </button>
+                        <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" class="border border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-dark-card text-slate-700 dark:text-slate-300 px-6 py-2 rounded-md font-medium transition-colors">
+                            トップに戻る
+                        </button>
+                    </div>
+                </section>
 
-      <hr class="my-8 border-slate-200 dark:border-dark-border" />
+            </div>
+        </article>
+    </main>
 
-      <h2>A vs B：Sカーブと技術ポートフォリオ</h2>
-      <div class="overflow-x-auto">
-        <table class="min-w-full">
-          <thead>
-            <tr>
-              <th class="whitespace-nowrap">観点</th>
-              <th class="whitespace-nowrap">技術のSカーブ</th>
-              <th class="whitespace-nowrap">技術ポートフォリオ</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>見る方向</td>
-              <td>時系列</td>
-              <td>同時点の比較</td>
-            </tr>
-            <tr>
-              <td>主目的</td>
-              <td>技術の寿命把握</td>
-              <td>投資配分</td>
-            </tr>
-            <tr>
-              <td>活用場面</td>
-              <td>技術転換判断</td>
-              <td>技術選択判断</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+    <!-- フッター -->
+    <footer class="border-t border-slate-200 dark:border-dark-border mt-12 py-8 bg-slate-50 dark:bg-dark-card transition-colors">
+        <div class="max-w-3xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center text-slate-500 text-sm">
+            <p>&copy; 2026 Study Notes. All rights reserved.</p>
+            <div class="flex gap-4 mt-4 sm:mt-0">
+                <a href="#" class="hover:text-blue-600 transition-colors">Privacy</a>
+                <a href="#" class="hover:text-blue-600 transition-colors">Terms</a>
+                <a href="#" class="hover:text-blue-600 transition-colors">Contact</a>
+            </div>
+        </div>
+    </footer>
 
-      <hr class="my-8 border-slate-200 dark:border-dark-border" />
+    <script>
+        // ダークモード切り替えロジック
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const sunIcon = document.getElementById('sun-icon');
+        const moonIcon = document.getElementById('moon-icon');
+        const html = document.documentElement;
 
-      <h2>試験で狙われやすいポイント</h2>
-      <ul class="list-none pl-0">
-        <li class="flex items-start mb-2">
-          <span class="mr-2 text-red-500 flex-shrink-0">❌</span>
-          <span>成熟期でも投資すれば性能が伸び続ける</span>
-        </li>
-        <li class="flex items-start">
-          <span class="mr-2 text-green-500 flex-shrink-0">✅</span>
-          <span><strong>成熟期では限界があり、次の技術が必要</strong></span>
-        </li>
-      </ul>
+        // 初期設定：OSの設定またはローカルストレージを確認
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            html.classList.add('dark');
+            sunIcon.classList.remove('hidden');
+            moonIcon.classList.add('hidden');
+        } else {
+            html.classList.remove('dark');
+            sunIcon.classList.add('hidden');
+            moonIcon.classList.remove('hidden');
+        }
 
-      <hr class="my-8 border-slate-200 dark:border-dark-border" />
-
-      <h2>試験向け一言まとめ</h2>
-      <div class="bg-yellow-50 dark:bg-yellow-900/20 p-6 rounded-lg border border-yellow-200 dark:border-yellow-800 text-center">
-        <p class="text-xl font-bold text-slate-800 dark:text-yellow-100 m-0">
-          技術のSカーブ＝「技術にも成長の限界があることを示す曲線」
-        </p>
-      </div>
-
-    </article>
-  </main>
-
-  <!-- フッター -->
-  <footer class="border-t border-slate-200 dark:border-dark-border mt-12 py-8 bg-slate-50 dark:bg-dark-card transition-colors">
-    <div class="max-w-3xl mx-auto px-6 text-slate-500 text-sm flex justify-between items-center">
-      <p>&copy; 2026 Tech Study</p>
-    </div>
-  </footer>
-
-  <script>
-    // ダークモード切り替えロジック
-    const themeToggleBtn = document.getElementById('theme-toggle');
-    const sunIcon = document.getElementById('sun-icon');
-    const moonIcon = document.getElementById('moon-icon');
-    const html = document.documentElement;
-
-    // 初期設定：OSの設定またはローカルストレージを確認
-    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      html.classList.add('dark');
-      sunIcon.classList.remove('hidden');
-      moonIcon.classList.add('hidden');
-    } else {
-      html.classList.remove('dark');
-      sunIcon.classList.add('hidden');
-      moonIcon.classList.remove('hidden');
-    }
-
-    themeToggleBtn.addEventListener('click', () => {
-      html.classList.toggle('dark');
-
-      if (html.classList.contains('dark')) {
-        localStorage.theme = 'dark';
-        sunIcon.classList.remove('hidden');
-        moonIcon.classList.add('hidden');
-      } else {
-        localStorage.theme = 'light';
-        sunIcon.classList.add('hidden');
-        moonIcon.classList.remove('hidden');
-      }
-    });
-  </script>
+        themeToggleBtn.addEventListener('click', () => {
+            html.classList.toggle('dark');
+            
+            if (html.classList.contains('dark')) {
+                localStorage.theme = 'dark';
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
+            } else {
+                localStorage.theme = 'light';
+                sunIcon.classList.add('hidden');
+                moonIcon.classList.remove('hidden');
+            }
+        });
+    </script>
 </body>
 </html>
