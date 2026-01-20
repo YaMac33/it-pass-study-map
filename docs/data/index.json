@@ -1,5 +1,21 @@
 [
   {
+    "timestamp": "2026-01-20T18:44:57+09:00",
+    "title": "フリーミアムとシェアウェアの違い",
+    "summary": "フリーミアムとシェアウェアの二つの課金モデルについて解説します。どちらも無料で始められますが、その後の仕組みが異なります。",
+    "tags": [
+      "フリーミアム",
+      "シェアウェア",
+      "ビジネス",
+      "モデル",
+      "IT",
+      "課金"
+    ],
+    "dir": "2026-01-20_freemium-shareware-difference",
+    "repo_path": "/docs/2026-01-20_freemium-shareware-difference/index.html",
+    "public_url": "https://yamac33.github.io/sidenote/2026-01-20_freemium-shareware-difference"
+  },
+  {
     "timestamp": "2026-01-20T18:17:25+09:00",
     "title": "アジャイル開発手法の概要",
     "summary": "アジャイル開発の特徴と手法を解説します。XPとスクラムについて詳しく紹介します。",
