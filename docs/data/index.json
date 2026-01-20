@@ -1,5 +1,21 @@
 [
   {
+    "timestamp": "2026-01-20T19:19:49+09:00",
+    "title": "技術のSカーブの概要",
+    "summary": "技術の成長段階を示すS字型モデルについて解説します。導入期から停滞期までの変遷を詳しく説明しています。",
+    "tags": [
+      "Sカーブ",
+      "技術",
+      "成長",
+      "成熟",
+      "停滞",
+      "R&D戦略"
+    ],
+    "dir": "2026-01-20_technology-s-curve-overview",
+    "repo_path": "/docs/2026-01-20_technology-s-curve-overview/index.html",
+    "public_url": "https://yamac33.github.io/sidenote/2026-01-20_technology-s-curve-overview"
+  },
+  {
     "timestamp": "2026-01-20T19:09:53+09:00",
     "title": "ダークモード切り替え機能の実装",
     "summary": "このHTMLにはダークモードの切り替え機能が実装されています。ユーザーの設定に基づき、テーマが自動的に変更されます。",
