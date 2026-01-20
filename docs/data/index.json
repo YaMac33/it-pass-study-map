@@ -1,5 +1,21 @@
 [
   {
+    "timestamp": "2026-01-20T19:43:14+09:00",
+    "title": "GitHub Actionsの排他制御についての解説",
+    "summary": "GitHub Actionsは競合を検知して同時処理を停止するが、実際には排他制御とは言えない。排他制御の定義や目的を解説する。",
+    "tags": [
+      "GitHub",
+      "排他制御",
+      "Action",
+      "トランザクション",
+      "競合検出",
+      "処理停止"
+    ],
+    "dir": "2026-01-20_github-actions-exclusivity",
+    "repo_path": "/docs/2026-01-20_github-actions-exclusivity/index.html",
+    "public_url": "https://yamac33.github.io/sidenote/2026-01-20_github-actions-exclusivity"
+  },
+  {
     "timestamp": "2026-01-20T19:33:35+09:00",
     "title": "技術のSカーブの概要と考察",
     "summary": "技術の進化はS字型のモデルを通じて理解される。本記事では、そのプロセスと重要なポイントについて解説します。",
