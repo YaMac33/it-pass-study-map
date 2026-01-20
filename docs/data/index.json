@@ -1,5 +1,20 @@
 [
   {
+    "timestamp": "2026-01-20T12:14:59+09:00",
+    "title": "ライブマイグレーションの解説",
+    "summary": "稼働中のシステムを止めずに別の物理サーバーへ移動させる仮想化技術について解説します。",
+    "tags": [
+      "ライブマイグレーション",
+      "仮想化",
+      "ITパスポート",
+      "クラウド",
+      "システム移行"
+    ],
+    "dir": "2026-01-20_live-migration-technique",
+    "repo_path": "/docs/2026-01-20_live-migration-technique/index.html",
+    "public_url": "https://yamac33.github.io/sidenote/2026-01-20_live-migration-technique"
+  },
+  {
     "timestamp": "2026-01-20T11:14:27+09:00",
     "title": "プロジェクト統合マネジメントの概要",
     "summary": "プロジェクト全体を俯瞰し、計画から実行、終結までを統括・調整する重要な役割について解説します。",
