@@ -1,5 +1,21 @@
 [
   {
+    "timestamp": "2026-01-20T19:09:53+09:00",
+    "title": "ダークモード切り替え機能の実装",
+    "summary": "このHTMLにはダークモードの切り替え機能が実装されています。ユーザーの設定に基づき、テーマが自動的に変更されます。",
+    "tags": [
+      "ダークモード",
+      "テーマ",
+      "JavaScript",
+      "CSS",
+      "インターフェース",
+      "ユーザビリティ"
+    ],
+    "dir": "2026-01-20_dark-mode-toggle",
+    "repo_path": "/docs/2026-01-20_dark-mode-toggle/index.html",
+    "public_url": "https://yamac33.github.io/sidenote/2026-01-20_dark-mode-toggle"
+  },
+  {
     "timestamp": "2026-01-20T18:44:57+09:00",
     "title": "フリーミアムとシェアウェアの違い",
     "summary": "フリーミアムとシェアウェアの二つの課金モデルについて解説します。どちらも無料で始められますが、その後の仕組みが異なります。",
