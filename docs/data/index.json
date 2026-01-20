@@ -1,5 +1,20 @@
 [
   {
+    "timestamp": "2026-01-20T16:09:40+09:00",
+    "title": "R&D戦略の全体像",
+    "summary": "経営目標から研究開発、事業化の流れを解説。主要要素を構造図で可視化しています。",
+    "tags": [
+      "R&D",
+      "技術経営",
+      "イノベーション",
+      "知財戦略",
+      "構造図"
+    ],
+    "dir": "2026-01-20_rd-strategy-overview",
+    "repo_path": "/docs/2026-01-20_rd-strategy-overview/index.html",
+    "public_url": "https://yamac33.github.io/sidenote/2026-01-20_rd-strategy-overview"
+  },
+  {
     "timestamp": "2026-01-20T15:09:28+09:00",
     "title": "PPMとマトリクスの関連性",
     "summary": "PPMとBCG・GE・ADL・技術ポートフォリオの関連性について解説します。",
