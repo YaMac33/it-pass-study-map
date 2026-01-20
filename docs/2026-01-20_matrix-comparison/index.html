@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="ja" class="scroll-smooth">
+<head>
+    <!-- 指定されたスクリプト -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-MQ9ZB4LYWP"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>アンゾフと技術市場マトリクスの違い</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Helvetica Neue"', 'Arial', '"Hiragino Kaku Gothic ProN"', '"Hiragino Sans"', 'Meiryo', 'sans-serif'],
+                        mono: ['"Menlo"', '"Monaco"', '"Consolas"', '"Courier New"', 'monospace'],
+                    },
+                    colors: {
+                        primary: '#3b82f6',
+                        dark: {
+                            bg: '#0d1117',
+                            card: '#161b22',
+                            border: '#30363d',
+                            text: '#c9d1d9'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* カスタムスクロールバー */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #30363d;
+        }
+
+        /* リンクのホバーアニメーション */
+        .hover-underline-animation {
+            display: inline-block;
+            position: relative;
+        }
+        .hover-underline-animation::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            transform: scaleX(0);
+            height: 1px;
+            bottom: 0;
+            left: 0;
+            background-color: currentColor;
+            transform-origin: bottom right;
+            transition: transform 0.25s ease-out;
+        }
+        .hover-underline-animation:hover::after {
+            transform: scaleX(1);
+            transform-origin: bottom left;
+        }
+    </style>
+</head>
+<body class="bg-white text-slate-800 antialiased transition-colors duration-300 dark:bg-dark-bg dark:text-dark-text min-h-screen flex flex-col">
+
+    <!-- ヘッダー -->
+    <header class="sticky top-0 z-50 backdrop-blur-md bg-white/80 dark:bg-dark-bg/80 border-b border-slate-200 dark:border-dark-border">
+        <div class="max-w-3xl mx-auto px-6 h-16 flex items-center justify-between">
+            <!-- Back to Home Link -->
+            <a href="https://yamac33.github.io/sidenote/" class="font-medium text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center gap-2 group">
+                <span class="group-hover:-translate-x-1 transition-transform duration-200">←</span>
+                Back to Home
+            </a>
+            
+            <button id="theme-toggle" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-dark-border transition-colors focus:outline-none" aria-label="Toggle Dark Mode">
+                <!-- Sun Icon -->
+                <svg id="sun-icon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                <!-- Moon Icon -->
+                <svg id="moon-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- メインコンテンツ -->
+    <main class="flex-grow w-full max-w-3xl mx-auto px-6 py-12">
+        
+        <!-- 記事ヘッダー -->
+        <article class="prose prose-slate dark:prose-invert max-w-none">
+            <div class="mb-8 border-b border-slate-200 dark:border-dark-border pb-8">
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <span class="text-xs font-mono text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded">2026-01-20</span>
+                    <span class="text-xs font-mono text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">#成長戦略</span>
+                    <span class="text-xs font-mono text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">#技術経営</span>
+                    <span class="text-xs font-mono text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">#マトリクス</span>
+                    <span class="text-xs font-mono text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">#ビジネスフレームワーク</span>
+                </div>
+                <h1 class="text-3xl sm:text-4xl font-extrabold mt-4 mb-4 tracking-tight text-slate-900 dark:text-white leading-tight">
+                    アンゾフと技術市場マトリクスの違い
+                </h1>
+                <p class="text-slate-500 dark:text-slate-400 text-lg leading-relaxed">
+                    見た目は似ていますが、使い所が異なります。「製品」と「技術」の違いに着目して、2つのフレームワークの共通点と相違点を解説します。
+                </p>
+            </div>
+
+            <!-- 本文 -->
+            <div class="space-y-12">
+                
+                <!-- ① 1行定義 -->
+                <section>
+                    <h2 class="text-2xl font-bold flex items-center text-slate-900 dark:text-white mb-4 group">
+                        <span class="text-slate-300 dark:text-slate-600 mr-2 group-hover:text-blue-500 transition-colors">#</span>
+                        1. 結論（似ているけど違う）
+                    </h2>
+                    <div class="p-6 bg-blue-50 dark:bg-blue-900/20 rounded-lg border-l-4 border-blue-500">
+                        <p class="text-lg font-bold text-slate-800 dark:text-slate-100 m-0">
+                            <span class="text-2xl mr-2">👉</span>
+                            構造と思想は近いが、<span class="text-blue-600 dark:text-blue-400">横軸が「製品」か「技術」か</span>で使い道が異なる
+                        </p>
+                    </div>
+                </section>
+
+                <!-- ② アンゾフの成長マトリクス -->
+                <section>
+                    <h2 class="text-2xl font-bold border-b border-slate-200 dark:border-dark-border pb-2 mb-6 mt-8 flex items-center text-slate-900 dark:text-white group">
+                        <span class="text-slate-300 dark:text-slate-600 mr-2 group-hover:text-blue-500 transition-colors">#</span>
+                        2. アンゾフの成長マトリクス
+                    </h2>
+                    <p class="mb-4 text-slate-600 dark:text-slate-400">
+                        経営戦略のド定番。「事業をどう成長させるか？」を考えるための地図です。
+                    </p>
+                    
+                    <!-- Matrix Diagram -->
+                    <div class="relative max-w-lg mx-auto my-8">
+                        <!-- Labels -->
+                        <div class="absolute -left-8 top-1/2 -translate-y-1/2 -rotate-90 text-sm font-bold text-slate-500">市場 (Market)</div>
+                        <div class="absolute left-1/2 -top-8 -translate-x-1/2 text-sm font-bold text-slate-500">製品 (Product)</div>
+
+                        <!-- Grid -->
+                        <div class="grid grid-cols-2 gap-2 text-center h-64">
+                            <!-- Headers -->
+                            <div class="absolute -top-6 left-[25%] -translate-x-1/2 text-xs text-slate-400">既存</div>
+                            <div class="absolute -top-6 left-[75%] -translate-x-1/2 text-xs text-slate-400">新規</div>
+                            <div class="absolute top-[25%] -left-6 -translate-y-1/2 text-xs text-slate-400 -rotate-90">既存</div>
+                            <div class="absolute top-[75%] -left-6 -translate-y-1/2 text-xs text-slate-400 -rotate-90">新規</div>
+
+                            <!-- Quadrants -->
+                            <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded flex flex-col items-center justify-center p-2">
+                                <div class="font-bold text-blue-800 dark:text-blue-200">市場浸透</div>
+                                <div class="text-xs text-blue-600 dark:text-blue-400 mt-1">もっと売る</div>
+                            </div>
+                            <div class="bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800 rounded flex flex-col items-center justify-center p-2">
+                                <div class="font-bold text-indigo-800 dark:text-indigo-200">新製品開発</div>
+                                <div class="text-xs text-indigo-600 dark:text-indigo-400 mt-1">新しいモノを売る</div>
+                            </div>
+                            <div class="bg-cyan-50 dark:bg-cyan-900/20 border border-cyan-200 dark:border-cyan-800 rounded flex flex-col items-center justify-center p-2">
+                                <div class="font-bold text-cyan-800 dark:text-cyan-200">新市場開拓</div>
+                                <div class="text-xs text-cyan-600 dark:text-cyan-400 mt-1">新しい場所で売る</div>
+                            </div>
+                            <div class="bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded flex flex-col items-center justify-center p-2 relative overflow-hidden">
+                                <div class="font-bold text-slate-800 dark:text-slate-200">多角化</div>
+                                <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">未知への挑戦</div>
+                                <div class="absolute -right-4 -bottom-4 w-12 h-12 bg-red-500/20 rounded-full blur-xl"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center text-sm text-slate-500 mb-8">
+                        目的：<strong>経営戦略・事業成長の方向性</strong>を決める
+                    </div>
+                </section>
+
+                <!-- ③ 技術市場マトリクス -->
+                <section>
+                    <h2 class="text-2xl font-bold border-b border-slate-200 dark:border-dark-border pb-2 mb-6 mt-8 flex items-center text-slate-900 dark:text-white group">
+                        <span class="text-slate-300 dark:text-slate-600 mr-2 group-hover:text-blue-500 transition-colors">#</span>
+                        3. 技術市場マトリクス
+                    </h2>
+                    <p class="mb-4 text-slate-600 dark:text-slate-400">
+                        こちらは「技術」を軸にしたもの。R&D（研究開発）戦略などで使われます。
+                    </p>
+                    
+                    <!-- Matrix Diagram -->
+                    <div class="relative max-w-lg mx-auto my-8">
+                        <!-- Labels -->
+                        <div class="absolute -left-8 top-1/2 -translate-y-1/2 -rotate-90 text-sm font-bold text-slate-500">市場 (Market)</div>
+                        <div class="absolute left-1/2 -top-8 -translate-x-1/2 text-sm font-bold text-pink-600 dark:text-pink-400 border-b-2 border-pink-500 dark:border-pink-400 pb-1">技術 (Technology)</div>
+
+                        <!-- Grid -->
+                        <div class="grid grid-cols-2 gap-2 text-center h-64">
+                            <!-- Headers -->
+                            <div class="absolute -top-6 left-[25%] -translate-x-1/2 text-xs text-slate-400">既存</div>
+                            <div class="absolute -top-6 left-[75%] -translate-x-1/2 text-xs text-slate-400">新規</div>
+                            <div class="absolute top-[25%] -left-6 -translate-y-1/2 text-xs text-slate-400 -rotate-90">既存</div>
+                            <div class="absolute top-[75%] -left-6 -translate-y-1/2 text-xs text-slate-400 -rotate-90">新規</div>
+
+                            <!-- Quadrants -->
+                            <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded flex flex-col items-center justify-center p-2">
+                                <div class="font-bold text-green-800 dark:text-green-200">技術改良</div>
+                                <div class="text-xs text-green-600 dark:text-green-400 mt-1">コストダウン等</div>
+                            </div>
+                            <div class="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded flex flex-col items-center justify-center p-2">
+                                <div class="font-bold text-orange-800 dark:text-orange-200">技術革新</div>
+                                <div class="text-xs text-orange-600 dark:text-orange-400 mt-1">イノベーション</div>
+                            </div>
+                            <div class="bg-teal-50 dark:bg-teal-900/20 border border-teal-200 dark:border-teal-800 rounded flex flex-col items-center justify-center p-2">
+                                <div class="font-bold text-teal-800 dark:text-teal-200">用途開発</div>
+                                <div class="text-xs text-teal-600 dark:text-teal-400 mt-1">技術の横展開</div>
+                            </div>
+                            <div class="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded flex flex-col items-center justify-center p-2">
+                                <div class="font-bold text-purple-800 dark:text-purple-200">技術起点新事業</div>
+                                <div class="text-xs text-purple-600 dark:text-purple-400 mt-1">ベンチャー的</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center text-sm text-slate-500 mb-8">
+                        目的：<strong>R&D戦略・技術投資の方向性</strong>を決める
+                    </div>
+                </section>
+
+                <!-- ④ 決定的な違い -->
+                <section>
+                    <h2 class="text-2xl font-bold border-b border-slate-200 dark:border-dark-border pb-2 mb-6 mt-8 flex items-center text-slate-900 dark:text-white group">
+                        <span class="text-slate-300 dark:text-slate-600 mr-2 group-hover:text-blue-500 transition-colors">#</span>
+                        4. 決定的な違い（製品 vs 技術）
+                    </h2>
+                    <p class="mb-6">
+                        「製品」と「技術」はイコールではありません。ここが混同しやすいポイントです。
+                    </p>
+                    
+                    <div class="overflow-x-auto rounded-lg border border-slate-200 dark:border-dark-border mb-6">
+                        <table class="min-w-full text-left text-sm">
+                            <thead class="bg-slate-50 dark:bg-dark-card border-b border-slate-200 dark:border-dark-border">
+                                <tr>
+                                    <th class="px-6 py-3 font-semibold text-slate-900 dark:text-white">観点</th>
+                                    <th class="px-6 py-3 font-semibold text-blue-600 dark:text-blue-400">アンゾフ</th>
+                                    <th class="px-6 py-3 font-semibold text-pink-600 dark:text-pink-400">技術市場マトリクス</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-200 dark:divide-dark-border bg-white dark:bg-dark-bg">
+                                <tr>
+                                    <td class="px-6 py-4 font-bold text-slate-600 dark:text-slate-300">横軸</td>
+                                    <td class="px-6 py-4 font-bold text-blue-600 dark:text-blue-400">製品 (Product)</td>
+                                    <td class="px-6 py-4 font-bold text-pink-600 dark:text-pink-400">技術 (Technology)</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 font-bold text-slate-600 dark:text-slate-300">主目的</td>
+                                    <td class="px-6 py-4">事業・成長戦略</td>
+                                    <td class="px-6 py-4">R&D・技術投資戦略</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 font-bold text-slate-600 dark:text-slate-300">視点</td>
+                                    <td class="px-6 py-4">市場・顧客起点</td>
+                                    <td class="px-6 py-4">技術起点（シーズ）</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 font-bold text-slate-600 dark:text-slate-300">多角化の意味</td>
+                                    <td class="px-6 py-4">事業としての多角化</td>
+                                    <td class="px-6 py-4">技術×市場の飛躍</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="bg-yellow-50 dark:bg-yellow-900/10 p-4 rounded-lg border border-yellow-200 dark:border-yellow-900/30 text-sm">
+                        <p class="font-bold text-yellow-800 dark:text-yellow-200 mb-1">💡 なぜ区別が必要？</p>
+                        <p class="text-slate-700 dark:text-slate-300">
+                            「同じ製品でも中の技術は刷新されている」場合や、「同じ技術を使って全く別の製品を作る」場合があるからです。<br>
+                            技術ドリブンな企業ほど、この2つを使い分ける必要があります。
+                        </p>
+                    </div>
+                </section>
+
+                <!-- ⑤ 使い分け -->
+                <section>
+                    <h2 class="text-2xl font-bold border-b border-slate-200 dark:border-dark-border pb-2 mb-6 mt-8 flex items-center text-slate-900 dark:text-white group">
+                        <span class="text-slate-300 dark:text-slate-600 mr-2 group-hover:text-blue-500 transition-colors">#</span>
+                        5. どう使い分ける？
+                    </h2>
+                    
+                    <div class="grid sm:grid-cols-2 gap-4 mt-6">
+                        <div class="p-5 border border-slate-200 dark:border-slate-700 rounded-lg hover:shadow-md transition-shadow">
+                            <div class="text-3xl mb-3">💼</div>
+                            <h3 class="font-bold text-slate-900 dark:text-white mb-2">アンゾフを使うとき</h3>
+                            <ul class="list-disc list-outside pl-5 text-sm text-slate-600 dark:text-slate-400 space-y-1">
+                                <li>全社的な売上目標を立てるとき</li>
+                                <li>マーケティング戦略を考えるとき</li>
+                                <li>「何を誰に売るか」を整理したいとき</li>
+                            </ul>
+                        </div>
+                        <div class="p-5 border border-slate-200 dark:border-slate-700 rounded-lg hover:shadow-md transition-shadow">
+                            <div class="text-3xl mb-3">🔬</div>
+                            <h3 class="font-bold text-slate-900 dark:text-white mb-2">技術市場マトリクスを使うとき</h3>
+                            <ul class="list-disc list-outside pl-5 text-sm text-slate-600 dark:text-slate-400 space-y-1">
+                                <li>研究開発（R&D）の予算配分を決めるとき</li>
+                                <li>保有技術の棚卸しと用途探索をするとき</li>
+                                <li>「技術で何ができるか」を整理したいとき</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ⑥ ミニ確認問題 -->
+                <section>
+                    <h2 class="text-2xl font-bold border-b border-slate-200 dark:border-dark-border pb-2 mb-6 mt-8 flex items-center text-slate-900 dark:text-white group">
+                        <span class="text-slate-300 dark:text-slate-600 mr-2 group-hover:text-blue-500 transition-colors">#</span>
+                        6. ミニ確認問題
+                    </h2>
+                    
+                    <div class="my-6 relative group rounded-lg overflow-hidden border border-slate-200 dark:border-dark-border bg-white dark:bg-[#161b22]">
+                        <div class="flex items-center px-4 py-2 bg-slate-100 dark:bg-[#21252b] border-b border-slate-200 dark:border-slate-700">
+                            <span class="text-xs text-slate-500 dark:text-slate-400 font-mono">Quiz</span>
+                        </div>
+                        <div class="p-6">
+                            <p class="font-bold text-lg mb-4 text-slate-900 dark:text-white">Q. アンゾフの成長マトリクスにおいて、縦軸と横軸の組み合わせとして正しいものはどれか？</p>
+                            <div class="space-y-2 mb-6">
+                                <div class="p-2 border border-slate-200 dark:border-slate-700 rounded text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition-colors">A. 市場 × 技術</div>
+                                <div class="p-2 border border-blue-200 dark:border-blue-900 bg-blue-50 dark:bg-blue-900/20 rounded text-blue-800 dark:text-blue-300 font-semibold cursor-pointer">B. 市場 × 製品</div>
+                                <div class="p-2 border border-slate-200 dark:border-slate-700 rounded text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition-colors">C. 製品 × 技術</div>
+                                <div class="p-2 border border-slate-200 dark:border-slate-700 rounded text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition-colors">D. 市場 × 顧客</div>
+                            </div>
+                            <div class="text-sm text-slate-500 pt-4 border-t border-slate-100 dark:border-slate-800">
+                                <span class="font-bold text-green-600 dark:text-green-400">👉 正解：B</span><br>
+                                アンゾフは「市場 × 製品」です。「市場 × 技術」は技術市場マトリクスとなります。
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- まとめ -->
+                <section class="mt-16 pt-8 border-t border-slate-200 dark:border-dark-border">
+                    <h3 class="text-xl font-bold mb-4 text-slate-900 dark:text-white">まとめ</h3>
+                    <p class="leading-8 text-lg mb-6">
+                        <span class="font-bold bg-yellow-100 dark:bg-yellow-900/40 px-1 rounded">「製品」で考えるか「技術」で考えるか、文脈に合わせて使い分けよう</span>
+                    </p>
+                    <div class="flex gap-4">
+                        <button class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md font-medium transition-colors shadow-sm shadow-blue-500/30">
+                            シェアする
+                        </button>
+                        <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" class="border border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-dark-card text-slate-700 dark:text-slate-300 px-6 py-2 rounded-md font-medium transition-colors">
+                            トップに戻る
+                        </button>
+                    </div>
+                </section>
+
+            </div>
+        </article>
+    </main>
+
+    <!-- フッター -->
+    <footer class="border-t border-slate-200 dark:border-dark-border mt-12 py-8 bg-slate-50 dark:bg-dark-card transition-colors">
+        <div class="max-w-3xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center text-slate-500 text-sm">
+            <p>&copy; 2026 Study Notes. All rights reserved.</p>
+            <div class="flex gap-4 mt-4 sm:mt-0">
+                <a href="#" class="hover:text-blue-600 transition-colors">Privacy</a>
+                <a href="#" class="hover:text-blue-600 transition-colors">Terms</a>
+                <a href="#" class="hover:text-blue-600 transition-colors">Contact</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ダークモード切り替えロジック
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const sunIcon = document.getElementById('sun-icon');
+        const moonIcon = document.getElementById('moon-icon');
+        const html = document.documentElement;
+
+        // 初期設定：OSの設定またはローカルストレージを確認
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            html.classList.add('dark');
+            sunIcon.classList.remove('hidden');
+            moonIcon.classList.add('hidden');
+        } else {
+            html.classList.remove('dark');
+            sunIcon.classList.add('hidden');
+            moonIcon.classList.remove('hidden');
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            html.classList.toggle('dark');
+            
+            if (html.classList.contains('dark')) {
+                localStorage.theme = 'dark';
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
+            } else {
+                localStorage.theme = 'light';
+                sunIcon.classList.add('hidden');
+                moonIcon.classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
