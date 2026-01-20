@@ -1,5 +1,20 @@
 [
   {
+    "timestamp": "2026-01-21T07:08:19+09:00",
+    "title": "システム稼働率の計算手順",
+    "summary": "システム稼働率の計算方法を解説します。WebサーバとDBの接続構成を図解でわかりやすく整理しました。",
+    "tags": [
+      "システム",
+      "稼働率",
+      "計算問題",
+      "Webサーバ",
+      "基本情報技術者"
+    ],
+    "dir": "2026-01-21_system-availability-calculation",
+    "repo_path": "/docs/2026-01-21_system-availability-calculation/index.html",
+    "public_url": "https://yamac33.github.io/sidenote/2026-01-21_system-availability-calculation"
+  },
+  {
     "timestamp": "2026-01-21T06:57:27+09:00",
     "title": "GPT-4o miniがもたらすAI革命",
     "summary": "OpenAIの新モデル「GPT-4o mini」は、低価格で高性能なAIを実現し、AIの利用を広げる革新的な製品です。この記事ではその特徴と影響を解説します。",
