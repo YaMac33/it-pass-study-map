@@ -1,5 +1,21 @@
 [
   {
+    "timestamp": "2026-01-20T18:17:25+09:00",
+    "title": "アジャイル開発手法の概要",
+    "summary": "アジャイル開発の特徴と手法を解説します。XPとスクラムについて詳しく紹介します。",
+    "tags": [
+      "アジャイル",
+      "XP",
+      "スクラム",
+      "ソフトウェア開発",
+      "開発手法",
+      "イテレーション"
+    ],
+    "dir": "2026-01-20_agile-development-overview",
+    "repo_path": "/docs/2026-01-20_agile-development-overview/index.html",
+    "public_url": "https://yamac33.github.io/sidenote/2026-01-20_agile-development-overview"
+  },
+  {
     "timestamp": "2026-01-20T16:09:40+09:00",
     "title": "R&D戦略の全体像",
     "summary": "経営目標から研究開発、事業化の流れを解説。主要要素を構造図で可視化しています。",
