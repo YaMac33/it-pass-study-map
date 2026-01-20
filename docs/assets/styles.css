@@ -240,3 +240,46 @@ a:hover {
         font-size: 1.5rem;
     }
 }
+
+/* =========
+   Search
+   ========= */
+.search-wrap {
+  margin: 0 0 3.5rem;
+}
+
+.search-input {
+  width: 100%;
+  font-size: 1.15rem;
+  padding: 1.1rem 1rem;
+  border: 1px solid var(--line-color);
+  border-radius: 8px;
+  outline: none;
+  background: var(--bg-color);
+  color: var(--text-main);
+}
+
+.search-input:focus {
+  border-color: var(--text-main);
+}
+
+/* =========
+   Tags on cards
+   ========= */
+.tag-list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.6rem;
+  margin: 0 0 1rem;
+  padding: 0;
+}
+
+.tag {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-sub);
+  border: 1px solid var(--line-color);
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+}
