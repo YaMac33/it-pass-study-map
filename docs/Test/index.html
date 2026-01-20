@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>構造的審美性 - THE MONOLITH</title>
+    <!-- 階層が一つ下がるためパスを調整 -->
+    <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+
+    <div class="container">
+        <header class="site-header">
+            <a href="../index.html" class="site-title">THE MONOLITH.</a>
+            <nav class="site-nav">
+                <ul>
+                    <li><a href="../index.html">Back to List</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            <article class="article-content">
+                <header class="article-header">
+                    <time class="post-meta" datetime="2024-03-20">2024.03.20 / DESIGN</time>
+                    <h1 class="article-title">構造的審美性：<br>余白と文字だけで語るデザインの哲学</h1>
+                </header>
+
+                <p>
+                    現代のWebデザインにおいて、「リッチ」であることは必ずしも美徳ではありません。
+                    画像や動画、複雑なアニメーションはユーザーの注意を引きますが、
+                    同時にコンテンツの本質から目を逸らさせる可能性も孕んでいます。
+                </p>
+
+                <h2>1. 「引き算」のアプローチ</h2>
+                <p>
+                    このブログテーマは、徹底的な「引き算」から生まれました。
+                    色は白と黒、そしてグレーのみ。画像は使用せず、ボーダーラインと文字の太さ（ウェイト）だけで階層構造を表現しています。
+                </p>
+                
+                <blockquote>
+                    <p>"Perfection is achieved, not when there is nothing more to add, but when there is nothing left to take away." - Antoine de Saint-Exupéry</p>
+                </blockquote>
+
+                <p>
+                    サン＝テグジュペリの言葉通り、完璧とは「これ以上削れない」状態を指します。
+                    CSSにおいても同様です。不要な<code>box-shadow</code>や<code>border-radius</code>を削除し、
+                    グリッドとスペーシングに注力することで、理知的でクールな印象を与えることができます。
+                </p>
+
+                <h2>2. コードとしての美しさ</h2>
+                <p>
+                    デザインだけでなく、実装もシンプルであるべきです。
+                    以下は、このページで使用されている主要なCSS変数の一部です。
+                </p>
+
+<pre><code class="language-css">:root {
+    --bg-color: #ffffff;
+    --text-main: #111111;
+    --font-sans: "Helvetica Neue", Arial, sans-serif;
+    --spacing-unit: 1.5rem;
+}</code></pre>
+
+                <h3>タイポグラフィの選定</h3>
+                <p>
+                    画像を使わない場合、フォント選びがデザインの命運を分けます。
+                    可読性の高いサンセリフ体（Helvetica NeueやNoto Sans JP）をベースにしつつ、
+                    メタデータには等幅フォント（Monospace）を使用することで、
+                    「ドキュメント」としての信頼感とデジタルな質感を演出しています。
+                </p>
+
+                <ul>
+                    <li><strong>見出し：</strong> 力強く、太く、黒く。</li>
+                    <li><strong>本文：</strong> 読みやすい行間（line-height: 1.8）と適度な余白。</li>
+                    <li><strong>余白：</strong> 意図的な空白は、ユーザーに「読むための息継ぎ」を与えます。</li>
+                </ul>
+
+                <h2>3. 結論</h2>
+                <p>
+                    画像がないからといって、退屈である必要はありません。
+                    むしろ制約があるからこそ、配置と文字のバランスに対する感性が研ぎ澄まされます。
+                    この「白いキャンバス」のようなブログが、コンテンツそのものを輝かせる器となることを願っています。
+                </p>
+            </article>
+        </main>
+
+        <footer class="site-footer">
+            <p>&copy; 2024 The Monolith Blog. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <!-- 階層調整して読み込み -->
+    <script src="../assets/app.js"></script>
+</body>
+</html>
