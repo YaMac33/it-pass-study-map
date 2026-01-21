@@ -1,5 +1,20 @@
 [
   {
+    "timestamp": "2026-01-21T11:24:14+09:00",
+    "title": "E-R図の基本と試験対策",
+    "summary": "E-R図の概要と試験対策を解説します。データベース設計におけるE-R図の重要性を理解しましょう。",
+    "tags": [
+      "E-R図",
+      "データ構造",
+      "試験対策",
+      "エンティティ",
+      "リレーションシップ"
+    ],
+    "dir": "2026-01-21_er-diagram-basics",
+    "repo_path": "/docs/2026-01-21_er-diagram-basics/index.html",
+    "public_url": "https://yamac33.github.io/sidenote/2026-01-21_er-diagram-basics"
+  },
+  {
     "timestamp": "2026-01-21T10:42:22+09:00",
     "title": "損益計算書の利益分析ポイント",
     "summary": "損益計算書の4つの主要利益を徹底分析し、各利益の意味や計算式、チェックポイントを明確に解説します。",
