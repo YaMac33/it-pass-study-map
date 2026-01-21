@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>公開鍵暗号方式の役割と事例：社会を支える「見えないインフラ」 - Sidenote</title>
+  <meta name="description" content="S/MIMEやIoTだけでなく、Web閲覧、クレカ決済、ブロックチェーンなど、現代社会のあらゆる場面で使われている「公開鍵暗号方式」の活用事例を総まとめ解説。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="公開鍵暗号方式の役割と事例：社会を支える「見えないインフラ」" />
+  <meta property="og:description" content="HTTPSからビットコインまで。この技術がないと現代社会は一日たりとも回らない。" />
+  <meta property="og:url" content="https://example.com/articles/public-key-applications.html" />
+
+  <!-- Assets: 記事は1階層下なので ../ 固定 -->
+  <link rel="stylesheet" href="../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS -->
+  <style>
+    /* 全体マップ（ツリー図） */
+    .map-container {
+      margin: 2.5rem 0;
+      padding: 2rem;
+      background-color: var(--code-bg);
+      border: 1px solid var(--line-color);
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+
+    .tree-diagram {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 300px;
+    }
+
+    .root-box {
+      background: var(--text-main);
+      color: #fff;
+      padding: 0.8rem 1.5rem;
+      border-radius: 4px;
+      font-weight: bold;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    .root-box::after {
+      content: "";
+      position: absolute;
+      bottom: -2rem;
+      left: 50%;
+      width: 2px;
+      height: 2rem;
+      background: var(--text-main);
+    }
+
+    .branch-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      position: relative;
+      padding-top: 1rem;
+    }
+
+    .branch-list::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 10%;
+      right: 10%;
+      height: 2px;
+      background: var(--text-main);
+    }
+
+    .branch-item {
+      background: var(--bg-color);
+      border: 1px solid var(--line-color);
+      padding: 0.8rem;
+      text-align: center;
+      width: 140px;
+      position: relative;
+      font-size: 0.9rem;
+      box-shadow: 2px 2px 0 rgba(0,0,0,0.05);
+    }
+
+    .branch-item::before {
+      content: "";
+      position: absolute;
+      top: -1rem; /* branch-listの上線まで届かせる */
+      left: 50%;
+      width: 2px;
+      height: 1rem;
+      background: var(--text-main);
+    }
+
+    /* 用途別解説カード */
+    .use-case-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .use-case-card {
+      background: var(--bg-color);
+      border: 1px solid var(--line-color);
+      padding: 1.5rem;
+      border-left: 4px solid var(--text-main);
+    }
+
+    .card-head {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-bottom: 1rem;
+      border-bottom: 1px dashed var(--line-color);
+      padding-bottom: 0.5rem;
+    }
+
+    .icon-box {
+      font-size: 1.5rem;
+    }
+
+    .card-title {
+      font-weight: bold;
+      font-size: 1.05rem;
+    }
+
+    .role-highlight {
+      background: #e3f2fd;
+      color: #0d47a1;
+      padding: 0.5rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      margin-top: 1rem;
+      text-align: center;
+    }
+    
+    .role-highlight::before {
+      content: "🔑 役割：";
+    }
+
+    /* Web通信の簡易フロー */
+    .https-flow {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--code-bg);
+      padding: 1rem;
+      border-radius: 4px;
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+    }
+    
+    .flow-step {
+      text-align: center;
+      flex: 1;
+    }
+    .flow-arrow {
+      color: var(--text-sub);
+      font-weight: bold;
+    }
+
+    /* まとめテーブル */
+    .summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.9rem;
+    }
+    .summary-table th, .summary-table td {
+      border: 1px solid var(--line-color);
+      padding: 0.8rem;
+      text-align: left;
+    }
+    .summary-table th {
+      background: var(--code-bg);
+      width: 25%;
+    }
+
+    /* Tag List Styling */
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      list-style: none;
+      padding: 0;
+      margin-top: 1rem;
+    }
+    .tag-list li {
+      font-size: 0.8rem;
+      background: var(--code-bg);
+      padding: 0.2rem 0.6rem;
+      border-radius: 3px;
+      color: var(--text-sub);
+      font-family: var(--font-mono);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <!-- GEN: Site Title -->
+      <a href="../index.html" class="site-title">Sidenote.</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-21">2026.01.21 / セキュリティ・基礎理論</time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">公開鍵暗号方式の役割と事例：社会を支える「見えないインフラ」</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list" aria-label="tags">
+            <li>#公開鍵暗号</li>
+            <li>#セキュリティ</li>
+            <li>#HTTPS</li>
+            <li>#ブロックチェーン</li>
+            <li>#ITパスポート</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>「公開鍵暗号方式」と聞くと、S/MIMEなどのメールセキュリティを思い浮かべるかもしれません。しかし、その活躍の場はメールに留まりません。</p>
+        <p>Webサイトの閲覧、ネットショッピング、会社へのリモートアクセス、さらには仮想通貨まで。公開鍵暗号は、<strong>「お互いを信用できないインターネット上で、信頼関係を作るための技術」</strong>として、現代社会のあらゆる場面で使われています。</p>
+
+        <h2>全体像：どこに使われているのか？</h2>
+        <p>まずは、その利用範囲の広さを俯瞰してみましょう。</p>
+
+        <div class="map-container">
+            <div class="tree-diagram">
+                <div class="root-box">公開鍵暗号方式</div>
+                <div class="branch-list">
+                    <div class="branch-item">Web通信<br>(HTTPS)</div>
+                    <div class="branch-item">認証・ログイン<br>(SSH)</div>
+                    <div class="branch-item">決済・取引<br>(ECサイト)</div>
+                    <div class="branch-item">ソフト配布<br>(署名)</div>
+                    <div class="branch-item">VPN<br>(社内接続)</div>
+                    <div class="branch-item">ブロックチェーン<br>(暗号資産)</div>
+                </div>
+            </div>
+        </div>
+
+        <h2>主要な活用事例の解説</h2>
+        <p>それぞれの分野で、公開鍵暗号が具体的にどのような役割を果たしているのかを見ていきます。</p>
+
+        <div class="use-case-grid">
+            <!-- 1. Web通信 -->
+            <div class="use-case-card">
+                <div class="card-head">
+                    <span class="icon-box">🌐</span>
+                    <span class="card-title">Web通信 (HTTPS)</span>
+                </div>
+                <p>ブラウザのアドレスバーにある「鍵マーク」の裏側です。Webサーバが偽物でないことを証明書で確認し、通信を暗号化するための「鍵交換」に使われます。</p>
+                <div class="https-flow">
+                    <div class="flow-step">公開鍵で<br>鍵交換</div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step">共通鍵で<br>高速通信</div>
+                </div>
+                <div class="role-highlight">サーバ認証 ＋ 鍵交換</div>
+            </div>
+
+            <!-- 2. ログイン認証 -->
+            <div class="use-case-card">
+                <div class="card-head">
+                    <span class="icon-box">🔑</span>
+                    <span class="card-title">ログイン認証 (SSH等)</span>
+                </div>
+                <p>IDとパスワードを送る代わりに、手元の「秘密鍵」で署名を作成してログインします。パスワードが通信経路を流れないため、非常に安全です。</p>
+                <div class="role-highlight">本人確認（電子署名）</div>
+            </div>
+
+            <!-- 3. 電子商取引 -->
+            <div class="use-case-card">
+                <div class="card-head">
+                    <span class="icon-box">🛒</span>
+                    <span class="card-title">電子商取引・決済</span>
+                </div>
+                <p>クレジットカード情報などを送信する際、ショップのサーバが本物であることを確認し、データを暗号化して送ります。「フィッシング詐欺」ではないことの証明になります。</p>
+                <div class="role-highlight">サーバ証明 ＋ 暗号化</div>
+            </div>
+
+            <!-- 4. ソフトウェア配布 -->
+            <div class="use-case-card">
+                <div class="card-head">
+                    <span class="icon-box">📦</span>
+                    <span class="card-title">ソフトウェア配布</span>
+                </div>
+                <p>OSのアップデートやアプリのインストール時、開発元が公式に配布したものであり、ウイルス混入（改ざん）がないことをチェックします。</p>
+                <div class="role-highlight">改ざん防止（コード署名）</div>
+            </div>
+
+            <!-- 5. VPN -->
+            <div class="use-case-card">
+                <div class="card-head">
+                    <span class="icon-box">🏢</span>
+                    <span class="card-title">VPN (社内接続)</span>
+                </div>
+                <p>自宅から会社のネットワークに接続する際、接続してきたPCが社員のものであるか（機器認証）を確認し、通信トンネルを暗号化します。</p>
+                <div class="role-highlight">機器認証 ＋ 通信保護</div>
+            </div>
+
+            <!-- 6. ブロックチェーン -->
+            <div class="use-case-card">
+                <div class="card-head">
+                    <span class="icon-box">⛓️</span>
+                    <span class="card-title">ブロックチェーン</span>
+                </div>
+                <p>ビットコインなどの取引において、「このコインは私のものだ」という所有権の証明や、送金依頼への署名に使われます。中央管理者がいなくても信頼を担保できる理由です。</p>
+                <div class="role-highlight">所有証明 ＋ 取引署名</div>
+            </div>
+        </div>
+
+        <h2>まとめ：試験対策用リスト</h2>
+        <p>ITパスポートなどの試験では、用途と役割の組み合わせが問われます。</p>
+
+        <table class="summary-table">
+            <thead>
+                <tr>
+                    <th>分野</th>
+                    <th>目的</th>
+                    <th>公開鍵暗号の主な役割</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>HTTPS</strong></td>
+                    <td>Web通信</td>
+                    <td>サーバ認証 ＋ 共通鍵の安全な交換</td>
+                </tr>
+                <tr>
+                    <td><strong>ログイン</strong></td>
+                    <td>サーバ管理</td>
+                    <td>パスワードを使わない本人認証（署名）</td>
+                </tr>
+                <tr>
+                    <td><strong>決済</strong></td>
+                    <td>ECサイト</td>
+                    <td>ショップの正当性確認 ＋ 暗号化</td>
+                </tr>
+                <tr>
+                    <td><strong>ソフト配布</strong></td>
+                    <td>アップデート</td>
+                    <td>開発元の証明 ＋ 改ざん検知</td>
+                </tr>
+                <tr>
+                    <td><strong>仮想通貨</strong></td>
+                    <td>取引</td>
+                    <td>所有権の証明（秘密鍵を持っているか）</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>このように、公開鍵暗号方式は<strong>「なりすまし防止」</strong>と<strong>「安全な通信」</strong>が必要なあらゆるIT分野で使われる、“社会インフラ級”の基盤技術と言えます。</p>
+
+        <!-- GEN: REFERENCES -->
+        <section class="article-references">
+          <!-- 参考文献があればここに記載 -->
+        </section>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> Sidenote Blog. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <script src="../assets/app.js"></script>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    /* 必要に応じて追加 */
+  </script>
+
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
