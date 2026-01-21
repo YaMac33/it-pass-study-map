@@ -1,5 +1,20 @@
 [
   {
+    "timestamp": "2026-01-21T09:49:10+09:00",
+    "title": "損益計算書の流れと利益分類",
+    "summary": "損益計算書の計算フローと利益の意味を解説。試験対策にも役立つ情報が満載です。",
+    "tags": [
+      "損益計算書",
+      "利益",
+      "試験対策",
+      "計算フロー",
+      "財務分析"
+    ],
+    "dir": "2026-01-21_profit-flow-and-classification",
+    "repo_path": "/docs/2026-01-21_profit-flow-and-classification/index.html",
+    "public_url": "https://yamac33.github.io/sidenote/2026-01-21_profit-flow-and-classification"
+  },
+  {
     "timestamp": "2026-01-21T08:06:17+09:00",
     "title": "アナログとデジタルの本質的な違い",
     "summary": "この記事では、アナログとデジタルの違いを詳しく解説し、特に音楽CDがデジタルメディアに分類される理由を探ります。",
