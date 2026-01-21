@@ -1,5 +1,20 @@
 [
   {
+    "timestamp": "2026-01-21T10:42:22+09:00",
+    "title": "損益計算書の利益分析ポイント",
+    "summary": "損益計算書の4つの主要利益を徹底分析し、各利益の意味や計算式、チェックポイントを明確に解説します。",
+    "tags": [
+      "損益計算書",
+      "利益",
+      "分析",
+      "財務",
+      "経営"
+    ],
+    "dir": "2026-01-21_profit-analysis",
+    "repo_path": "/docs/2026-01-21_profit-analysis/index.html",
+    "public_url": "https://yamac33.github.io/sidenote/2026-01-21_profit-analysis"
+  },
+  {
     "timestamp": "2026-01-21T09:49:10+09:00",
     "title": "損益計算書の流れと利益分類",
     "summary": "損益計算書の計算フローと利益の意味を解説。試験対策にも役立つ情報が満載です。",
