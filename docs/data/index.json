@@ -1,5 +1,20 @@
 [
   {
+    "timestamp": "2026-01-22T07:20:24+09:00",
+    "title": "異常検出に適した管理図解説",
+    "summary": "異常を検出するための最適な図である管理図を解説します。様々なグラフの使い分けが重要です。",
+    "tags": [
+      "異常検出",
+      "管理図",
+      "品質管理",
+      "原因分析",
+      "QC工具"
+    ],
+    "dir": "2026-01-22_anomaly-detection-charts",
+    "repo_path": "/docs/2026-01-22_anomaly-detection-charts/index.html",
+    "public_url": "https://yamac33.github.io/sidenote/2026-01-22_anomaly-detection-charts"
+  },
+  {
     "timestamp": "2026-01-22T07:15:53+09:00",
     "title": "コンカレントエンジニアリングとガントチャートの違い",
     "summary": "この記事では、コンカレントエンジニアリングとガントチャートの違いを図解で解説します。両者の関係性を理解することで、試験対策にも役立てることができます。",
