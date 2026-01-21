@@ -1,5 +1,20 @@
 [
   {
+    "timestamp": "2026-01-21T12:26:13+09:00",
+    "title": "AIとブログ執筆の新たな自由",
+    "summary": "AIを活用したブログ執筆の新しい形を検討し、健全な匿名性が自己検閲をどのように緩和するかを考察します。",
+    "tags": [
+      "AI",
+      "ブログ",
+      "思考法",
+      "匿名性",
+      "発信"
+    ],
+    "dir": "2026-01-21_ai-blog-writing-freedom",
+    "repo_path": "/docs/2026-01-21_ai-blog-writing-freedom/index.html",
+    "public_url": "https://yamac33.github.io/sidenote/2026-01-21_ai-blog-writing-freedom"
+  },
+  {
     "timestamp": "2026-01-21T11:24:14+09:00",
     "title": "E-R図の基本と試験対策",
     "summary": "E-R図の概要と試験対策を解説します。データベース設計におけるE-R図の重要性を理解しましょう。",
