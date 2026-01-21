@@ -1,5 +1,20 @@
 [
   {
+    "timestamp": "2026-01-21T21:57:30+09:00",
+    "title": "IoTデバイスの仕組みとセキュリティ",
+    "summary": "IoTデバイスは、センサーと自動化の仕組みを持つ小さなコンピュータです。この記事では、その基本的な構成とセキュリティリスクについて説明します。",
+    "tags": [
+      "IoT",
+      "デバイス",
+      "センサー",
+      "自動化",
+      "セキュリティ"
+    ],
+    "dir": "2026-01-21_iot-device-basics",
+    "repo_path": "/docs/2026-01-21_iot-device-basics/index.html",
+    "public_url": "https://yamac33.github.io/sidenote/2026-01-21_iot-device-basics"
+  },
+  {
     "timestamp": "2026-01-21T21:55:46+09:00",
     "title": "IoTとS/MIMEの公開鍵暗号活用",
     "summary": "IoTとメールセキュリティの関係を公開鍵暗号方式を通じて解説します。デバイス認証とメールの信頼性確保における共通点に焦点を当てます。",
