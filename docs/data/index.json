@@ -1,5 +1,20 @@
 [
   {
+    "timestamp": "2026-01-21T19:43:42+09:00",
+    "title": "S/MIMEによるメールの安全性と技術",
+    "summary": "S/MIMEは、電子メールのセキュリティ技術として、暗号化と電子署名を組み合わせて安全性を向上させます。具体的な仕組みとその重要性について解説します。",
+    "tags": [
+      "S/MIME",
+      "セキュリティ",
+      "暗号化",
+      "電子署名",
+      "公開鍵暗号"
+    ],
+    "dir": "2026-01-21_email-security-smime",
+    "repo_path": "/docs/2026-01-21_email-security-smime/index.html",
+    "public_url": "https://yamac33.github.io/sidenote/2026-01-21_email-security-smime"
+  },
+  {
     "timestamp": "2026-01-21T15:32:28+09:00",
     "title": "DFDの基本と注意点について",
     "summary": "DFDはデータの流れに焦点を当てた図解技法で、明確なルールがあります。この記事では、その基本要素や禁止事項を解説します。",
