@@ -283,3 +283,128 @@ a:hover {
   padding: 0.15rem 0.5rem;
   border-radius: 999px;
 }
+
+/* =========================================
+   Category Tree (Index)
+========================================= */
+
+.category-tree {
+  margin: 0 0 2.5rem;
+  padding: 1.25rem 1.25rem;
+  border: 1px solid var(--line-color);
+  border-radius: 10px;
+}
+
+.category-tree__header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.category-tree__title {
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.category-tree__hint {
+  font-size: 0.85rem;
+  color: var(--text-sub);
+}
+
+.category-tree__clear {
+  background: transparent;
+  border: 1px solid var(--text-main);
+  color: var(--text-main);
+  padding: 0.4rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.category-tree__clear:hover {
+  opacity: 0.7;
+}
+
+.category-group {
+  border-top: 1px solid var(--line-color);
+  padding-top: 1rem;
+  margin-top: 1rem;
+}
+
+.category-group:first-of-type {
+  border-top: none;
+  padding-top: 0;
+  margin-top: 0;
+}
+
+.category-group summary {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  font-weight: 800;
+}
+
+.category-group summary::-webkit-details-marker {
+  display: none;
+}
+
+.category-group__meta {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-sub);
+  font-weight: 600;
+}
+
+.category-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.85rem;
+}
+
+.category-pill {
+  background: transparent;
+  border: 1px solid var(--line-color);
+  color: var(--text-main);
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: opacity 0.2s ease, border-color 0.2s ease;
+}
+
+.category-pill:hover {
+  opacity: 0.7;
+  border-color: var(--text-main);
+}
+
+.category-pill.is-active {
+  border-color: var(--text-main);
+  font-weight: 800;
+}
+
+.category-pill__count {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  color: var(--text-sub);
+  margin-left: 0.35rem;
+}
+
+@media (max-width: 768px) {
+  .category-tree {
+    padding: 1rem 1rem;
+  }
+  .category-tree__header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
