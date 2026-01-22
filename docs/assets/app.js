@@ -1,75 +1,16 @@
-/**
- * docs/assets/app.js
- *
- * - GA4 init（<head> に gtag.js がある前提）
- * - Scroll progress bar
- * - Smooth scroll for in-page anchors
- * - Index page: load ./data/index.json -> render list -> search
- * - Tag click: fill search box + apply filter
- */
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
 
-const GA_ID = 'G-MQ9ZB4LYWP';
-const DATA_URL = './data/index.json';
+  // ===============================
+  // Config
+  // ===============================
+  const DATA_URL = './data/index.json';
 
-document.addEventListener('DOMContentLoaded', () => {
-  initAnalytics();
-  initScrollProgress();
-  initSmoothScroll();
-  initIndexPage();
-});
-
-/**
- * Initialize Google Analytics (GA4)
- * Assumes the gtag script is already included in <head>.
- */
-function initAnalytics() {
-  window.dataLayer = window.dataLayer || [];
-  function gtag() { dataLayer.push(arguments); }
-  window.gtag = window.gtag || gtag;
-
-  window.gtag('js', new Date());
-  window.gtag('config', GA_ID);
-}
-
-/**
- * Scroll Progress Bar
- */
-function initScrollProgress() {
-  const progressBar = document.createElement('div');
-  progressBar.id = 'scroll-progress';
-  document.body.prepend(progressBar);
-
-  window.addEventListener('scroll', () => {
-    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-    const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
-    progressBar.style.width = scrolled + '%';
-  });
-}
-
-/**
- * Smooth Scroll for internal anchor links
- */
-function initSmoothScroll() {
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-      const href = this.getAttribute('href');
-      if (!href || href === '#') return;
-      const target = document.querySelector(href);
-      if (!target) return;
-
-      e.preventDefault();
-      target.scrollIntoView({ behavior: 'smooth' });
-    });
-  });
-}
-
-/**
- * Index page: load + render posts + search + tag click
- */
-function initIndexPage() {
-  const yearEl = document.getElementById('year');
-  if (yearEl) yearEl.textContent = new Date().getFullYear();
+  // ===============================
+  // State / DOM
+  // ===============================
+  let allPosts = [];
+  let currentFilter = { lv1: '', lv2: '' };
 
   const list = document.getElementById('postList');
   const searchInput = document.getElementById('searchInput');
@@ -78,14 +19,40 @@ function initIndexPage() {
   const loadError = document.getElementById('loadError');
   const loadErrorMsg = document.getElementById('loadErrorMsg');
 
-  // If not on index page (or DOM missing), do nothing.
-  if (!list || !searchInput) return;
+  // カテゴリツリー表示先（HTMLに無ければJSで作る）
+  let categoryTreeEl = document.getElementById('categoryTree');
 
-  let allPosts = [];
+  // ===============================
+  // Category slug maps (Actionsと同じ)
+  // ===============================
+  const LV1_SLUG = {
+    "ストラテジ系": "strategy",
+    "マネジメント系": "management",
+    "テクノロジ系": "technology"
+  };
 
-  // -------------------------------
+  const LV2_SLUG = {
+    "企業と法務": "corporate-law",
+    "経営戦略": "business-strategy",
+    "マーケティング": "marketing",
+    "財務": "finance",
+    "事業継続": "business-continuity",
+
+    "開発技術": "development",
+    "プロジェクトマネジメント": "project-management",
+    "サービスマネジメント": "service-management",
+
+    "基礎理論": "fundamentals",
+    "コンピュータシステム": "computer-systems",
+    "ネットワーク": "network",
+    "データベース": "database",
+    "セキュリティ": "security",
+    "新技術・先端技術": "emerging-tech"
+  };
+
+  // ===============================
   // Utils
-  // -------------------------------
+  // ===============================
   function normalizeTags(tags) {
     if (Array.isArray(tags)) return tags.map(t => String(t).trim()).filter(Boolean);
     if (typeof tags === 'string') return tags.split(',').map(t => t.trim()).filter(Boolean);
@@ -102,7 +69,6 @@ function initIndexPage() {
   }
 
   function formatDateJa(timestamp) {
-    // Display: YYYY.MM.DD
     const d = new Date(timestamp);
     if (Number.isNaN(d.getTime())) return '';
     const y = d.getFullYear();
@@ -112,7 +78,6 @@ function initIndexPage() {
   }
 
   function toDatetimeAttr(timestamp) {
-    // datetime attr: YYYY-MM-DD
     const d = new Date(timestamp);
     if (Number.isNaN(d.getTime())) return '';
     const y = d.getFullYear();
@@ -121,17 +86,234 @@ function initIndexPage() {
     return `${y}-${m}-${day}`;
   }
 
-  // -------------------------------
-  // Render
-  // -------------------------------
+  function makeShortcutUrl(lv1Name, lv2Name, id) {
+    const lv1 = LV1_SLUG[lv1Name] || '';
+    const lv2 = LV2_SLUG[lv2Name] || '';
+    if (!lv1 || !lv2 || !id) return '#';
+    // docs/index.html からの相対パス
+    return `./${lv1}/${lv2}/${encodeURIComponent(id)}/`;
+  }
+
+  // ===============================
+  // Tree building
+  // ===============================
+  function buildCategoryTree(posts) {
+    // { lv1: { lv2: [post, ...] } }
+    const tree = {};
+    for (const p of posts) {
+      const lv1 = (p.category_lv1 || '').trim();
+      const lv2 = (p.category_lv2 || '').trim();
+      if (!lv1 || !lv2) continue;
+      tree[lv1] ||= {};
+      tree[lv1][lv2] ||= [];
+      tree[lv1][lv2].push(p);
+    }
+
+    // 各カテゴリ内は新しい順
+    for (const lv1 of Object.keys(tree)) {
+      for (const lv2 of Object.keys(tree[lv1])) {
+        tree[lv1][lv2].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+      }
+    }
+    return tree;
+  }
+
+  function ensureCategoryTreeMount() {
+    if (categoryTreeEl) return categoryTreeEl;
+
+    // 無ければ search の上に作る
+    const main = document.querySelector('main');
+    if (!main) return null;
+
+    categoryTreeEl = document.createElement('section');
+    categoryTreeEl.id = 'categoryTree';
+    categoryTreeEl.style.margin = '0 0 18px 0';
+
+    const searchWrap = document.querySelector('.search-wrap');
+    if (searchWrap && searchWrap.parentNode === main) {
+      main.insertBefore(categoryTreeEl, searchWrap);
+    } else {
+      main.insertBefore(categoryTreeEl, main.firstChild);
+    }
+    return categoryTreeEl;
+  }
+
+  function applyFiltersAndRender() {
+    const q = (searchInput.value || '').toLowerCase();
+    const lv1 = currentFilter.lv1;
+    const lv2 = currentFilter.lv2;
+
+    const filtered = allPosts.filter(p => {
+      const matchText =
+        (p.title || '').toLowerCase().includes(q) ||
+        (p.summary || '').toLowerCase().includes(q) ||
+        (p.tags || []).join(' ').toLowerCase().includes(q);
+
+      const matchLv1 = !lv1 || p.category_lv1 === lv1;
+      const matchLv2 = !lv2 || p.category_lv2 === lv2;
+
+      return matchText && matchLv1 && matchLv2;
+    });
+
+    renderPosts(filtered);
+  }
+
+  function setCategoryFilter(lv1, lv2) {
+    currentFilter = { lv1: lv1 || '', lv2: lv2 || '' };
+    applyFiltersAndRender();
+    // ツリーの見た目更新
+    renderCategoryTree(allPosts);
+    // 目線を一覧へ
+    list?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function clearCategoryFilter() {
+    currentFilter = { lv1: '', lv2: '' };
+    applyFiltersAndRender();
+    renderCategoryTree(allPosts);
+  }
+
+  function renderCategoryTree(posts) {
+    const mount = ensureCategoryTreeMount();
+    if (!mount) return;
+
+    const tree = buildCategoryTree(posts);
+
+    // カテゴリの並び順を固定（見やすさ重視）
+    const lv1Order = ["ストラテジ系", "マネジメント系", "テクノロジ系"];
+
+    const activeLv1 = currentFilter.lv1;
+    const activeLv2 = currentFilter.lv2;
+
+    const html = [];
+
+    html.push(`
+      <div class="category-tree">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:10px;">
+          <div style="font-weight:600;">カテゴリ</div>
+          <button type="button" id="clearCategoryBtn" class="read-more" style="padding:6px 10px;">
+            フィルタ解除
+          </button>
+        </div>
+    `);
+
+    for (const lv1 of lv1Order.filter(x => tree[x])) {
+      const lv2Map = tree[lv1];
+      const lv2Names = Object.keys(lv2Map);
+
+      // lv2 は件数降順→名前
+      lv2Names.sort((a, b) => (lv2Map[b].length - lv2Map[a].length) || a.localeCompare(b, 'ja'));
+
+      html.push(`
+        <details ${activeLv1 === lv1 ? 'open' : ''} style="border:1px solid rgba(148,163,184,.35); border-radius:12px; padding:10px 12px; margin:10px 0;">
+          <summary style="cursor:pointer; list-style:none; display:flex; align-items:center; justify-content:space-between; gap:10px;">
+            <span>${escapeHtml(lv1)}</span>
+            <span style="opacity:.7; font-size:.9em;">${lv2Names.reduce((n, k) => n + lv2Map[k].length, 0)}件</span>
+          </summary>
+          <div style="margin-top:10px; display:flex; flex-wrap:wrap; gap:8px;">
+      `);
+
+      // 「lv1だけで絞る」ボタン
+      html.push(`
+        <button type="button"
+          class="tag"
+          data-lv1="${escapeHtml(lv1)}"
+          data-lv2=""
+          style="cursor:pointer; padding:6px 10px; border-radius:999px; border:1px solid rgba(148,163,184,.45); background:transparent;">
+          ${activeLv1 === lv1 && !activeLv2 ? '✅ ' : ''}${escapeHtml(lv1)}（全て）
+        </button>
+      `);
+
+      for (const lv2 of lv2Names) {
+        const count = lv2Map[lv2].length;
+
+        html.push(`
+          <button type="button"
+            class="tag"
+            data-lv1="${escapeHtml(lv1)}"
+            data-lv2="${escapeHtml(lv2)}"
+            style="cursor:pointer; padding:6px 10px; border-radius:999px; border:1px solid rgba(148,163,184,.45); background:transparent;">
+            ${activeLv1 === lv1 && activeLv2 === lv2 ? '✅ ' : ''}${escapeHtml(lv2)}（${count}）
+          </button>
+        `);
+      }
+
+      html.push(`
+          </div>
+        </details>
+      `);
+    }
+
+    html.push(`</div>`);
+
+    mount.innerHTML = html.join('');
+
+    // イベント
+    const clearBtn = document.getElementById('clearCategoryBtn');
+    if (clearBtn) {
+      clearBtn.onclick = () => clearCategoryFilter();
+    }
+
+    mount.querySelectorAll('button.tag[data-lv1]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const lv1 = btn.getAttribute('data-lv1') || '';
+        const lv2 = btn.getAttribute('data-lv2') || '';
+        setCategoryFilter(lv1, lv2);
+      });
+    });
+  }
+
+  // ===============================
+  // Fetch
+  // ===============================
+  async function loadPosts() {
+    try {
+      const res = await fetch(DATA_URL, { cache: 'no-store' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+      const json = await res.json(); // ←ここ、元ファイルのtypoを修正
+
+      allPosts = (json || []).map(p => ({
+        // id は index.json が dir/dr/id のどれで来ても拾えるようにする
+        id: p.id || p.dir || p.dr || '',
+        title: p.title || '',
+        summary: p.summary || '',
+        tags: normalizeTags(p.tags),
+        timestamp: p.timestamp || '',
+        category_lv1: p.category_lv1 || '',
+        category_lv2: p.category_lv2 || '',
+        // 既存互換：public_url が無い運用でも動く
+        url: p.public_url || p.repo_path || (p.post_path ? `./${String(p.post_path).replace(/^\/+/, '')}` : '#'),
+        // post_path があるなら保持（将来使う用）
+        post_path: p.post_path || ''
+      }));
+
+      allPosts.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+      // ツリー描画 → 一覧描画
+      renderCategoryTree(allPosts);
+      renderPosts(allPosts);
+
+    } catch (e) {
+      console.error(e);
+      loadError.style.display = 'block';
+      loadErrorMsg.textContent = e.message || String(e);
+    } finally {
+      if (loadingState) loadingState.remove();
+    }
+  }
+
+  // ===============================
+  // Render (List)
+  // ===============================
   function renderPosts(posts) {
     list.innerHTML = '';
 
     if (!posts || posts.length === 0) {
-      if (noResults) noResults.style.display = 'block';
+      noResults.style.display = 'block';
       return;
     }
-    if (noResults) noResults.style.display = 'none';
+    noResults.style.display = 'none';
 
     posts.forEach(post => {
       const dateLabel = formatDateJa(post.timestamp);
@@ -143,21 +325,15 @@ function initIndexPage() {
       const safeTitle = escapeHtml(post.title);
       const safeSummary = escapeHtml(post.summary);
 
-      const tags = Array.isArray(post.tags) ? post.tags : [];
-      const tagsHtml = tags.length
-        ? `<ul class="tag-list" aria-label="tags">
-            ${tags.map(t => `
-              <li>
-                <button type="button" class="tag" data-tag="${escapeHtml(t)}">${escapeHtml(t)}</button>
-              </li>
-            `).join('')}
-          </ul>`
+      // カテゴリが取れるなら軽く表示（任意）
+      const catLabel = (post.category_lv1 && post.category_lv2)
+        ? `<span style="opacity:.7; font-size:.9em;">${escapeHtml(post.category_lv1)} / ${escapeHtml(post.category_lv2)}</span>`
         : '';
 
       li.innerHTML = `
         <article>
           <time class="post-meta" datetime="${escapeHtml(datetime)}">${escapeHtml(dateLabel)}</time>
-          ${tagsHtml}
+          ${catLabel}
           <h2 class="post-title">
             <a href="${escapeHtml(post.url)}">${safeTitle}</a>
           </h2>
@@ -170,68 +346,13 @@ function initIndexPage() {
     });
   }
 
-  // -------------------------------
-  // Filter
-  // -------------------------------
-  function applyFilter(query) {
-    const q = (query || '').toLowerCase();
-    const filtered = allPosts.filter(p =>
-      (p.title || '').toLowerCase().includes(q) ||
-      (p.summary || '').toLowerCase().includes(q) ||
-      (p.tags || []).join(' ').toLowerCase().includes(q)
-    );
-    renderPosts(filtered);
-  }
-
-  // -------------------------------
-  // Fetch
-  // -------------------------------
-  async function loadPosts() {
-    try {
-      const res = await fetch(DATA_URL, { cache: 'no-store' });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
-      const json = await res.json();
-
-      allPosts = (json || []).map(p => ({
-        title: p.title || '',
-        summary: p.summary || '',
-        tags: normalizeTags(p.tags),
-        timestamp: p.timestamp || '',
-        url: p.public_url || p.repo_path || '#',
-      }));
-
-      allPosts.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-      renderPosts(allPosts);
-
-    } catch (e) {
-      console.error(e);
-      if (loadError) loadError.style.display = 'block';
-      if (loadErrorMsg) loadErrorMsg.textContent = e.message || String(e);
-    } finally {
-      if (loadingState) loadingState.remove();
-    }
-  }
-
-  // -------------------------------
-  // Events
-  // -------------------------------
+  // ===============================
+  // Search (text)  ※カテゴリフィルタと共存
+  // ===============================
   searchInput.addEventListener('input', () => {
-    applyFilter(searchInput.value);
-  });
-
-  // Tag click -> fill search + filter
-  // (event delegation so it works after re-render)
-  list.addEventListener('click', (e) => {
-    const btn = e.target.closest('button.tag[data-tag]');
-    if (!btn) return;
-
-    const tag = btn.getAttribute('data-tag') || '';
-    searchInput.value = tag;
-    searchInput.focus();
-    applyFilter(tag);
+    applyFiltersAndRender();
   });
 
   // Init
   loadPosts();
-}
+</script>
