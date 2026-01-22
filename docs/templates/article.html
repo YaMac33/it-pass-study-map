@@ -4,21 +4,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- GEN: META (必ずこのブロックだけ書き換える) -->
+  <!-- GEN: META（生成時にここだけ置換） -->
   <title>{{TITLE}} - Sidenote</title>
   <meta name="description" content="{{DESCRIPTION}}" />
   <meta name="robots" content="index,follow" />
 
-  <!-- Optional: OGP（必要なら使う。生成時に埋める） -->
+  <!-- Optional: OGP（不要なら生成時に空でOK） -->
   <meta property="og:type" content="article" />
   <meta property="og:title" content="{{TITLE}}" />
   <meta property="og:description" content="{{DESCRIPTION}}" />
-  <meta property="og:url" content="{{PUBLIC_URL}}" />
+  {{OGP_URL_META}}
 
-  <!-- Assets: 記事は1階層下なので ../ 固定 -->
-  <link rel="stylesheet" href="../assets/styles.css" />
+  <!-- Assets: 記事は docs/posts/<id>/index.html → ../../ 固定 -->
+  <link rel="stylesheet" href="../../assets/styles.css" />
 
-  <!-- GEN: EXTRA_CSS (図解などで必要な時だけ追記。不要なら空のまま) -->
+  <!-- GEN: EXTRA_CSS（図解・補助CSS用。不要なら空） -->
   <style>
     /* {{EXTRA_CSS}} */
   </style>
@@ -27,10 +27,10 @@
 <body>
   <div class="container">
     <header class="site-header">
-      <a href="../index.html" class="site-title">Sidenote</a>
+      <a href="../../index.html" class="site-title">Sidenote</a>
       <nav class="site-nav">
         <ul>
-          <li><a href="../index.html">Back to List</a></li>
+          <li><a href="../../index.html">Back to List</a></li>
         </ul>
       </nav>
     </header>
@@ -39,24 +39,22 @@
       <article class="article-content">
         <header class="article-header">
           <!-- GEN: POST_META -->
-          <time class="post-meta" datetime="{{DATE_ISO}}">{{DATE_DOT}} / {{CATEGORY}}</time>
+          <time class="post-meta" datetime="{{DATE_ISO}}">
+            {{DATE_DOT}} / {{CATEGORY}}
+          </time>
 
           <!-- GEN: TITLE -->
           <h1 class="article-title">{{H1_HTML}}</h1>
 
-          <!-- GEN: TAGS (styles.css側で tag-list/tag を用意している前提。無ければ ul を消してOK) -->
-          <ul class="tag-list" aria-label="tags">
-            {{TAGS_LI_HTML}}
-          </ul>
+          <!-- GEN: TAGS -->
+          {{TAGS_HTML}}
         </header>
 
-        <!-- GEN: BODY (ここだけ本文を生成) -->
+        <!-- GEN: BODY -->
         {{BODY_HTML}}
 
-        <!-- GEN: REFERENCES (出典/参考リンク。不要なら空でOK) -->
-        <section class="article-references">
-          {{REFERENCES_HTML}}
-        </section>
+        <!-- GEN: REFERENCES（不要なら空セクション） -->
+        {{REFERENCES_SECTION_HTML}}
       </article>
     </main>
 
@@ -65,15 +63,13 @@
     </footer>
   </div>
 
-  <script src="../assets/app.js"></script>
-
-  <!-- GEN: EXTRA_JS (図解の動作などで必要な時だけ追記。不要なら空のまま) -->
+  <!-- GEN: EXTRA_JS（図解などの補助JS。不要なら空） -->
   <script>
     /* {{EXTRA_JS}} */
   </script>
 
   <script>
-    // 共通：年表示はテンプレ側で自動化（生成で触らない）
+    // 共通：年表示（生成では触らない）
     const y = document.getElementById('year');
     if (y) y.textContent = new Date().getFullYear();
   </script>
