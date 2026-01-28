@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>ETLの基本とプロセス - IT passport study map</title>
+  <meta name="description" content="データ分析に不可欠なETL（抽出・変換・格納）処理を解説。業務システムからDWHへデータを渡す際の前処理プロセスを図解で整理します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="ETLの基本とプロセス" />
+  <meta property="og:description" content="データ分析に不可欠なETL（抽出・変換・格納）処理を解説。業務システムからDWHへデータを渡す際の前処理プロセスを図解で整理します。" />
+  
+  <!-- Assets: 記事は docs/posts/<id>/index.html → ../../ 固定 -->
+  <link rel="stylesheet" href="../../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS（図解・補助CSS） -->
+  <style>
+    /* 共通図解コンテナ */
+    .diagram-section {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* ETL全体フロー図 */
+    .etl-pipeline {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      max-width: 600px;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .source-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .sys-box {
+      background: #fff;
+      border: 1px solid #999;
+      padding: 0.5rem;
+      font-size: 0.8rem;
+      border-radius: 4px;
+      text-align: center;
+      color: #666;
+      width: 100px;
+    }
+
+    .etl-group {
+      display: flex;
+      gap: 0.5rem;
+      background: #eef6ff;
+      border: 2px solid #0056b3;
+      padding: 1rem;
+      border-radius: 8px;
+      position: relative;
+    }
+    .etl-group::before {
+      content: "ETL処理";
+      position: absolute;
+      top: -12px;
+      left: 10px;
+      background: #0056b3;
+      color: #fff;
+      font-size: 0.8rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    .proc-step {
+      background: #fff;
+      border: 1px solid #0056b3;
+      color: #0056b3;
+      padding: 0.5rem;
+      border-radius: 4px;
+      font-weight: bold;
+      text-align: center;
+      min-width: 80px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .step-sub {
+      font-size: 0.7rem;
+      font-weight: normal;
+      color: #555;
+    }
+
+    .dest-box {
+      background: #fffaf0;
+      border: 2px solid #e67e22;
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+      font-weight: bold;
+      color: #e67e22;
+      width: 100px;
+      position: relative;
+      box-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+    }
+    .dest-box::after {
+      content: "保存";
+      position: absolute;
+      bottom: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.8rem;
+      color: #666;
+    }
+
+    .arrow-right {
+      font-size: 1.5rem;
+      color: #999;
+      font-weight: bold;
+    }
+
+    /* Transform（変換）の具体例図 */
+    .transform-example {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: #fff;
+      border: 1px dashed #666;
+      padding: 1rem;
+      border-radius: 8px;
+      width: 100%;
+      max-width: 500px;
+    }
+    .data-table {
+      font-family: monospace;
+      font-size: 0.8rem;
+      border-collapse: collapse;
+      background: #fff;
+    }
+    .data-table td {
+      border: 1px solid #ccc;
+      padding: 4px 8px;
+    }
+    .dt-bad { background: #ffebeb; color: #d00; }
+    .dt-good { background: #e0f7fa; color: #006064; font-weight: bold; }
+    
+    .trans-arrow {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #0056b3;
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+
+    /* 比較テーブル */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      margin: 1rem 0;
+    }
+    .comparison-table th, .comparison-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+    .comparison-table th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+      width: 25%;
+      text-align: center;
+    }
+
+    /* 覚え方カード */
+    .memo-card {
+      background: #333;
+      color: #fff;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 1.1rem;
+      font-weight: bold;
+      letter-spacing: 0.05em;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .memo-sub {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: normal;
+      margin-top: 0.5rem;
+      color: #ddd;
+    }
+
+    /* ポイント強調 */
+    .key-point {
+      background-color: #f4f4f4;
+      border-left: 4px solid #333;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .key-point strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1em;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 600px) {
+      .etl-pipeline {
+        flex-direction: column;
+      }
+      .arrow-right {
+        transform: rotate(90deg);
+      }
+      .transform-example {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a href="../../index.html" class="site-title">IT passport study map</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-28">
+            2026.01.28 / テクノロジ系
+          </time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">ETLの基本とプロセス</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list">
+            <li class="tag">#ETL</li>
+            <li class="tag">#データ分析</li>
+            <li class="tag">#抽出</li>
+            <li class="tag">#変換</li>
+            <li class="tag">#DWH</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>「バラバラのシステムにあるデータを集めて分析したい」。<br>
+        そんなときに必要になるのが、データを集めて（Extract）、整えて（Transform）、保存する（Load）一連の処理、<strong>「ETL」</strong>です。</p>
+
+        <div class="key-point">
+          <strong>1行要約</strong><br>
+          ETLとは、データ分析のために「素材を選び（E）、下ごしらえをして（T）、保管庫に入れる（L）」というデータ準備の工程のこと。
+        </div>
+
+        <h2>1. 全体の流れ（工場ラインのイメージ）</h2>
+        <p>ETLは、業務システムと分析基盤（DWH）をつなぐパイプ役です。</p>
+
+        <div class="diagram-section">
+          <div class="etl-pipeline">
+            
+            <!-- ソース -->
+            <div class="source-group">
+              <div class="sys-box">販売システム</div>
+              <div class="sys-box">在庫システム</div>
+              <div class="sys-box">Excelなど</div>
+            </div>
+
+            <div class="arrow-right">➡</div>
+
+            <!-- ETL -->
+            <div class="etl-group">
+              <div class="proc-step">
+                E<span class="step-sub">Extract<br>(抽出)</span>
+              </div>
+              <div class="arrow-right" style="font-size:1rem;">→</div>
+              <div class="proc-step">
+                T<span class="step-sub">Transform<br>(変換)</span>
+              </div>
+              <div class="arrow-right" style="font-size:1rem;">→</div>
+              <div class="proc-step">
+                L<span class="step-sub">Load<br>(格納)</span>
+              </div>
+            </div>
+
+            <div class="arrow-right">➡</div>
+
+            <!-- DWH -->
+            <div class="dest-box">
+              DWH<br>
+              <span style="font-size:0.7rem; font-weight:normal;">データ倉庫</span>
+            </div>
+
+          </div>
+        </div>
+
+        <h2>2. 各工程の詳細</h2>
+
+        <h3>① Extract（抽出）</h3>
+        <p>各システムから「必要なデータだけ」を取り出します。<br>
+        例えば、「昨日の売上データだけ」「関東エリアの在庫データだけ」といった具合です。</p>
+
+        <h3>② Transform（変換）</h3>
+        <p>ここが最も重要な「下ごしらえ」の工程です。<br>
+        システムごとにバラバラな形式を統一したり、誤りや欠損を修正（クレンジング）したりします。</p>
+
+        <div class="diagram-section">
+          <div style="font-size:0.9rem; font-weight:bold; margin-bottom:0.5rem; color:#666;">変換のイメージ</div>
+          <div class="transform-example">
+            <table class="data-table">
+              <tr><td class="dt-bad">2025/1/1</td></tr>
+              <tr><td class="dt-bad">¥1,000</td></tr>
+              <tr><td class="dt-bad">（空白）</td></tr>
+            </table>
+            
+            <div class="trans-arrow">
+              <span>Transform</span>
+              <span>(整形・統一)</span>
+              <span style="font-size:1.5rem;">➡</span>
+            </div>
+
+            <table class="data-table">
+              <tr><td class="dt-good">2025-01-01</td><td style="color:#666; font-size:0.7rem;">← 日付統一</td></tr>
+              <tr><td class="dt-good">1000</td><td style="color:#666; font-size:0.7rem;">← 単位削除</td></tr>
+              <tr><td class="dt-good">0</td><td style="color:#666; font-size:0.7rem;">← 欠損埋め</td></tr>
+            </table>
+          </div>
+        </div>
+
+        <h3>③ Load（格納）</h3>
+        <p>きれいに整ったデータを、分析用のデータベース（DWH）に保存します。<br>
+        これで初めて、BIツールなどがデータを正しく読み込めるようになります。</p>
+
+        <h2>3. 似た用語との違い</h2>
+        <p>試験で混同しやすい用語との違いを整理します。</p>
+
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>用語</th>
+              <th>ETLとの違い</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>データ操作</strong></td>
+              <td>「検索」や「並べ替え」などの単純作業を指す。ETLはもっと大規模な「統合・加工処理」。</td>
+            </tr>
+            <tr>
+              <td><strong>OPAL</strong></td>
+              <td>データ処理の「全体像（概念）」を示す言葉。ETLはその中の「前処理（準備）」の実装技術。</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>4. 覚え方（試験対策）</h2>
+        <p>英語の頭文字をそのまま日本語の動詞に変換して覚えましょう。</p>
+
+        <div class="diagram-section" style="background:transparent; border:none; padding:0;">
+          <div class="memo-card">
+            E：えらぶ <span style="font-size:0.8rem;">(Extract)</span><br>
+            T：ととのえる <span style="font-size:0.8rem;">(Transform)</span><br>
+            L：ためる <span style="font-size:0.8rem;">(Load)</span>
+            <span class="memo-sub">分析のための「準備作業」</span>
+          </div>
+        </div>
+
+        <h2>まとめ</h2>
+        <ul>
+          <li><strong>Extract：</strong> 抽出（持ってくる）</li>
+          <li><strong>Transform：</strong> 変換（きれいにする）</li>
+          <li><strong>Load：</strong> 格納（倉庫に入れる）</li>
+        </ul>
+        <p>「ゴミ（汚いデータ）を入れたら、ゴミ（間違った分析結果）しか出てこない（GIGO）」という格言があります。ETLはそれを防ぐための重要なフィルター役です。</p>
+
+        <!-- GEN: REFERENCES -->
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> IT passport study map. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
