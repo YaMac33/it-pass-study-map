@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>データ活用の完全統合図 - IT passport study map</title>
+  <meta name="description" content="OPAL、ETL、ELT、DWH、データレイク、データマート、BI。これらデータ活用に関する用語の全体像と関係性を、一枚の統合図で解説します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="データ活用の完全統合図" />
+  <meta property="og:description" content="OPAL、ETL、ELT、DWH、データレイク、データマート、BI。これらデータ活用に関する用語の全体像と関係性を、一枚の統合図で解説します。" />
+  
+  <!-- Assets: 記事は docs/posts/<id>/index.html → ../../ 固定 -->
+  <link rel="stylesheet" href="../../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS（図解・補助CSS） -->
+  <style>
+    /* 共通図解コンテナ */
+    .diagram-section {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* 統合図レイアウト */
+    .grand-map {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr;
+      grid-template-rows: auto auto auto;
+      gap: 1rem;
+      align-items: center;
+      width: 100%;
+      max-width: 800px;
+      padding: 1rem;
+      overflow-x: auto; /* スマホ用 */
+    }
+
+    /* OPALフロー（上段） */
+    .opal-layer {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      border-bottom: 2px dashed #ccc;
+      padding-bottom: 0.5rem;
+    }
+    .opal-step {
+      font-weight: bold;
+      color: #666;
+      font-size: 0.9rem;
+      text-align: center;
+      flex: 1;
+      position: relative;
+    }
+    .opal-step::after {
+      content: "▼";
+      position: absolute;
+      bottom: -22px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #ccc;
+      font-size: 0.8rem;
+    }
+
+    /* 各要素ボックス */
+    .box-base {
+      border-radius: 6px;
+      padding: 0.8rem;
+      text-align: center;
+      font-weight: bold;
+      font-size: 0.85rem;
+      position: relative;
+      background: #fff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    
+    /* Source */
+    .box-src { border: 2px solid #666; color: #666; height: 100%; display:flex; align-items:center; justify-content:center; }
+    
+    /* Process (ETL/ELT) */
+    .proc-col { display: flex; flex-direction: column; gap: 0.5rem; }
+    .box-etl { border: 2px solid #0056b3; background: #eef6ff; color: #0056b3; }
+    .box-elt { border: 2px solid #00897b; background: #e0f2f1; color: #00897b; }
+    
+    /* Storage (DWH/Lake) */
+    .store-col { display: flex; flex-direction: column; gap: 0.5rem; }
+    .box-dwh { border: 2px solid #e67e22; background: #fffaf0; color: #e67e22; }
+    .box-lake { border: 2px solid #00897b; background: #e0f2f1; color: #00897b; }
+    
+    /* Mart */
+    .box-mart { border: 2px dashed #e67e22; background: #fff; color: #e67e22; }
+    
+    /* BI */
+    .box-bi { border: 2px solid #d00; background: #fff5f5; color: #d00; height: 100%; display:flex; align-items:center; justify-content:center; }
+
+    /* 矢印 */
+    .arrow-r { font-weight: bold; color: #999; }
+
+    /* 連携線 */
+    .cross-link {
+      grid-column: 5;
+      grid-row: 2;
+      height: 2px;
+      background: #ccc;
+      position: relative;
+    }
+
+    /* 比較テーブル */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      margin: 1rem 0;
+    }
+    .comparison-table th, .comparison-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+    .comparison-table th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+      width: 30%;
+    }
+
+    /* 覚え方カード */
+    .memo-card {
+      background: #333;
+      color: #fff;
+      padding: 1.5rem;
+      border-radius: 8px;
+      text-align: center;
+      width: 100%;
+      max-width: 400px;
+    }
+    .memo-line {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border-bottom: 1px dashed #666;
+      padding-bottom: 0.2rem;
+    }
+    .memo-line:last-child { border-bottom: none; }
+
+    /* ポイント強調 */
+    .key-point {
+      background-color: #f4f4f4;
+      border-left: 4px solid #333;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .key-point strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1em;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 768px) {
+      .grand-map {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+      }
+      .opal-layer { display: none; } /* スマホではOPAL層を非表示にして簡素化 */
+      .arrow-r { transform: rotate(90deg); margin: 0.5rem 0; }
+      .proc-col, .store-col { width: 100%; flex-direction: row; }
+      .box-base { width: 100%; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a href="../../index.html" class="site-title">IT passport study map</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-28">
+            2026.01.28 / テクノロジ系
+          </time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">データ活用の完全統合図</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list">
+            <li class="tag">#データ活用</li>
+            <li class="tag">#OPAL</li>
+            <li class="tag">#ETL</li>
+            <li class="tag">#ELT</li>
+            <li class="tag">#DWH</li>
+            <li class="tag">#データマート</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>「DWH」「ETL」「データマート」…データ分析に関する用語はたくさんありますが、これらはバラバラに存在するわけではありません。<br>
+        データの「流れ」に沿って全体像を捉えると、それぞれの役割が一気に明確になります。</p>
+
+        <div class="key-point">
+          <strong>1行要約</strong><br>
+          「OPAL」という流れの中で、「ETL/ELT」で運び、「DWH/データレイク」に貯め、「データマート/BI」で使う。
+        </div>
+
+        <h2>1. データ活用の全体像（完全統合図）</h2>
+        <p>上段の「OPAL（概念）」と、下段の「システム（実装）」の対応関係を見てください。</p>
+
+        <div class="diagram-section">
+          <div class="grand-map">
+            
+            <!-- 上段：OPAL概念 -->
+            <div class="opal-layer">
+              <div class="opal-step">Original<br>(元データ)</div>
+              <div class="opal-step">Process<br>(加工)</div>
+              <div class="opal-step">Load/Store<br>(蓄積)</div>
+              <div class="opal-step">Process<br>(抽出)</div>
+              <div class="opal-step">Analyze<br>(分析)</div>
+            </div>
+
+            <!-- 下段：システム構成 -->
+            <!-- 1. Source -->
+            <div class="box-base box-src">
+              業務<br>システム
+            </div>
+
+            <div class="arrow-r">▶</div>
+
+            <!-- 2. Process (ETL/ELT) -->
+            <div class="proc-col">
+              <div class="box-base box-etl">
+                ETL<br><span style="font-size:0.7rem; font-weight:normal;">抽出→変換→格納</span>
+              </div>
+              <div class="box-base box-elt">
+                ELT<br><span style="font-size:0.7rem; font-weight:normal;">抽出→格納→変換</span>
+              </div>
+            </div>
+
+            <div class="arrow-r">▶</div>
+
+            <!-- 3. Storage -->
+            <div class="store-col">
+              <div class="box-base box-dwh">
+                DWH<br><span style="font-size:0.7rem; font-weight:normal;">整理済み倉庫</span>
+              </div>
+              <div class="box-base box-lake">
+                Data Lake<br><span style="font-size:0.7rem; font-weight:normal;">生データ貯水池</span>
+              </div>
+            </div>
+
+            <div class="arrow-r">▶</div>
+
+            <!-- 4. Mart -->
+            <div class="box-base box-mart">
+              Data Mart<br><span style="font-size:0.7rem; font-weight:normal;">部門用ミニDWH</span>
+            </div>
+
+            <div class="arrow-r">▶</div>
+
+            <!-- 5. BI -->
+            <div class="box-base box-bi">
+              BIツール<br><span style="font-size:0.7rem; font-weight:normal;">可視化・分析</span>
+            </div>
+
+          </div>
+          <p style="font-size:0.8rem; color:#666; margin-top:1rem;">
+            ※ETLは「整えてからDWHへ」、ELTは「まずData Lakeへ入れてから整える」手法です。
+          </p>
+        </div>
+
+        <h2>2. 用語の一言解説</h2>
+        <p>試験対策として、それぞれの「役割」を一言で定義します。</p>
+
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>用語</th>
+              <th>役割（一言で）</th>
+              <th>試験でのポイント</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>OPAL</strong></td>
+              <td><strong>全体の流れ・概念</strong></td>
+              <td>「元データ→処理→分析→出力」のプロセス全体を指す。</td>
+            </tr>
+            <tr>
+              <td><strong>ETL</strong></td>
+              <td><strong>整えてから運ぶ</strong></td>
+              <td>DWHに入れる前に形式を統一する。</td>
+            </tr>
+            <tr>
+              <td><strong>ELT</strong></td>
+              <td><strong>運んでから整える</strong></td>
+              <td>ビッグデータやクラウドで主流。まずデータレイクに放り込む。</td>
+            </tr>
+            <tr>
+              <td><strong>DWH</strong></td>
+              <td><strong>整理された倉庫</strong></td>
+              <td>「時系列」「統合」「消さない」。全社分析用。</td>
+            </tr>
+            <tr>
+              <td><strong>データレイク</strong></td>
+              <td><strong>生の貯水池</strong></td>
+              <td>画像やログなど「非構造化データ」もそのまま保存できる。</td>
+            </tr>
+            <tr>
+              <td><strong>データマート</strong></td>
+              <td><strong>特定の売場</strong></td>
+              <td>DWHから「営業部用」など特定目的のために切り出したもの。</td>
+            </tr>
+            <tr>
+              <td><strong>BI</strong></td>
+              <td><strong>可視化ツール</strong></td>
+              <td>人間が見て判断するためのグラフやダッシュボード。</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>3. 試験での見分け方</h2>
+        <p>問題文に含まれるキーワードで、どの箱の話かを見抜きましょう。</p>
+        <ul>
+          <li>「経営判断のために全社のデータを統合」→ <strong>DWH</strong></li>
+          <li>「特定の部門が利用するために抽出」→ <strong>データマート</strong></li>
+          <li>「形式の異なるデータを統一して格納」→ <strong>ETL</strong></li>
+          <li>「大量の生データをそのまま蓄積」→ <strong>データレイク</strong></li>
+        </ul>
+
+        <h2>まとめ（暗記用）</h2>
+        <p>最後は、このフレーズで位置関係を頭に入れましょう。</p>
+
+        <div class="diagram-section" style="background:transparent; border:none; padding:0;">
+          <div class="memo-card">
+            <span class="memo-line">OPAL は「流れ」</span>
+            <span class="memo-line">ETL / ELT は「方法」</span>
+            <span class="memo-line">レイク・DWH は「場所」</span>
+            <span class="memo-line">マート は「小分け」</span>
+            <span class="memo-line">BI は「出口」</span>
+          </div>
+        </div>
+
+        <!-- GEN: REFERENCES -->
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> IT passport study map. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
