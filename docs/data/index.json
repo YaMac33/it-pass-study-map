@@ -1,5 +1,22 @@
 [
   {
+    "id": "2026-01-28_pki-cert-revocation",
+    "timestamp": "2026-01-28T16:02:58+09:00",
+    "title": "PKI証明書失効確認の仕組み",
+    "summary": "デジタル証明書の失効メカニズムを解説します。CRLとOCSPの違いを時系列で整理し、確認方法を比較します。",
+    "tags": [
+      "PKI",
+      "CRL",
+      "OCSP",
+      "セキュリティ",
+      "証明書",
+      "失効"
+    ],
+    "category_lv1": "テクノロジ系",
+    "category_lv2": "セキュリティ",
+    "post_path": "posts/2026-01-28_pki-cert-revocation/"
+  },
+  {
     "id": "2026-01-28_data-utilization-map",
     "timestamp": "2026-01-28T15:49:25+09:00",
     "title": "データ活用の完全統合図",
