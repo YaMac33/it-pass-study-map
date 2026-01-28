@@ -1,0 +1,408 @@
+ <!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>データ操作、分析、活用、マイニングなど：データ用語 - IT passport study map</title>
+  <meta name="description" content="データ操作、分析、活用、マイニングなど、ITパスポート試験で混同しやすいデータ関連用語を整理。データ処理の基本フローである「OPAL」も図解で解説します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="データ操作、分析、活用、マイニングなど：データ用語" />
+  <meta property="og:description" content="データ操作、分析、活用、マイニングなど、ITパスポート試験で混同しやすいデータ関連用語を整理。データ処理の基本フローである「OPAL」も図解で解説します。" />
+  
+  <!-- Assets: 記事は docs/posts/<id>/index.html → ../../ 固定 -->
+  <link rel="stylesheet" href="../../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS（図解・補助CSS） -->
+  <style>
+    /* 共通図解コンテナ */
+    .diagram-section {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* 3段階プロセス（操作・分析・活用） */
+    .process-steps {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      width: 100%;
+      flex-wrap: wrap;
+    }
+    .step-card {
+      flex: 1;
+      min-width: 200px;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 1.5rem;
+      text-align: center;
+      position: relative;
+    }
+    .step-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+    .step-title {
+      font-weight: bold;
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      display: block;
+      color: #333;
+    }
+    .step-desc {
+      font-size: 0.85rem;
+      color: #666;
+    }
+    .arrow-right {
+      align-self: center;
+      font-size: 1.5rem;
+      color: #999;
+      font-weight: bold;
+    }
+
+    /* データマイニング図 */
+    .mining-visual {
+      background: #333;
+      border-radius: 8px;
+      padding: 2rem;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      color: #fff;
+      position: relative;
+    }
+    .data-pile {
+      font-family: monospace;
+      color: #999;
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+      line-height: 1.2;
+      opacity: 0.5;
+    }
+    .diamond {
+      font-size: 3rem;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+    }
+    .mining-label {
+      margin-top: 1rem;
+      font-weight: bold;
+      color: #e67e22;
+    }
+
+    /* OPALフロー図 */
+    .opal-flow {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      width: 100%;
+      max-width: 450px;
+    }
+    .opal-step {
+      display: flex;
+      align-items: center;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 0.8rem;
+      position: relative;
+    }
+    .opal-char {
+      font-size: 1.5rem;
+      font-weight: bold;
+      width: 50px;
+      text-align: center;
+      color: #0056b3;
+      background: #eef6ff;
+      border-radius: 4px;
+      padding: 4px 0;
+      margin-right: 1rem;
+    }
+    .opal-content {
+      flex: 1;
+    }
+    .opal-name {
+      font-weight: bold;
+      font-size: 1rem;
+      display: block;
+    }
+    .opal-detail {
+      font-size: 0.85rem;
+      color: #666;
+    }
+    .arrow-down {
+      text-align: center;
+      color: #999;
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin: -0.3rem 0;
+    }
+
+    /* 比較テーブル */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      margin: 1rem 0;
+    }
+    .comparison-table th, .comparison-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+    .comparison-table th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+      width: 30%;
+      text-align: center;
+    }
+    .comparison-table td:nth-child(2) {
+      font-size: 0.9rem;
+    }
+
+    /* ポイント強調 */
+    .key-point {
+      background-color: #f4f4f4;
+      border-left: 4px solid #333;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .key-point strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1em;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 600px) {
+      .process-steps {
+        flex-direction: column;
+      }
+      .arrow-right {
+        transform: rotate(90deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a href="../../index.html" class="site-title">IT passport study map</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-28">
+            2026.01.28 / テクノロジ系
+          </time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">ITデータ操作、分析、活用、マイニングなど：データ用語</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list">
+            <li class="tag">#ITパスポート</li>
+            <li class="tag">#データ処理</li>
+            <li class="tag">#試験対策</li>
+            <li class="tag">#データ分析</li>
+            <li class="tag">#OPAL</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>「データ分析」「データ活用」「データマイニング」…似たような言葉が多くて混乱していませんか？<br>
+        ITパスポート試験では、これらの用語の定義を正確に区別できるかが問われます。</p>
+        <p>それぞれの違いと、データ処理の基本フローである「OPAL」について整理します。</p>
+
+        <div class="key-point">
+          <strong>1行要約</strong><br>
+          「操作」は作業、「分析」は発見、「活用」は意思決定。そして「マイニング」は人間には見えないルールを見つける技術。
+        </div>
+
+        <h2>1. 「操作・分析・活用」の違い</h2>
+        <p>データを使うプロセスは、大きく3段階に分かれます。試験では「何をしているか」で判別しましょう。</p>
+
+        <div class="diagram-section">
+          <div class="process-steps">
+            
+            <div class="step-card">
+              <span class="step-icon">🛠️</span>
+              <span class="step-title">データ操作</span>
+              <div class="step-desc">
+                <strong>「整える」</strong><br>
+                検索、並べ替え、抽出。<br>
+                機械的な作業。
+              </div>
+            </div>
+
+            <div class="arrow-right">➡</div>
+
+            <div class="step-card" style="border-color:#0056b3;">
+              <span class="step-icon" style="color:#0056b3;">🔍</span>
+              <span class="step-title" style="color:#0056b3;">データ分析</span>
+              <div class="step-desc">
+                <strong>「考える」</strong><br>
+                集計、傾向把握。<br>
+                意味を見つけ出す。
+              </div>
+            </div>
+
+            <div class="arrow-right">➡</div>
+
+            <div class="step-card" style="border-color:#e67e22;">
+              <span class="step-icon" style="color:#e67e22;">🚀</span>
+              <span class="step-title" style="color:#e67e22;">データ活用</span>
+              <div class="step-desc">
+                <strong>「動く」</strong><br>
+                意思決定、施策実行。<br>
+                ビジネスに活かす。
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <h2>2. 特別な用語：データマイニング</h2>
+        <p>「分析」の中でも、特に大量のデータから**「人間では気づかない隠れた法則」**を見つける技術を「データマイニング（Data Mining）」と呼びます。</p>
+
+        <div class="diagram-section" style="padding:1rem;">
+          <div class="mining-visual">
+            <div class="data-pile">
+              01010101010101010101<br>
+              10101010101010101010<br>
+              00110011001100110011<br>
+              11001100110011001100
+            </div>
+            <div class="diamond">💎</div>
+            <div class="mining-label">大量のデータから「知識」を掘り出す</div>
+          </div>
+        </div>
+        
+        <p><strong>例：</strong>「ビールを買う人は紙おむつも一緒に買う傾向がある」といった相関関係の発見。</p>
+
+        <h2>3. データ処理の流れ「OPAL」</h2>
+        <p>データ処理の基本的な手順を表す用語として「OPAL（オパール）」があります。<br>
+        ETL（抽出・変換・格納）と似ていますが、こちらはより一般的な「処理の順序」を示します。</p>
+
+        <div class="diagram-section">
+          <div class="opal-flow">
+            <div class="opal-step">
+              <span class="opal-char">O</span>
+              <div class="opal-content">
+                <span class="opal-name">Original Data (元データ)</span>
+                <span class="opal-detail">収集した生のデータ。</span>
+              </div>
+            </div>
+            <div class="arrow-down">↓</div>
+            <div class="opal-step">
+              <span class="opal-char">P</span>
+              <div class="opal-content">
+                <span class="opal-name">Process (処理)</span>
+                <span class="opal-detail">集計、計算、加工を行う。</span>
+              </div>
+            </div>
+            <div class="arrow-down">↓</div>
+            <div class="opal-step">
+              <span class="opal-char">A</span>
+              <div class="opal-content">
+                <span class="opal-name">Analyze (分析)</span>
+                <span class="opal-detail">傾向や意味を読み解く。</span>
+              </div>
+            </div>
+            <div class="arrow-down">↓</div>
+            <div class="opal-step">
+              <span class="opal-char">L</span>
+              <div class="opal-content">
+                <span class="opal-name">Load / Leave (出力・保存)</span>
+                <span class="opal-detail">結果を表示したり、DBに保存する。</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h2>4. 試験対策：キーワード整理</h2>
+        <p>試験で正解を選ぶための対応表です。</p>
+
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>用語</th>
+              <th>キーワード・やるべきこと</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>データ操作</strong></td>
+              <td>並べ替え、検索、抽出（単純作業）</td>
+            </tr>
+            <tr>
+              <td><strong>データ分析</strong></td>
+              <td>傾向把握、原因究明、意味の理解</td>
+            </tr>
+            <tr>
+              <td><strong>データ可視化</strong></td>
+              <td>グラフ化、見やすく表現</td>
+            </tr>
+            <tr>
+              <td><strong>データ活用</strong></td>
+              <td>意思決定、業務改善、アクション</td>
+            </tr>
+            <tr>
+              <td><strong>データマイニング</strong></td>
+              <td><strong>「隠れた規則性」「未知の知見」</strong>の発見</td>
+            </tr>
+            <tr>
+              <td><strong>BI</strong></td>
+              <td>経営判断の支援、ダッシュボード</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>まとめ</h2>
+        <ul>
+          <li><strong>操作</strong>は「手作業」、<strong>分析</strong>は「頭脳」、<strong>活用</strong>は「行動」。</li>
+          <li><strong>マイニング</strong>は「採掘（宝探し）」。</li>
+          <li><strong>OPAL</strong>は「元→処理→分析→出力」の流れ。</li>
+        </ul>
+
+        <!-- GEN: REFERENCES -->
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> IT passport study map. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
