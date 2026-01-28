@@ -1,5 +1,22 @@
 [
   {
+    "id": "2026-01-28_pki-shikyu-kakunin",
+    "timestamp": "2026-01-28T16:14:38+09:00",
+    "title": "PKI失効確認の統合図解",
+    "summary": "PKIの証明書失効確認手段を図解で整理しました。CRL、Delta CRL、OCSPの違いを明確にします。",
+    "tags": [
+      "PKI",
+      "証明書",
+      "CRL",
+      "OCSP",
+      "ITパスポート",
+      "セキュリティ"
+    ],
+    "category_lv1": "テクノロジ系",
+    "category_lv2": "セキュリティ",
+    "post_path": "posts/2026-01-28_pki-shikyu-kakunin/"
+  },
+  {
     "id": "2026-01-28_pki-cert-revocation",
     "timestamp": "2026-01-28T16:02:58+09:00",
     "title": "PKI証明書失効確認の仕組み",
