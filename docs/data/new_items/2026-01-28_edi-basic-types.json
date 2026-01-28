@@ -1,0 +1,16 @@
+{
+  "id": "2026-01-28_edi-basic-types",
+  "timestamp": "2026-01-28T16:39:09+09:00",
+  "title": "EDIの基本と種類",
+  "summary": "企業間の取引データを電子化するEDIの概要を解説します。VAN型とWeb-EDIの違いや、それぞれの特徴を整理しました。",
+  "tags": [
+    "EDI",
+    "電子取引",
+    "業務効率化",
+    "VAN",
+    "Web-EDI"
+  ],
+  "category_lv1": "ストラテジ系",
+  "category_lv2": "経営戦略",
+  "post_path": "posts/2026-01-28_edi-basic-types/"
+}
