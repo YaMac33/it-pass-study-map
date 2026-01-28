@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>EDIの基本と種類 - IT passport study map</title>
+  <meta name="description" content="企業間の取引データを電子化するEDI（Electronic Data Interchange）について解説。従来型VANとWeb-EDIの違いや、導入メリットを図解で整理します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="EDIの基本と種類" />
+  <meta property="og:description" content="企業間の取引データを電子化するEDI（Electronic Data Interchange）について解説。従来型VANとWeb-EDIの違いや、導入メリットを図解で整理します。" />
+  
+  <!-- Assets: 記事は docs/posts/<id>/index.html → ../../ 固定 -->
+  <link rel="stylesheet" href="../../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS（図解・補助CSS） -->
+  <style>
+    /* 共通図解コンテナ */
+    .diagram-section {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* EDIフロー図 */
+    .edi-flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+      max-width: 650px;
+      flex-wrap: wrap;
+    }
+    
+    .company-box {
+      background: #fff;
+      border: 2px solid #333;
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+      font-weight: bold;
+      min-width: 120px;
+      position: relative;
+    }
+    .comp-a { border-color: #0056b3; color: #0056b3; }
+    .comp-b { border-color: #e67e22; color: #e67e22; }
+
+    .process-step {
+      background: #eee;
+      padding: 0.5rem;
+      font-size: 0.8rem;
+      border-radius: 4px;
+      color: #666;
+      text-align: center;
+      min-width: 80px;
+    }
+
+    .network-cloud {
+      background: #f0f8ff;
+      border: 2px dashed #999;
+      border-radius: 50px;
+      padding: 1rem 2rem;
+      color: #555;
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+
+    .flow-arrow {
+      color: #999;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
+    /* 比較図（VAN vs Web） */
+    .type-compare {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      width: 100%;
+      flex-wrap: wrap;
+    }
+    .type-box {
+      flex: 1;
+      min-width: 240px;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 1.5rem;
+      text-align: center;
+    }
+    .tb-title {
+      font-weight: bold;
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      display: block;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid #eee;
+    }
+    .van-line {
+      height: 4px;
+      background: #333;
+      margin: 1rem 0;
+      position: relative;
+    }
+    .van-line::after { content: "専用線・閉域網"; position: absolute; top: -20px; left: 0; right: 0; font-size: 0.8rem; color: #666; }
+    
+    .web-line {
+      height: 4px;
+      background: #27ae60;
+      margin: 1rem 0;
+      position: relative;
+    }
+    .web-line::after { content: "インターネット"; position: absolute; top: -20px; left: 0; right: 0; font-size: 0.8rem; color: #27ae60; }
+
+    /* 比較テーブル */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      margin: 1rem 0;
+    }
+    .comparison-table th, .comparison-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+    .comparison-table th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+      width: 25%;
+    }
+    .comparison-table td:nth-child(3) { background: #f0ffff; } /* Web-EDI */
+
+    /* ポイント強調 */
+    .key-point {
+      background-color: #f4f4f4;
+      border-left: 4px solid #333;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .key-point strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1em;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 600px) {
+      .edi-flow {
+        flex-direction: column;
+      }
+      .flow-arrow {
+        transform: rotate(90deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a href="../../index.html" class="site-title">IT passport study map</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-28">
+            2026.01.28 / ストラテジ系
+          </time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">EDIの基本と種類</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list">
+            <li class="tag">#EDI</li>
+            <li class="tag">#電子取引</li>
+            <li class="tag">#業務効率化</li>
+            <li class="tag">#VAN</li>
+            <li class="tag">#Web-EDI</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>企業間の受発注や請求などの取引を、紙やFAXではなく、ネットワーク経由のデータ交換で行う仕組みが<strong>「EDI（電子データ交換）」</strong>です。<br>
+        ペーパーレス化だけでなく、手入力ミスの削減や処理スピード向上など、業務効率化の切り札となります。</p>
+
+        <div class="key-point">
+          <strong>1行要約</strong><br>
+          EDIとは、異なる企業同士が、標準的なフォーマットを使って、専用回線やインターネットで商取引データを自動交換する仕組みのこと。
+        </div>
+
+        <h2>1. EDIの仕組み（データの流れ）</h2>
+        <p>FAXや電話と違い、人間が介在せずにシステム同士でデータをやり取りします。</p>
+
+        <div class="diagram-section">
+          <div class="edi-flow">
+            
+            <div class="company-box comp-a">
+              A社<br>(発注側)
+            </div>
+
+            <div class="flow-arrow">➡</div>
+
+            <div class="process-step">
+              形式変換<br>(自社→標準)
+            </div>
+
+            <div class="flow-arrow">➡</div>
+
+            <div class="network-cloud">
+              ネットワーク
+            </div>
+
+            <div class="flow-arrow">➡</div>
+
+            <div class="process-step">
+              形式変換<br>(標準→自社)
+            </div>
+
+            <div class="flow-arrow">➡</div>
+
+            <div class="company-box comp-b">
+              B社<br>(受注側)
+            </div>
+
+          </div>
+          <p style="font-size:0.9rem; color:#666; margin-top:1rem;">
+            注文データが自動で相手のシステムに登録されるため、入力作業が不要になります。
+          </p>
+        </div>
+
+        <h2>2. EDIの2つの種類（VAN型 vs Web-EDI）</h2>
+        <p>EDIには、昔ながらの「専用線」を使うタイプと、現代主流の「インターネット」を使うタイプがあります。</p>
+
+        <div class="diagram-section">
+          <div class="type-compare">
+            
+            <!-- VAN型 -->
+            <div class="type-box">
+              <span class="tb-title">VAN型 EDI</span>
+              <div class="van-line"></div>
+              <p style="font-size:0.9rem; text-align:left;">
+                特定業者が運営する専用ネットワーク（VAN）を使う。<br>
+                <strong>特徴：</strong> 安全だがコストが高い。<br>
+                <strong>規格：</strong> JCA手順、全銀手順など（レガシー）。
+              </p>
+            </div>
+
+            <!-- Web-EDI -->
+            <div class="type-box">
+              <span class="tb-title" style="color:#27ae60;">Web-EDI</span>
+              <div class="web-line"></div>
+              <p style="font-size:0.9rem; text-align:left;">
+                インターネット回線を使う。<br>
+                <strong>特徴：</strong> 安価で導入しやすい。ブラウザで操作可能。<br>
+                <strong>規格：</strong> XML、EDIINTなど。
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+        <h2>3. 比較まとめ表</h2>
+        <p>試験対策として、それぞれの特徴を整理します。</p>
+
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>項目</th>
+              <th>VAN型 (従来)</th>
+              <th>Web-EDI (現代)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>通信回線</strong></td>
+              <td>専用線・電話回線</td>
+              <td><strong>インターネット</strong></td>
+            </tr>
+            <tr>
+              <td><strong>コスト</strong></td>
+              <td>高い</td>
+              <td><strong>安い</strong></td>
+            </tr>
+            <tr>
+              <td><strong>導入ハードル</strong></td>
+              <td>高い（専用機器が必要）</td>
+              <td>低い（PCとブラウザでOK）</td>
+            </tr>
+            <tr>
+              <td><strong>セキュリティ</strong></td>
+              <td>非常に高い（閉域網）</td>
+              <td>対策が必要（SSL/TLS等）</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>4. 標準規格について</h2>
+        <p>異なる企業同士でデータをやり取りするためには、「データの並び順（フォーマット）」などのルール（プロトコル）を合わせる必要があります。</p>
+        <ul>
+          <li><strong>国内規格：</strong> JCA手順、全銀手順（古いが金融などで現役）、JX手順（流通BMS）。</li>
+          <li><strong>国際規格：</strong> UN/EDIFACT（国連制定）、XML/UBL。</li>
+        </ul>
+        <p>最近は、柔軟性の高い<strong>XML</strong>を用いたデータ交換が増えています。</p>
+
+        <h2>まとめ</h2>
+        <ul>
+          <li><strong>EDI：</strong> 電子データ交換。業務効率化とペーパーレス化を実現。</li>
+          <li><strong>VAN型：</strong> 専用線。安全だが高い。</li>
+          <li><strong>Web-EDI：</strong> インターネット。安くて手軽。</li>
+        </ul>
+        <p>「電話やFAXをやめて、ネットでデータを自動連携する仕組み」と覚えておけばOKです。</p>
+
+        <!-- GEN: REFERENCES -->
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> IT passport study map. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
