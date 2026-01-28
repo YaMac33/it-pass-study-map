@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>PKI失効確認統合図 - IT passport study map</title>
+  <meta name="description" content="PKIの証明書失効確認を図解で説明。CRL、Delta CRL、OCSPの違いや、それぞれのメリット・デメリットを即答できるように整理します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="PKI失効確認統合図" />
+  <meta property="og:description" content="PKIの証明書失効確認を図解で説明。CRL、Delta CRL、OCSPの違いや、それぞれのメリット・デメリットを即答できるように整理します。" />
+  
+  <!-- Assets: 記事は docs/posts/<id>/index.html → ../../ 固定 -->
+  <link rel="stylesheet" href="../../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS（図解・補助CSS） -->
+  <style>
+    /* 共通図解コンテナ */
+    .diagram-section {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* 統合図レイアウト */
+    .integrated-flow {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 600px;
+      gap: 1rem;
+      position: relative;
+    }
+
+    /* 上流：CA */
+    .ca-box {
+      background: #333;
+      color: #fff;
+      padding: 0.8rem 2rem;
+      border-radius: 6px;
+      font-weight: bold;
+      z-index: 2;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    /* 中段：3つの方式 */
+    .methods-row {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      width: 100%;
+      flex-wrap: wrap;
+    }
+    .method-card {
+      flex: 1;
+      min-width: 160px;
+      background: #fff;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+      position: relative;
+    }
+    .mc-crl { border-color: #e67e22; background: #fffaf0; }
+    .mc-delta { border-color: #f39c12; background: #fffaf0; }
+    .mc-ocsp { border-color: #0056b3; background: #eef6ff; }
+    
+    .mc-title {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1rem;
+    }
+    .mc-desc {
+      font-size: 0.8rem;
+      color: #555;
+      line-height: 1.4;
+    }
+
+    /* 下流：利用者 */
+    .user-box {
+      background: #fff;
+      border: 2px solid #666;
+      padding: 0.8rem 2rem;
+      border-radius: 6px;
+      font-weight: bold;
+      width: 80%;
+      text-align: center;
+      z-index: 2;
+    }
+
+    /* 最下流：結果 */
+    .result-box {
+      border: 2px dashed #27ae60;
+      background: #f0fff4;
+      padding: 0.8rem;
+      width: 100%;
+      text-align: center;
+      border-radius: 6px;
+      color: #27ae60;
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+
+    /* 矢印 */
+    .arrow-down {
+      font-size: 1.5rem;
+      color: #999;
+      font-weight: bold;
+      margin: -0.5rem 0;
+    }
+    .branch-lines {
+      position: relative;
+      width: 80%;
+      height: 20px;
+      border-top: 2px solid #999;
+      border-left: 2px solid #999;
+      border-right: 2px solid #999;
+      margin-top: -10px;
+      margin-bottom: -5px;
+    }
+    .branch-center-line {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      height: 20px;
+      border-left: 2px solid #999;
+    }
+
+    /* 比較テーブル */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      margin: 1rem 0;
+    }
+    .comparison-table th, .comparison-table td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+    .comparison-table th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+    }
+    .t-good { color: #27ae60; font-weight: bold; }
+    .t-bad { color: #d00; font-weight: bold; }
+
+    /* 覚え方メモ */
+    .memo-box {
+      background: #333;
+      color: #fff;
+      padding: 1.5rem;
+      border-radius: 8px;
+      text-align: center;
+      width: 100%;
+      max-width: 400px;
+    }
+    .memo-line {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border-bottom: 1px dashed #666;
+      padding-bottom: 0.2rem;
+    }
+
+    /* ポイント強調 */
+    .key-point {
+      background-color: #f4f4f4;
+      border-left: 4px solid #333;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .key-point strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1em;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 600px) {
+      .methods-row {
+        flex-direction: column;
+      }
+      .branch-lines { display: none; }
+      .arrow-down { display: block; margin: 0.5rem 0; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a href="../../index.html" class="site-title">IT passport study map</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-28">
+            2026.01.28 / テクノロジ系
+          </time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">PKI失効確認統合図</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list">
+            <li class="tag">#PKI</li>
+            <li class="tag">#証明書</li>
+            <li class="tag">#CRL</li>
+            <li class="tag">#OCSP</li>
+            <li class="tag">#ITパスポート</li>
+            <li class="tag">#セキュリティ</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>デジタル証明書が有効かどうかを確認する手段には、「CRL」「Delta CRL」「OCSP」の3つがあります。<br>
+        これらは名前が似ていて混同しがちですが、<strong>「情報の流れ」と「確認タイミング」</strong>で整理すると一発で覚えられます。</p>
+
+        <div class="key-point">
+          <strong>1行要約</strong><br>
+          CRLは「定期配布される一覧表」、OCSPは「その都度聞くリアルタイム確認」。
+        </div>
+
+        <h2>1. PKI証明書失効確認 完全統合図</h2>
+        <p>認証局（CA）から利用者まで、失効情報がどのように届くかを図解しました。</p>
+
+        <div class="diagram-section">
+          <div class="integrated-flow">
+            
+            <div class="ca-box">CA（認証局）</div>
+            
+            <div class="arrow-down">⬇ 失効情報を発信</div>
+            <div class="branch-lines">
+              <div class="branch-center-line"></div>
+            </div>
+
+            <div class="methods-row">
+              <!-- CRL -->
+              <div class="method-card mc-crl">
+                <span class="mc-title">CRL (フル)</span>
+                <div class="mc-desc">
+                  失効した証明書の<br><strong>全リスト</strong><br>
+                  (定期更新)
+                </div>
+              </div>
+
+              <!-- Delta CRL -->
+              <div class="method-card mc-delta">
+                <span class="mc-title">Delta CRL</span>
+                <div class="mc-desc">
+                  前回からの<br><strong>差分のみ</strong><br>
+                  (軽量化)
+                </div>
+              </div>
+
+              <!-- OCSP -->
+              <div class="method-card mc-ocsp">
+                <span class="mc-title">OCSP</span>
+                <div class="mc-desc">
+                  <strong>個別問い合わせ</strong><br>
+                  リアルタイム応答<br>
+                  (サーバ依存)
+                </div>
+              </div>
+            </div>
+
+            <div class="arrow-down">⬇ 確認・照合</div>
+
+            <div class="user-box">
+              利用者（ブラウザ等）
+            </div>
+
+            <div class="arrow-down">⬇</div>
+
+            <div class="result-box">
+              【判定】 有効 → 通信開始 ／ 失効 → 警告・遮断
+            </div>
+
+          </div>
+        </div>
+
+        <h2>2. 試験即答用ポイント比較表</h2>
+        <p>ITパスポート試験で問われる違いを整理しました。</p>
+
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>用語</th>
+              <th>更新頻度</th>
+              <th>タイミング</th>
+              <th>メリット</th>
+              <th>デメリット</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>CRL</strong></td>
+              <td>定期</td>
+              <td>事前にDL</td>
+              <td class="t-good">オフラインOK</td>
+              <td class="t-bad">サイズ大・遅延</td>
+            </tr>
+            <tr>
+              <td><strong>Delta CRL</strong></td>
+              <td>定期</td>
+              <td>事前にDL</td>
+              <td class="t-good">軽量</td>
+              <td>CRLが必要</td>
+            </tr>
+            <tr>
+              <td><strong>OCSP</strong></td>
+              <td class="t-good">リアルタイム</td>
+              <td>利用時</td>
+              <td class="t-good">即時確認</td>
+              <td class="t-bad">サーバ依存</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>理解のコツ</h3>
+        <ul>
+          <li><strong>CRL系：</strong>「新聞」や「官報」のようなもの。定期的に配られるので、手元にあればいつでも見れるが、情報は少し古いかもしれない。</li>
+          <li><strong>OCSP：</strong>「電話問い合わせ」のようなもの。その場で聞くので最新だが、電話が繋がらないと確認できない。</li>
+        </ul>
+
+        <h2>3. 覚え方（試験直前）</h2>
+        <p>以下のキーワードセットで覚えましょう。</p>
+
+        <div class="diagram-section" style="background:transparent; border:none; padding:0;">
+          <div class="memo-box">
+            <span class="memo-line">CRL ＝ 一覧表（まとめてチェック）</span>
+            <span class="memo-line">Delta ＝ 差分のみ（軽量）</span>
+            <span class="memo-line">OCSP ＝ 個別確認（リアルタイム）</span>
+          </div>
+        </div>
+
+        <h2>まとめ</h2>
+        <ul>
+          <li><strong>CRL：</strong>リストを配る方式。オフラインでも使えるがタイムラグがある。</li>
+          <li><strong>OCSP：</strong>都度問い合わせる方式。リアルタイムだが通信が必要。</li>
+        </ul>
+        <p>この2つのアプローチの違いを理解していれば、PKI関連の問題は迷わず解けるようになります。</p>
+
+        <!-- GEN: REFERENCES -->
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> IT passport study map. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
