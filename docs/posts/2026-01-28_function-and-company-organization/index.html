@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>機能別組織とカンパニー制組織 - IT passport study map</title>
+  <meta name="description" content="機能別組織とカンパニー制組織の特徴、メリット・デメリットを解説。組織構造の違いを図解し、ITパスポート試験での見分け方を整理します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="機能別組織とカンパニー制組織" />
+  <meta property="og:description" content="機能別組織とカンパニー制組織の特徴、メリット・デメリットを解説。組織構造の違いを図解し、ITパスポート試験での見分け方を整理します。" />
+  
+  <!-- Assets: 記事は docs/posts/<id>/index.html → ../../ 固定 -->
+  <link rel="stylesheet" href="../../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS（図解・補助CSS） -->
+  <style>
+    /* 共通図解コンテナ */
+    .diagram-section {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* 組織図ツリー共通 */
+    .org-chart {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 600px;
+    }
+    .org-node {
+      background: #fff;
+      border: 2px solid #333;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-weight: bold;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .boss-node {
+      background: #333;
+      color: #fff;
+      min-width: 120px;
+    }
+    .connector-v {
+      width: 2px;
+      height: 20px;
+      background: #999;
+    }
+    .connector-h-bar {
+      width: 80%;
+      height: 2px;
+      background: #999;
+      margin-bottom: 0;
+    }
+    .sub-level {
+      display: flex;
+      justify-content: space-around;
+      width: 100%;
+      position: relative;
+    }
+    .sub-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+    }
+    .sub-col::before {
+      content: "";
+      width: 2px;
+      height: 15px;
+      background: #999;
+      margin-bottom: 5px;
+    }
+    
+    /* 機能別組織のスタイル */
+    .dept-node {
+      font-size: 0.9rem;
+      border-color: #0056b3;
+      color: #0056b3;
+      min-width: 60px;
+    }
+
+    /* カンパニー制のスタイル */
+    .company-node {
+      border-color: #e67e22;
+      color: #e67e22;
+      background: #fffaf0;
+      min-width: 140px;
+      margin-bottom: 10px;
+    }
+    .mini-func-row {
+      display: flex;
+      gap: 4px;
+      justify-content: center;
+    }
+    .mini-func {
+      font-size: 0.7rem;
+      border: 1px solid #ccc;
+      background: #fff;
+      padding: 2px 4px;
+      border-radius: 3px;
+      color: #666;
+    }
+
+    /* メリット・デメリットリスト */
+    .pros-cons-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      width: 100%;
+      margin-top: 1rem;
+    }
+    .pc-box {
+      background: #fff;
+      border-radius: 6px;
+      padding: 1rem;
+      border: 1px solid #ddd;
+    }
+    .pc-title {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 0.5rem;
+      text-align: center;
+      padding-bottom: 0.3rem;
+      border-bottom: 2px solid #eee;
+    }
+    .pc-good .pc-title { color: #27ae60; border-color: #27ae60; }
+    .pc-bad .pc-title { color: #d00; border-color: #d00; }
+    
+    .pc-list {
+      list-style: none;
+      padding: 0;
+      font-size: 0.9rem;
+    }
+    .pc-list li {
+      margin-bottom: 0.3rem;
+      padding-left: 1.2em;
+      position: relative;
+    }
+    .pc-good li::before { content: "✔"; position: absolute; left: 0; color: #27ae60; }
+    .pc-bad li::before { content: "▲"; position: absolute; left: 0; color: #d00; }
+
+    /* 比較テーブル */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      margin: 1rem 0;
+    }
+    .comparison-table th, .comparison-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+    .comparison-table th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+      width: 20%;
+    }
+    .comparison-table td:nth-child(2) { background: #eef6ff; font-weight:bold; color: #0056b3; } /* 機能別 */
+    .comparison-table td:nth-child(3) { background: #fffaf0; font-weight:bold; color: #e67e22; } /* カンパニー */
+
+    /* ポイント強調 */
+    .key-point {
+      background-color: #f4f4f4;
+      border-left: 4px solid #333;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .key-point strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1em;
+    }
+    .check-box {
+      border: 2px dashed #666;
+      padding: 1rem;
+      margin-top: 1rem;
+      background: #fff;
+      border-radius: 6px;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 600px) {
+      .sub-level {
+        flex-wrap: wrap;
+      }
+      .pros-cons-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a href="../../index.html" class="site-title">IT passport study map</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-28">
+            2026.01.28 / ストラテジ系
+          </time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">機能別組織とカンパニー制組織</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list">
+            <li class="tag">#組織形態</li>
+            <li class="tag">#機能別</li>
+            <li class="tag">#カンパニー制</li>
+            <li class="tag">#比較</li>
+            <li class="tag">#ビジネス</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>企業が大きくなると、どのような形で組織を分けるかが重要になります。<br>
+        代表的な「機能別組織」と「カンパニー制組織」。この2つの違いを、構造図と特徴の比較で整理します。</p>
+
+        <div class="key-point">
+          <strong>1行要約</strong><br>
+          機能別組織は「仕事の種類（機能）」で分ける効率重視の形、カンパニー制組織は「事業」ごとに独立した小さな会社を作るスピード重視の形。
+        </div>
+
+        <h2>1. 機能別組織（Functional Organization）</h2>
+        <p>業務の「機能（役割）」ごとに部門を分ける、最も基本的な組織形態です。<br>
+        営業は営業部、開発は開発部といった形で、専門性を集約します。</p>
+
+        <div class="diagram-section">
+          <div class="org-chart">
+            <div class="org-node boss-node">社長</div>
+            <div class="connector-v"></div>
+            <div class="connector-h-bar"></div>
+            <div class="sub-level">
+              <div class="sub-col"><div class="org-node dept-node">営業部</div></div>
+              <div class="sub-col"><div class="org-node dept-node">製造部</div></div>
+              <div class="sub-col"><div class="org-node dept-node">開発部</div></div>
+              <div class="sub-col"><div class="org-node dept-node">人事部</div></div>
+            </div>
+          </div>
+          <p style="font-size:0.9rem; color:#0056b3; margin-top:1rem; font-weight:bold;">
+            専門特化の縦割り構造
+          </p>
+        </div>
+
+        <div class="pros-cons-grid">
+          <div class="pc-box pc-good">
+            <span class="pc-title">メリット</span>
+            <ul class="pc-list">
+              <li>専門スキルが向上しやすい</li>
+              <li>業務の重複がなく効率的</li>
+              <li>指揮命令系統が明確</li>
+            </ul>
+          </div>
+          <div class="pc-box pc-bad">
+            <span class="pc-title">デメリット</span>
+            <ul class="pc-list">
+              <li>部門間の壁（セクショナリズム）ができやすい</li>
+              <li>経営者視点の人材が育ちにくい</li>
+              <li>全社的な意思決定に時間がかかる</li>
+            </ul>
+          </div>
+        </div>
+
+        <h2>2. カンパニー制組織（Company-based Organization）</h2>
+        <p>製品や市場（事業）ごとに、あたかも「独立した会社」のように組織を分け、大幅な権限を与える形態です。<br>
+        各カンパニーの中に、営業・製造・開発などの機能を持たせます。</p>
+
+        <div class="diagram-section">
+          <div class="org-chart">
+            <div class="org-node boss-node">社長</div>
+            <div class="connector-v"></div>
+            <div class="connector-h-bar" style="width:50%;"></div>
+            <div class="sub-level">
+              <!-- Aカンパニー -->
+              <div class="sub-col">
+                <div class="org-node company-node">
+                  Aカンパニー<br>
+                  <span style="font-size:0.7rem; font-weight:normal;">(家電事業)</span>
+                </div>
+                <div class="connector-v" style="height:10px;"></div>
+                <div class="mini-func-row">
+                  <span class="mini-func">営業</span>
+                  <span class="mini-func">製造</span>
+                  <span class="mini-func">開発</span>
+                </div>
+              </div>
+              <!-- Bカンパニー -->
+              <div class="sub-col">
+                <div class="org-node company-node">
+                  Bカンパニー<br>
+                  <span style="font-size:0.7rem; font-weight:normal;">(IT事業)</span>
+                </div>
+                <div class="connector-v" style="height:10px;"></div>
+                <div class="mini-func-row">
+                  <span class="mini-func">営業</span>
+                  <span class="mini-func">製造</span>
+                  <span class="mini-func">開発</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p style="font-size:0.9rem; color:#e67e22; margin-top:1rem; font-weight:bold;">
+            事業ごとに完結した「小さな会社」の集合体
+          </p>
+        </div>
+
+        <div class="pros-cons-grid">
+          <div class="pc-box pc-good">
+            <span class="pc-title">メリット</span>
+            <ul class="pc-list">
+              <li>市場変化への対応が速い（迅速な意思決定）</li>
+              <li>責任の所在が明確（独立採算）</li>
+              <li>経営感覚を持った人材が育つ</li>
+            </ul>
+          </div>
+          <div class="pc-box pc-bad">
+            <span class="pc-title">デメリット</span>
+            <ul class="pc-list">
+              <li>機能（人事・経理など）が重複し、コストが増える</li>
+              <li>カンパニー間の連携が希薄になる</li>
+              <li>全社最適より部分最適になりがち</li>
+            </ul>
+          </div>
+        </div>
+
+        <h2>3. 違いと比較まとめ</h2>
+        <p>試験対策として、両者の特徴を対比させます。</p>
+
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>項目</th>
+              <th>機能別組織</th>
+              <th>カンパニー制組織</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>分け方</strong></td>
+              <td>仕事の<strong>種類（機能）</strong></td>
+              <td>製品・市場・<strong>事業</strong></td>
+            </tr>
+            <tr>
+              <td><strong>意思決定</strong></td>
+              <td>遅くなりがち</td>
+              <td><strong>速い</strong>（現場に近い）</td>
+            </tr>
+            <tr>
+              <td><strong>コスト</strong></td>
+              <td><strong>低い</strong>（効率的）</td>
+              <td>高い（機能重複）</td>
+            </tr>
+            <tr>
+              <td><strong>人材育成</strong></td>
+              <td>スペシャリスト</td>
+              <td>ゼネラリスト（経営者）</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>4. 試験での見抜き方（ひっかけ対策）</h2>
+        <p>ITパスポートなどの試験で正解を選ぶためのキーワードです。</p>
+
+        <div class="check-box">
+          <p><strong>■ 機能別組織のサイン</strong></p>
+          <ul>
+            <li>「専門性を高める」「業務効率化」「営業部・製造部」</li>
+          </ul>
+          <p><strong>■ カンパニー制組織のサイン</strong></p>
+          <ul>
+            <li>「独立採算」「迅速な意思決定」「権限委譲」「事業ごとの責任」</li>
+          </ul>
+        </div>
+
+        <h2>まとめ</h2>
+        <ul>
+          <li><strong>機能別：</strong> 仕事の種類で分ける。「効率と専門性」重視。</li>
+          <li><strong>カンパニー制：</strong> 事業で分ける。「スピードと経営責任」重視。</li>
+        </ul>
+        <p>「中小企業は機能別が多く、大企業はカンパニー制（または事業部制）が多い」というイメージを持っておくと理解しやすいでしょう。</p>
+
+        <!-- GEN: REFERENCES -->
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> IT passport study map. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
