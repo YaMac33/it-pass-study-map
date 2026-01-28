@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>オブジェクト指向、SOA、マイクロサービスの進化の歴史と違い - IT passport study map</title>
+  <meta name="description" content="オブジェクト指向、SOA、マイクロサービスの進化の歴史と違いを解説。プログラム内部の部品化から、クラウド時代の独立したサービス連携へと至る設計思想の変遷を図解で整理します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="オブジェクト指向、SOA、マイクロサービスの進化の歴史と違い" />
+  <meta property="og:description" content="オブジェクト指向、SOA、マイクロサービスの進化の歴史と違いを解説。プログラム内部の部品化から、クラウド時代の独立したサービス連携へと至る設計思想の変遷を図解で整理します。" />
+  
+  <!-- Assets: 記事は docs/posts/<id>/index.html → ../../ 固定 -->
+  <link rel="stylesheet" href="../../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS（図解・補助CSS） -->
+  <style>
+    /* 共通図解コンテナ */
+    .diagram-section {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* 進化ステップ図 */
+    .evolution-container {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      width: 100%;
+      flex-wrap: wrap;
+    }
+    .evo-step {
+      flex: 1;
+      min-width: 220px;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+    .evo-step.step1 { border-top: 4px solid #666; }
+    .evo-step.step2 { border-top: 4px solid #0056b3; }
+    .evo-step.step3 { border-top: 4px solid #e67e22; }
+
+    .step-label {
+      font-weight: bold;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+      text-align: center;
+    }
+
+    /* アーキテクチャ模式図 */
+    .arch-visual {
+      width: 150px;
+      height: 100px;
+      margin-bottom: 1rem;
+      position: relative;
+      background: #f4f4f4;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    /* OO: 内部の結合 */
+    .oo-obj {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #999;
+      position: absolute;
+    }
+    .oo-line {
+      position: absolute;
+      width: 40px;
+      height: 2px;
+      background: #999;
+      transform: rotate(45deg);
+    }
+
+    /* SOA: バス連携 */
+    .soa-bus {
+      width: 80%;
+      height: 6px;
+      background: #0056b3;
+      border-radius: 3px;
+    }
+    .soa-srv {
+      width: 30px;
+      height: 30px;
+      background: #fff;
+      border: 2px solid #0056b3;
+      position: absolute;
+    }
+    
+    /* Microservices: 分散・クラウド */
+    .ms-cloud {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      font-size: 1.5rem;
+      color: #e67e22;
+    }
+    .ms-srv {
+      width: 25px;
+      height: 25px;
+      background: #fff;
+      border: 2px solid #e67e22;
+      border-radius: 4px;
+      position: absolute;
+      font-size: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* 詳細リスト */
+    .feature-list {
+      list-style: none;
+      padding: 0;
+      font-size: 0.85rem;
+      width: 100%;
+    }
+    .feature-list li {
+      margin-bottom: 0.4rem;
+      border-bottom: 1px dashed #eee;
+      padding-bottom: 0.2rem;
+      display: flex;
+      justify-content: space-between;
+    }
+    .f-key { color: #666; }
+    .f-val { font-weight: bold; }
+
+    /* 比較テーブル */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      margin: 1rem 0;
+    }
+    .comparison-table th, .comparison-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+    .comparison-table th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+      width: 20%;
+    }
+    .td-left { text-align: left; }
+
+    /* ポイント強調 */
+    .key-point {
+      background-color: #f4f4f4;
+      border-left: 4px solid #333;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .key-point strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1em;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 600px) {
+      .evolution-container {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a href="../../index.html" class="site-title">IT passport study map</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-28">
+            2026.01.28 / テクノロジ系
+          </time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">オブジェクト指向、SOA、マイクロサービスの進化の歴史と違い</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list">
+            <li class="tag">#オブジェクト指向</li>
+            <li class="tag">#SOA</li>
+            <li class="tag">#マイクロサービス</li>
+            <li class="tag">#クラウド</li>
+            <li class="tag">#プログラム設計</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>ソフトウェア開発の歴史は、「いかに部品化して再利用するか」の歴史でもあります。<br>
+        「オブジェクト指向」から始まり、「SOA」を経て、現代の「マイクロサービス」へと至る設計思想の進化を整理します。</p>
+
+        <div class="key-point">
+          <strong>1行要約</strong><br>
+          「プログラムの中（オブジェクト指向）」から「システム同士（SOA）」へ、そして「クラウド上で独立（マイクロサービス）」へと、部品の単位が変化してきた。
+        </div>
+
+        <h2>1. 進化の3段階（図解）</h2>
+        <p>部品化の単位と、結合の緩やかさ（疎結合）がどう変わってきたかを見てみましょう。</p>
+
+        <div class="diagram-section">
+          <div class="evolution-container">
+            
+            <!-- オブジェクト指向 -->
+            <div class="evo-step step1">
+              <span class="step-label">1. オブジェクト指向<br>(Object Oriented)</span>
+              <div class="arch-visual">
+                <div class="oo-obj" style="top:20px; left:30px;"></div>
+                <div class="oo-obj" style="bottom:20px; right:30px;"></div>
+                <div class="oo-line" style="top:45px; left:55px;"></div>
+              </div>
+              <ul class="feature-list">
+                <li><span class="f-key">単位</span> <span class="f-val">クラス</span></li>
+                <li><span class="f-key">場所</span> <span class="f-val">アプリ内部</span></li>
+                <li><span class="f-key">結合</span> <span class="f-val">密結合</span></li>
+              </ul>
+            </div>
+
+            <!-- SOA -->
+            <div class="evo-step step2">
+              <span class="step-label">2. SOA<br>(Service Oriented)</span>
+              <div class="arch-visual">
+                <div class="soa-bus"></div>
+                <div class="soa-srv" style="top:10px; left:20px;">A</div>
+                <div class="soa-srv" style="bottom:10px; right:20px;">B</div>
+                <div style="position:absolute; width:2px; height:30px; background:#0056b3; top:40px; left:35px;"></div>
+                <div style="position:absolute; width:2px; height:30px; background:#0056b3; bottom:40px; right:35px;"></div>
+              </div>
+              <ul class="feature-list">
+                <li><span class="f-key">単位</span> <span class="f-val">業務機能</span></li>
+                <li><span class="f-key">場所</span> <span class="f-val">企業内連携</span></li>
+                <li><span class="f-key">結合</span> <span class="f-val">疎結合</span></li>
+              </ul>
+            </div>
+
+            <!-- マイクロサービス -->
+            <div class="evo-step step3">
+              <span class="step-label">3. マイクロサービス<br>(Microservices)</span>
+              <div class="arch-visual">
+                <div class="ms-cloud">☁️</div>
+                <div class="ms-srv" style="top:20px; left:20px;">A</div>
+                <div class="ms-srv" style="top:20px; right:40px;">B</div>
+                <div class="ms-srv" style="bottom:20px; left:50px;">C</div>
+                <span style="font-size:0.6rem; color:#e67e22;">API</span>
+              </div>
+              <ul class="feature-list">
+                <li><span class="f-key">単位</span> <span class="f-val">小さなサービス</span></li>
+                <li><span class="f-key">場所</span> <span class="f-val">クラウド/Web</span></li>
+                <li><span class="f-key">結合</span> <span class="f-val">超・疎結合</span></li>
+              </ul>
+            </div>
+
+          </div>
+          <p style="font-size:0.9rem; color:#666; margin-top:1rem;">
+            右に行くほど、部品が独立して動きやすくなる（変更に強い）。
+          </p>
+        </div>
+
+        <h2>2. 各アーキテクチャの詳細</h2>
+
+        <h3>① オブジェクト指向（Object Oriented）</h3>
+        <p>1つのアプリケーションの中で、データと処理をセットにした「オブジェクト（クラス）」という単位で部品化します。<br>
+        <strong>メリット：</strong> プログラムの再利用性が高まる。<br>
+        <strong>限界：</strong> あくまで「1つのアプリの中」の話。システム間の連携は考えられていない。</p>
+
+        <h3>② SOA（Service Oriented Architecture）</h3>
+        <p>企業の基幹システムなどを「受注サービス」「在庫サービス」といった大きな業務機能単位で部品化し、ネットワーク越しに連携させます。<br>
+        <strong>メリット：</strong> 既存のシステムを活かして統合できる。<br>
+        <strong>限界：</strong> サービス単位が大きく、中央の連携基盤（ESB）が複雑になりがち。</p>
+
+        <h3>③ マイクロサービス（Microservices）</h3>
+        <p>SOAをさらに細かくし、クラウド技術（コンテナ等）を使って「1つの機能＝1つの独立したサービス」として作ります。<br>
+        <strong>メリット：</strong> 一部だけ修正・デプロイできる。アクセス増に合わせて自動で拡張（スケーリング）できる。<br>
+        <strong>課題：</strong> サービスが多すぎて管理が大変。</p>
+
+        <h2>3. 比較まとめ</h2>
+        <p>それぞれの違いを表で整理します。</p>
+
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>項目</th>
+              <th>オブジェクト指向</th>
+              <th>SOA</th>
+              <th>マイクロサービス</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>部品の単位</strong></td>
+              <td>クラス</td>
+              <td>業務システム</td>
+              <td>小さな機能</td>
+            </tr>
+            <tr>
+              <td><strong>通信</strong></td>
+              <td>メモリ内呼出</td>
+              <td>ネットワーク (SOAP等)</td>
+              <td>Web API (REST等)</td>
+            </tr>
+            <tr>
+              <td><strong>主な舞台</strong></td>
+              <td>アプリ開発</td>
+              <td>企業内システム統合</td>
+              <td>Webサービス・クラウド</td>
+            </tr>
+            <tr>
+              <td><strong>メリット</strong></td>
+              <td>コードの保守性</td>
+              <td>資産の有効活用</td>
+              <td><strong>変更への速さ・拡張性</strong></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>まとめ</h2>
+        <p>進化の歴史を一言で言うと、以下のようになります。</p>
+        <ul>
+          <li><strong>オブジェクト指向：</strong> プログラムをきれいに書くための技術。</li>
+          <li><strong>SOA：</strong> バラバラな社内システムをつなぐための技術。</li>
+          <li><strong>マイクロサービス：</strong> 変化の激しいネット社会で、素早くサービスを提供・改善するための技術。</li>
+        </ul>
+        <p>「より独立して、より自由に動けるように」進化してきたと捉えましょう。</p>
+
+        <!-- GEN: REFERENCES -->
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> IT passport study map. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
