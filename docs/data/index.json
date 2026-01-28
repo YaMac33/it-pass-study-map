@@ -1,5 +1,21 @@
 [
   {
+    "id": "2026-01-28_risk-management-jis-q-27000",
+    "timestamp": "2026-01-28T16:42:33+09:00",
+    "title": "JIS Q 27000のリスク管理について",
+    "summary": "JIS Q 27000（ISO/IEC 27000）では、リスク管理の用語と構造を詳しく解説します。脆弱性やリスクアセスメントの流れについても触れます。",
+    "tags": [
+      "情報セキュリティ",
+      "リスク管理",
+      "JIS Q 27000",
+      "脆弱性",
+      "リスクレベル"
+    ],
+    "category_lv1": "テクノロジ系",
+    "category_lv2": "セキュリティ",
+    "post_path": "posts/2026-01-28_risk-management-jis-q-27000/"
+  },
+  {
     "id": "2026-01-28_edi-basic-types",
     "timestamp": "2026-01-28T16:39:09+09:00",
     "title": "EDIの基本と種類",
