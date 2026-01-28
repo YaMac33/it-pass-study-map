@@ -1,5 +1,21 @@
 [
   {
+    "id": "2026-01-28_function-and-company-organization",
+    "timestamp": "2026-01-28T15:39:28+09:00",
+    "title": "機能別組織とカンパニー制組織",
+    "summary": "機能別組織とカンパニー制組織の違いを解説します。各組織形態のメリット・デメリットを整理し、試験対策にも役立てます。",
+    "tags": [
+      "組織形態",
+      "機能別",
+      "カンパニー制",
+      "比較",
+      "ビジネス"
+    ],
+    "category_lv1": "ストラテジ系",
+    "category_lv2": "経営戦略",
+    "post_path": "posts/2026-01-28_function-and-company-organization/"
+  },
+  {
     "id": "2026-01-28_data-processing",
     "timestamp": "2026-01-28T15:18:32+09:00",
     "title": "データ操作・分析・活用の基礎",
