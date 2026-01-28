@@ -1,5 +1,21 @@
 [
   {
+    "id": "2026-01-28_evolution-of-design-approaches",
+    "timestamp": "2026-01-28T17:35:22+09:00",
+    "title": "オブジェクト指向とマイクロサービスの違い",
+    "summary": "オブジェクト指向からマイクロサービスまでの進化を解説します。各段階の設計思想と特徴を整理しました。",
+    "tags": [
+      "オブジェクト指向",
+      "SOA",
+      "マイクロサービス",
+      "クラウド",
+      "プログラム設計"
+    ],
+    "category_lv1": "テクノロジ系",
+    "category_lv2": "新技術・先端技術",
+    "post_path": "posts/2026-01-28_evolution-of-design-approaches/"
+  },
+  {
     "id": "2026-01-28_risk-management-jis-q-27000",
     "timestamp": "2026-01-28T16:42:33+09:00",
     "title": "JIS Q 27000のリスク管理について",
