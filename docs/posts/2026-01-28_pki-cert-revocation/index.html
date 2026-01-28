@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>PKIの証明書失効確認の時系列 - IT passport study map</title>
+  <meta name="description" content="デジタル証明書が有効期限前に無効になる「失効」の仕組みを解説。CRL（定期リスト）とOCSP（リアルタイム確認）の違いを時系列図解で整理します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="PKIの証明書失効確認の時系列" />
+  <meta property="og:description" content="デジタル証明書が有効期限前に無効になる「失効」の仕組みを解説。CRL（定期リスト）とOCSP（リアルタイム確認）の違いを時系列図解で整理します。" />
+  
+  <!-- Assets: 記事は docs/posts/<id>/index.html → ../../ 固定 -->
+  <link rel="stylesheet" href="../../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS（図解・補助CSS） -->
+  <style>
+    /* 共通図解コンテナ */
+    .diagram-section {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* 時系列フロー図（タイムライン） */
+    .timeline-flow {
+      position: relative;
+      width: 100%;
+      max-width: 500px;
+      padding-left: 2rem;
+      border-left: 4px solid #ccc;
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: 2rem;
+      padding-left: 1.5rem;
+    }
+    .timeline-item::before {
+      content: "";
+      position: absolute;
+      left: -2.6rem; /* 軸の上 */
+      top: 0;
+      width: 16px;
+      height: 16px;
+      background: #fff;
+      border: 4px solid #666;
+      border-radius: 50%;
+    }
+    .timeline-item.highlight::before {
+      border-color: #d00;
+      background: #d00;
+    }
+    .tl-title {
+      font-weight: bold;
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+    .tl-box {
+      background: #fff;
+      border: 1px solid #ccc;
+      padding: 1rem;
+      border-radius: 6px;
+      position: relative;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    
+    /* CRLイメージ */
+    .crl-list {
+      font-family: monospace;
+      font-size: 0.8rem;
+      background: #eee;
+      padding: 0.5rem;
+      border-radius: 4px;
+      margin-top: 0.5rem;
+      color: #555;
+    }
+    .delta-badge {
+      background: #0056b3;
+      color: #fff;
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-left: 5px;
+    }
+
+    /* OCSPイメージ */
+    .ocsp-interaction {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+    .ocsp-server {
+      background: #333;
+      color: #fff;
+      padding: 0.5rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+    }
+    .ocsp-arrow {
+      flex: 1;
+      text-align: center;
+      font-size: 0.8rem;
+      color: #0056b3;
+      font-weight: bold;
+    }
+
+    /* 比較図（リスト vs 窓口） */
+    .method-compare {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      width: 100%;
+      flex-wrap: wrap;
+    }
+    .method-box {
+      flex: 1;
+      min-width: 220px;
+      background: #fff;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      padding: 1.5rem;
+      text-align: center;
+    }
+    .mb-crl { border-color: #e67e22; }
+    .mb-ocsp { border-color: #27ae60; }
+    
+    .method-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+    .method-title {
+      font-weight: bold;
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    /* 比較テーブル */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      margin: 1rem 0;
+    }
+    .comparison-table th, .comparison-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+    .comparison-table th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+      width: 20%;
+    }
+    .comparison-table td:nth-child(2) { background: #fffaf0; } /* CRL */
+    .comparison-table td:nth-child(4) { background: #f0fff4; } /* OCSP */
+
+    /* ポイント強調 */
+    .key-point {
+      background-color: #f4f4f4;
+      border-left: 4px solid #333;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .key-point strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1em;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 600px) {
+      .method-compare {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a href="../../index.html" class="site-title">IT passport study map</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-28">
+            2026.01.28 / テクノロジ系
+          </time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">PKIの証明書失効確認の時系列</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list">
+            <li class="tag">#PKI</li>
+            <li class="tag">#CRL</li>
+            <li class="tag">#OCSP</li>
+            <li class="tag">#セキュリティ</li>
+            <li class="tag">#証明書失効</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>デジタル証明書には有効期限がありますが、鍵の漏洩や退職などの理由で、期限の途中でも無効化（失効）しなければならない場合があります。<br>
+        この「失効情報」をどのように管理し、利用者はどうやって確認するのか？時系列に沿って整理します。</p>
+
+        <div class="key-point">
+          <strong>1行要約</strong><br>
+          CRLは「定期的に配られるブラックリスト」、OCSPは「リアルタイムに問い合わせる窓口」。
+        </div>
+
+        <h2>1. 失効確認の時系列フロー</h2>
+        <p>証明書が失効してから、利用者がそれに気づくまでの流れです。</p>
+
+        <div class="diagram-section">
+          <div class="timeline-flow">
+            
+            <div class="timeline-item highlight">
+              <span class="tl-title">1. 失効発生・登録</span>
+              <div class="tl-box">
+                秘密鍵の紛失などが発覚。<br>
+                認証局（CA）がデータベースに「この証明書は無効！」と登録する。
+              </div>
+            </div>
+
+            <div class="timeline-item">
+              <span class="tl-title">2. CRLの発行（定期）</span>
+              <div class="tl-box" style="border-left: 4px solid #e67e22;">
+                CAが定期的に<strong>「失効リスト（CRL）」</strong>を作成・公開する。
+                <div class="crl-list">
+                  [CRL #105]<br>
+                  - Cert ID: A123 (Revoked)<br>
+                  - Cert ID: B456 (Revoked)
+                </div>
+                <p style="font-size:0.8rem; margin-top:0.5rem; color:#e67e22;">
+                  ※ 差分だけを載せた「Delta CRL」もある。
+                </p>
+              </div>
+            </div>
+
+            <div class="timeline-item">
+              <span class="tl-title">3. 利用者の確認（アクセス時）</span>
+              <div class="tl-box">
+                利用者がWebサイト等にアクセスした際、証明書が有効かチェックする。<br>
+                <strong>方法A：CRLをダウンロードして照合</strong><br>
+                <strong>方法B：OCSPでリアルタイム問合せ</strong>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <h2>2. CRLとOCSPのイメージ比較</h2>
+        <p>2つの確認方法は、更新頻度や通信負荷の面でトレードオフの関係にあります。</p>
+
+        <div class="diagram-section">
+          <div class="method-compare">
+            
+            <!-- CRL -->
+            <div class="method-box mb-crl">
+              <span class="method-icon">📜</span>
+              <span class="method-title">CRL方式</span>
+              <p style="font-size:0.9rem;">
+                <strong>「ブラックリスト配布」</strong><br>
+                一覧表をダウンロードして手元で確認。
+              </p>
+              <ul style="text-align:left; font-size:0.85rem; color:#666; margin-top:1rem;">
+                <li>リストが大きいと通信が重い</li>
+                <li>更新のタイムラグがある</li>
+              </ul>
+            </div>
+
+            <!-- OCSP -->
+            <div class="method-box mb-ocsp">
+              <span class="method-icon">📞</span>
+              <span class="method-title">OCSP方式</span>
+              <p style="font-size:0.9rem;">
+                <strong>「リアルタイム問合せ」</strong><br>
+                その証明書だけをサーバに聞く。
+              </p>
+              <div class="ocsp-interaction">
+                <span>利用者</span>
+                <div class="ocsp-arrow">これ有効？ ➡<br>⬅ OK/NG</div>
+                <div class="ocsp-server">OCSP<br>レスポンダ</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <h2>3. 違いと比較まとめ</h2>
+        <p>試験対策として、それぞれの特徴を表で整理します。</p>
+
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>項目</th>
+              <th>CRL</th>
+              <th>Delta CRL</th>
+              <th>OCSP</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>正式名称</strong></td>
+              <td>Certificate<br>Revocation List</td>
+              <td>(差分CRL)</td>
+              <td>Online Certificate<br>Status Protocol</td>
+            </tr>
+            <tr>
+              <td><strong>形式</strong></td>
+              <td>失効した全リスト</td>
+              <td>前回の差分のみ</td>
+              <td>個別問合せ応答</td>
+            </tr>
+            <tr>
+              <td><strong>即時性</strong></td>
+              <td>低い（定期発行）</td>
+              <td>中（定期発行）</td>
+              <td><strong>高い</strong>（リアルタイム）</td>
+            </tr>
+            <tr>
+              <td><strong>通信負荷</strong></td>
+              <td>大（リスト全体）</td>
+              <td>小</td>
+              <td>小（1件分）</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>まとめ</h2>
+        <ul>
+          <li><strong>CRL（証明書失効リスト）：</strong> 有効期限内に無効になった証明書の一覧表。定期的に発行されるため、最新情報とのタイムラグがある。</li>
+          <li><strong>OCSP：</strong> リアルタイムに証明書の有効性を問い合わせるプロトコル。即時性が高い。</li>
+        </ul>
+        <p>「リスト配付のCRL」か、「都度確認のOCSP」か。この違いを押さえておけばOKです。</p>
+
+        <!-- GEN: REFERENCES -->
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> IT passport study map. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
