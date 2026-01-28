@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>JIS Q 27000におけるリスク管理 - IT passport study map</title>
+  <meta name="description" content="JIS Q 27000（ISO/IEC 27000）におけるリスク管理の用語と構造を解説。脆弱性・脅威・リスクの関係性や、リスクアセスメントの流れを図解で整理します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="JIS Q 27000におけるリスク管理" />
+  <meta property="og:description" content="JIS Q 27000（ISO/IEC 27000）におけるリスク管理の用語と構造を解説。脆弱性・脅威・リスクの関係性や、リスクアセスメントの流れを図解で整理します。" />
+  
+  <!-- Assets: 記事は docs/posts/<id>/index.html → ../../ 固定 -->
+  <link rel="stylesheet" href="../../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS（図解・補助CSS） -->
+  <style>
+    /* 共通図解コンテナ */
+    .diagram-section {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* リスク発生のメカニズム図 */
+    .risk-mechanism {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 450px;
+      position: relative;
+    }
+    
+    .box-asset {
+      background: #eef6ff;
+      border: 2px solid #0056b3;
+      color: #0056b3;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      font-weight: bold;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+      position: relative;
+    }
+    .box-vuln {
+      background: #fffaf0;
+      border: 2px dashed #e67e22;
+      color: #e67e22;
+      padding: 0.8rem;
+      border-radius: 6px;
+      width: 90%;
+      text-align: center;
+      margin-top: -10px; /* 重ねる */
+      font-size: 0.9rem;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .attack-arrow {
+      position: relative;
+      margin: 1rem 0;
+      color: #d00;
+      font-weight: bold;
+      text-align: center;
+    }
+    .attack-arrow::before {
+      content: "⚡";
+      font-size: 1.5rem;
+      display: block;
+    }
+    
+    .box-threat {
+      background: #fff5f5;
+      border: 2px solid #d00;
+      color: #d00;
+      padding: 0.8rem;
+      border-radius: 6px;
+      width: 90%;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .result-arrow {
+      font-size: 1.5rem;
+      color: #666;
+      font-weight: bold;
+      margin: 0.5rem 0;
+    }
+
+    .box-risk {
+      background: #333;
+      color: #fff;
+      padding: 1.5rem;
+      border-radius: 8px;
+      width: 100%;
+      text-align: center;
+      position: relative;
+    }
+    .risk-formula {
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+      color: #ccc;
+    }
+    
+    .level-bar {
+      display: flex;
+      margin-top: 1rem;
+      border-radius: 4px;
+      overflow: hidden;
+      font-size: 0.75rem;
+      font-weight: bold;
+      color: #fff;
+    }
+    .lb-low { flex: 1; background: #27ae60; padding: 2px; }
+    .lb-mid { flex: 1; background: #f39c12; padding: 2px; }
+    .lb-high { flex: 1; background: #d00; padding: 2px; }
+
+    /* 用語定義リスト */
+    .term-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+      width: 100%;
+    }
+    .term-card {
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 1rem;
+    }
+    .term-head {
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .term-en {
+      font-size: 0.8rem;
+      color: #666;
+      font-weight: normal;
+    }
+    .term-body {
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    /* 比較テーブル */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      margin: 1rem 0;
+    }
+    .comparison-table th, .comparison-table td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    .comparison-table th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .risk-high { background: #fff5f5; color: #d00; font-weight: bold; text-align: center; }
+    .risk-mid { background: #fffaf0; color: #e67e22; font-weight: bold; text-align: center; }
+
+    /* ポイント強調 */
+    .key-point {
+      background-color: #f4f4f4;
+      border-left: 4px solid #333;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .key-point strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1em;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 600px) {
+      .risk-mechanism {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a href="../../index.html" class="site-title">IT passport study map</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-28">
+            2026.01.28 / テクノロジ系
+          </time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">JIS Q 27000におけるリスク管理</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list">
+            <li class="tag">#情報セキュリティ</li>
+            <li class="tag">#リスク管理</li>
+            <li class="tag">#JIS Q 27000</li>
+            <li class="tag">#脆弱性</li>
+            <li class="tag">#リスクレベル</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>情報セキュリティマネジメント（ISMS）の基準となる「JIS Q 27000」シリーズ。<br>
+        この中で定義されている「脅威」「脆弱性」「リスク」の関係性は、セキュリティ対策の基礎中の基礎です。</p>
+
+        <div class="key-point">
+          <strong>1行要約</strong><br>
+          「情報資産」にある「脆弱性（弱点）」を「脅威」が突くことで「リスク（損失）」が発生する。この大きさを評価したものが「リスクレベル」。
+        </div>
+
+        <h2>1. 用語の定義と関係性</h2>
+        <p>これらの用語はバラバラに覚えるのではなく、一つのストーリーとして理解しましょう。</p>
+
+        <div class="diagram-section">
+          <div class="risk-mechanism">
+            
+            <!-- 情報資産 -->
+            <div class="box-asset">
+              情報資産 (Asset)
+              <div style="font-size:0.8rem; font-weight:normal; margin-top:4px;">守るべきデータ・システム</div>
+            </div>
+
+            <!-- 脆弱性（内包される） -->
+            <div class="box-vuln">
+              ⚠️ 脆弱性 (Vulnerability)<br>
+              <span style="font-size:0.8rem;">OS未更新、パスワード使い回し</span>
+            </div>
+
+            <!-- 脅威（外から来る） -->
+            <div class="attack-arrow">
+              <span style="font-size:0.8rem; display:block; margin-bottom:4px;">ここを狙われる</span>
+              脅威 (Threat)<br>
+              <span style="font-size:0.8rem; color:#666;">マルウェア・不正アクセス・災害</span>
+            </div>
+            
+            <div class="result-arrow">⬇ 発生</div>
+
+            <!-- リスク -->
+            <div class="box-risk">
+              リスク (Risk)
+              <div class="risk-formula">
+                発生確率 × 影響度 ＝ <strong>リスクレベル</strong>
+              </div>
+              
+              <!-- レベルバー -->
+              <div class="level-bar">
+                <div class="lb-low">低：許容</div>
+                <div class="lb-mid">中：監視</div>
+                <div class="lb-high">高：即対応</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <h2>2. 基本用語の整理</h2>
+
+        <div class="term-grid">
+          <div class="term-card">
+            <div class="term-head">
+              脅威 <span class="term-en">Threat</span>
+            </div>
+            <div class="term-body">
+              組織や資産に損害を与える可能性がある要因。<br>
+              例：ハッカー、ウイルス、地震、操作ミス
+            </div>
+          </div>
+
+          <div class="term-card">
+            <div class="term-head">
+              脆弱性 <span class="term-en">Vulnerability</span>
+            </div>
+            <div class="term-body">
+              脅威に付け込まれる弱点や欠陥。<br>
+              例：セキュリティホールの放置、鍵の掛け忘れ
+            </div>
+          </div>
+
+          <div class="term-card">
+            <div class="term-head">
+              リスク <span class="term-en">Risk</span>
+            </div>
+            <div class="term-body">
+              脅威が脆弱性を利用して損害を与える可能性。<br>
+              「どれくらいの確率で、どれくらい酷いことになるか」
+            </div>
+          </div>
+
+          <div class="term-card">
+            <div class="term-head">
+              リスクレベル <span class="term-en">Risk Level</span>
+            </div>
+            <div class="term-body">
+              リスクの大きさや優先度。<br>
+              これに基づいて「すぐ直すか、様子を見るか」を決める。
+            </div>
+          </div>
+        </div>
+
+        <h2>3. 具体例：Webサーバーの場合</h2>
+        <p>実際にWebサーバーのリスクを評価してみましょう。同じサーバーでも、脆弱性の有無や脅威の種類によってリスクレベルは変わります。</p>
+
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>資産</th>
+              <th>脆弱性（弱点）</th>
+              <th>脅威（きっかけ）</th>
+              <th>リスク（結果）</th>
+              <th>レベル</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Webサーバー</td>
+              <td>ソフトの未更新<br>(放置)</td>
+              <td>ハッカーによる<br>攻撃</td>
+              <td>個人情報漏洩</td>
+              <td class="risk-high">高</td>
+            </tr>
+            <tr>
+              <td>Webサーバー</td>
+              <td>パスワードの<br>使い回し</td>
+              <td>内部スタッフの<br>悪用</td>
+              <td>データ改ざん</td>
+              <td class="risk-mid">中</td>
+            </tr>
+            <tr>
+              <td>Webサーバー</td>
+              <td>入室管理なし<br>(物理)</td>
+              <td>火災・停電</td>
+              <td>サーバー停止</td>
+              <td class="risk-high">高</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>4. リスクアセスメントの流れ</h2>
+        <p>JIS Q 27000に基づくリスク管理は、以下の順序で行います。</p>
+        <ol>
+          <li><strong>情報資産の特定：</strong>何を守るべきかリストアップする。</li>
+          <li><strong>脅威と脆弱性の特定：</strong>敵は誰で、弱点はどこかを知る。</li>
+          <li><strong>リスク分析：</strong>発生確率と影響度を見積もる。</li>
+          <li><strong>リスク評価：</strong>リスクレベルを決定し、対応の優先順位をつける。</li>
+          <li><strong>リスク対応：</strong>低減、回避、移転、保有のいずれかを実施する。</li>
+        </ol>
+
+        <h2>まとめ</h2>
+        <ul>
+          <li><strong>脆弱性：</strong>内側の弱点（直せる）。</li>
+          <li><strong>脅威：</strong>外側の要因（直せない、防ぐもの）。</li>
+          <li><strong>リスク：</strong>両者が重なったときに起きる可能性。</li>
+        </ul>
+        <p>「脆弱性を減らすことで、脅威が来てもリスクを小さくできる」というのがセキュリティ対策の基本思想です。</p>
+
+        <!-- GEN: REFERENCES -->
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> IT passport study map. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
