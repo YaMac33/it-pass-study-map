@@ -1,0 +1,17 @@
+{
+  "id": "2026-01-28_data-utilization-map",
+  "timestamp": "2026-01-28T15:49:25+09:00",
+  "title": "データ活用の完全統合図",
+  "summary": "データ分析に関する用語の全体像を解説し、それぞれの関係を明確にします。ETLやDWH等の流れを理解するための統合図です。",
+  "tags": [
+    "データ活用",
+    "OPAL",
+    "ETL",
+    "ELT",
+    "DWH",
+    "データマート"
+  ],
+  "category_lv1": "テクノロジ系",
+  "category_lv2": "新技術・先端技術",
+  "post_path": "posts/2026-01-28_data-utilization-map/"
+}
