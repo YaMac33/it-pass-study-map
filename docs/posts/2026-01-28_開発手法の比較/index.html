@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>ウォーターフォール、スパイラル、アジャイルの違い - IT passport study map</title>
+  <meta name="description" content="ウォーターフォール、スパイラル、アジャイルの違いを解説。開発の進め方（直線型、螺旋型、反復型）の特徴と、それぞれのメリット・デメリットを図解で整理します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="ウォーターフォール、スパイラル、アジャイルの違い" />
+  <meta property="og:description" content="ウォーターフォール、スパイラル、アジャイルの違いを解説。開発の進め方（直線型、螺旋型、反復型）の特徴と、それぞれのメリット・デメリットを図解で整理します。" />
+  
+  <!-- Assets: 記事は docs/posts/<id>/index.html → ../../ 固定 -->
+  <link rel="stylesheet" href="../../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS（図解・補助CSS） -->
+  <style>
+    /* 共通図解コンテナ */
+    .diagram-section {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* 3つの手法の概念図 */
+    .methods-visual {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      width: 100%;
+      max-width: 600px;
+    }
+    
+    /* 共通スタイル */
+    .method-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: #fff;
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      position: relative;
+    }
+    .method-label {
+      width: 120px;
+      font-weight: bold;
+      text-align: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .method-graph {
+      flex: 1;
+      position: relative;
+      height: 60px;
+      display: flex;
+      align-items: center;
+    }
+
+    /* ウォーターフォール（階段） */
+    .wf-steps {
+      display: flex;
+      width: 100%;
+    }
+    .wf-step {
+      flex: 1;
+      height: 30px;
+      background: #0056b3;
+      margin-right: 2px;
+      position: relative;
+    }
+    .wf-step:nth-child(1) { margin-top: 0; }
+    .wf-step:nth-child(2) { margin-top: 10px; opacity: 0.8; }
+    .wf-step:nth-child(3) { margin-top: 20px; opacity: 0.6; }
+    .wf-step:nth-child(4) { margin-top: 30px; opacity: 0.4; }
+    .wf-arrow {
+      position: absolute;
+      right: -10px;
+      bottom: 5px;
+      color: #0056b3;
+      font-weight: bold;
+    }
+
+    /* スパイラル（渦巻き風） */
+    .spiral-container {
+      position: relative;
+      width: 100%;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .spiral-circle {
+      border: 3px solid #e67e22;
+      border-radius: 50%;
+      position: absolute;
+      border-left-color: transparent;
+      transform: rotate(-45deg);
+    }
+    .sc-1 { width: 20px; height: 20px; opacity: 0.4; }
+    .sc-2 { width: 40px; height: 40px; opacity: 0.7; }
+    .sc-3 { width: 60px; height: 60px; }
+    .spiral-text {
+      font-size: 0.7rem;
+      color: #e67e22;
+      position: absolute;
+      bottom: -15px;
+      font-weight: bold;
+    }
+
+    /* アジャイル（反復） */
+    .agile-loops {
+      display: flex;
+      width: 100%;
+      justify-content: space-around;
+      align-items: center;
+    }
+    .agile-loop {
+      width: 40px;
+      height: 40px;
+      border: 3px solid #27ae60;
+      border-radius: 50%;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      color: #27ae60;
+      font-weight: bold;
+    }
+    .agile-loop::after {
+      content: "→";
+      position: absolute;
+      right: -15px;
+      color: #999;
+    }
+    .agile-loop:last-child::after { content: "完成"; font-size:0.8rem; width:40px; }
+
+    /* 比較テーブル */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      margin: 1rem 0;
+    }
+    .comparison-table th, .comparison-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+    .comparison-table th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+      width: 20%;
+    }
+    .td-wf { background: #eef6ff; font-weight: bold; color: #0056b3; }
+    .td-sp { background: #fffaf0; font-weight: bold; color: #e67e22; }
+    .td-ag { background: #f0fff4; font-weight: bold; color: #27ae60; }
+
+    /* 覚え方メモ */
+    .memo-box {
+      background: #333;
+      color: #fff;
+      padding: 1.5rem;
+      border-radius: 8px;
+      text-align: center;
+      width: 100%;
+      max-width: 400px;
+    }
+    .memo-line {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border-bottom: 1px dashed #666;
+      padding-bottom: 0.2rem;
+    }
+
+    /* ポイント強調 */
+    .key-point {
+      background-color: #f4f4f4;
+      border-left: 4px solid #333;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .key-point strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1em;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 600px) {
+      .method-row {
+        flex-direction: column;
+        text-align: center;
+      }
+      .method-graph {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a href="../../index.html" class="site-title">IT passport study map</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-28">
+            2026.01.28 / マネジメント系
+          </time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">ウォーターフォール、スパイラル、アジャイルの違い</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list">
+            <li class="tag">#開発手法</li>
+            <li class="tag">#ウォーターフォール</li>
+            <li class="tag">#アジャイル</li>
+            <li class="tag">#スパイラル</li>
+            <li class="tag">#プロジェクト管理</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>システム開発のプロジェクトを成功させるには、プロジェクトの性質（規模や変更の有無）に合った「進め方（開発モデル）」を選ぶ必要があります。<br>
+        代表的な3つの手法「ウォーターフォール」「スパイラル」「アジャイル」の違いを、図解で整理します。</p>
+
+        <div class="key-point">
+          <strong>1行要約</strong><br>
+          ウォーターフォールは「一直線（計画重視）」、スパイラルは「リスク評価の繰り返し（慎重）」、アジャイルは「小刻みな改善（スピード重視）」。
+        </div>
+
+        <h2>1. 3つの開発モデルのイメージ図</h2>
+        <p>時間の流れと、どうやって完成に近づいていくかの違いを見てみましょう。</p>
+
+        <div class="diagram-section">
+          <div class="methods-visual">
+            
+            <!-- ウォーターフォール -->
+            <div class="method-row" style="border-color: #0056b3;">
+              <span class="method-label" style="color: #0056b3;">ウォーターフォール</span>
+              <div class="method-graph">
+                <div class="wf-steps">
+                  <div class="wf-step"></div>
+                  <div class="wf-step"></div>
+                  <div class="wf-step"></div>
+                  <div class="wf-step"></div>
+                </div>
+                <span class="wf-arrow">➡ 完成</span>
+              </div>
+            </div>
+            <p style="font-size:0.85rem; margin-top:-1.5rem; margin-bottom:0; text-align:center; color:#666;">
+              滝のように上から下へ。後戻りしない。
+            </p>
+
+            <!-- スパイラル -->
+            <div class="method-row" style="border-color: #e67e22;">
+              <span class="method-label" style="color: #e67e22;">スパイラル</span>
+              <div class="method-graph">
+                <div class="spiral-container">
+                  <div class="spiral-circle sc-1"></div>
+                  <div class="spiral-circle sc-2"></div>
+                  <div class="spiral-circle sc-3"></div>
+                  <span class="spiral-text">試作・評価を繰り返して完成へ</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- アジャイル -->
+            <div class="method-row" style="border-color: #27ae60;">
+              <span class="method-label" style="color: #27ae60;">アジャイル</span>
+              <div class="method-graph">
+                <div class="agile-loops">
+                  <div class="agile-loop">1</div>
+                  <div class="agile-loop">2</div>
+                  <div class="agile-loop">3</div>
+                </div>
+              </div>
+            </div>
+            <p style="font-size:0.85rem; margin-top:-1.5rem; margin-bottom:0; text-align:center; color:#666;">
+              短期間で機能を追加していく。変更に強い。
+            </p>
+
+          </div>
+        </div>
+
+        <h2>2. 各手法の特徴詳細</h2>
+
+        <h3>① ウォーターフォールモデル</h3>
+        <p>工程を「要件定義→設計→実装→テスト」と順番に進め、原則として後戻り（手戻り）をしない手法です。</p>
+        <ul>
+          <li><strong>メリット：</strong> スケジュールや予算の管理がしやすい。品質を確保しやすい。</li>
+          <li><strong>デメリット：</strong> 途中で仕様変更があると、修正コストが莫大になる。</li>
+          <li><strong>向いている：</strong> 大規模システム、基幹システムなど「仕様が固まっている」案件。</li>
+        </ul>
+
+        <h3>② スパイラルモデル</h3>
+        <p>システムを独立性の高いサブシステムに分割し、それぞれの開発サイクル（設計→実装→評価）を螺旋階段を登るように繰り返す手法です。</p>
+        <ul>
+          <li><strong>特徴：</strong> サイクルごとにプロトタイプ（試作）を作り、ユーザーの評価を受けてから次に進む。</li>
+          <li><strong>メリット：</strong> 早期にフィードバックが得られ、手戻りのリスクを減らせる。</li>
+          <li><strong>向いている：</strong> 未知の技術を使う場合や、要件が不明確な案件。</li>
+        </ul>
+
+        <h3>③ アジャイル開発（XP / スクラム）</h3>
+        <p>「イテレーション（反復）」と呼ばれる短い期間（1〜4週間）で、「計画→実装→テスト」を繰り返し、少しずつ機能をリリースしていく手法です。</p>
+        <ul>
+          <li><strong>特徴：</strong> 最初から完璧な計画を立てず、変化に対応することを優先する。</li>
+          <li><strong>メリット：</strong> 顧客の要望変化に柔軟に対応でき、動くものを早く提供できる。</li>
+          <li><strong>向いている：</strong> Webサービス、スマホアプリ、スタートアップなど。</li>
+        </ul>
+
+        <h2>3. 比較まとめ表</h2>
+        <p>試験対策として、それぞれの重視するポイントを整理します。</p>
+
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>項目</th>
+              <th>ウォーターフォール</th>
+              <th>スパイラル</th>
+              <th>アジャイル</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>進め方</strong></td>
+              <td class="td-wf">一直線</td>
+              <td class="td-sp">反復（リスク重視）</td>
+              <td class="td-ag">反復（速度重視）</td>
+            </tr>
+            <tr>
+              <td><strong>変更対応</strong></td>
+              <td>弱い（困難）</td>
+              <td>中程度</td>
+              <td class="td-ag">強い（柔軟）</td>
+            </tr>
+            <tr>
+              <td><strong>重視点</strong></td>
+              <td>計画・文書</td>
+              <td>品質・リスク</td>
+              <td>スピード・変化</td>
+            </tr>
+            <tr>
+              <td><strong>成果物</strong></td>
+              <td>最後に完成</td>
+              <td>徐々に完成</td>
+              <td>すぐ動く</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>4. 試験でのひっかけ対策</h2>
+        <p>問題文のキーワードで即答できるようにしましょう。</p>
+        <ul>
+          <li>「工程を順番に」「後戻りしない」→ <strong>ウォーターフォール</strong></li>
+          <li>「試作を繰り返す」「リスクを最小化」→ <strong>スパイラル</strong></li>
+          <li>「短い期間（イテレーション）」「仕様変更に柔軟」→ <strong>アジャイル</strong></li>
+        </ul>
+
+        <h2>まとめ（暗記用）</h2>
+        <p>開発手法は「変更へのスタンス」の違いです。</p>
+
+        <div class="diagram-section" style="background:transparent; border:none; padding:0;">
+          <div class="memo-box">
+            <span class="memo-line">WF ＝ 一気通貫（変わらない前提）</span>
+            <span class="memo-line">SP ＝ リスクぐるぐる（慎重に進む）</span>
+            <span class="memo-line">AG ＝ 小刻み改善（変わる前提）</span>
+          </div>
+        </div>
+
+        <!-- GEN: REFERENCES -->
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> IT passport study map. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
