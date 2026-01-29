@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>継続的インテグレーションとデリバリ - IT passport study map</title>
+  <meta name="description" content="CI/CD（継続的インテグレーション/デリバリ/デプロイメント）の違いと仕組みを解説。開発プロセスの自動化範囲や、それぞれの目的を図解で整理します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="継続的インテグレーションとデリバリ" />
+  <meta property="og:description" content="CI/CD（継続的インテグレーション/デリバリ/デプロイメント）の違いと仕組みを解説。開発プロセスの自動化範囲や、それぞれの目的を図解で整理します。" />
+  
+  <!-- Assets: 記事は docs/posts/<id>/index.html → ../../ 固定 -->
+  <link rel="stylesheet" href="../../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS（図解・補助CSS） -->
+  <style>
+    /* 共通図解コンテナ */
+    .diagram-section {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* パイプライン比較図 */
+    .pipeline-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      width: 100%;
+      max-width: 600px;
+    }
+    
+    .pipeline-row {
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 1rem;
+      position: relative;
+    }
+    .pl-title {
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 0.8rem;
+      display: block;
+      font-size: 1rem;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 0.2rem;
+    }
+
+    .pl-steps {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .pl-step {
+      flex: 1;
+      padding: 0.5rem;
+      border-radius: 4px;
+      text-align: center;
+      font-size: 0.8rem;
+      font-weight: bold;
+      position: relative;
+      color: #fff;
+    }
+    .pl-arrow {
+      color: #999;
+      font-weight: bold;
+    }
+
+    /* ステータス色 */
+    .bg-dev { background: #666; } /* コード */
+    .bg-auto { background: #27ae60; } /* 自動化 */
+    .bg-manual { background: #e67e22; } /* 手動 */
+    .bg-none { background: #eee; color: #999; border: 1px dashed #ccc; } /* 対象外 */
+
+    /* バッジ */
+    .auto-badge {
+      position: absolute;
+      top: -8px;
+      right: -5px;
+      background: #27ae60;
+      color: #fff;
+      font-size: 0.6rem;
+      padding: 1px 4px;
+      border-radius: 3px;
+    }
+    .manual-badge {
+      position: absolute;
+      top: -8px;
+      right: -5px;
+      background: #e67e22;
+      color: #fff;
+      font-size: 0.6rem;
+      padding: 1px 4px;
+      border-radius: 3px;
+    }
+
+    /* 比較テーブル */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      margin: 1rem 0;
+    }
+    .comparison-table th, .comparison-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+    .comparison-table th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+      width: 25%;
+      text-align: center;
+    }
+    .comparison-table td:nth-child(2) { font-size: 0.9rem; }
+
+    /* 覚え方メモ */
+    .memo-box {
+      background: #333;
+      color: #fff;
+      padding: 1.5rem;
+      border-radius: 8px;
+      text-align: center;
+      width: 100%;
+      max-width: 400px;
+    }
+    .memo-line {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border-bottom: 1px dashed #666;
+      padding-bottom: 0.2rem;
+    }
+    .memo-line:last-child { border-bottom: none; }
+
+    /* ポイント強調 */
+    .key-point {
+      background-color: #f4f4f4;
+      border-left: 4px solid #333;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .key-point strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1em;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 600px) {
+      .pl-steps {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      .pl-arrow {
+        transform: rotate(90deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a href="../../index.html" class="site-title">IT passport study map</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-29">
+            2026.01.29 / マネジメント系
+          </time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">継続的インテグレーションとデリバリ</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list">
+            <li class="tag">#CI</li>
+            <li class="tag">#CD</li>
+            <li class="tag">#自動化</li>
+            <li class="tag">#開発手法</li>
+            <li class="tag">#DevOps</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>現代のソフトウェア開発において、「CI/CD」という言葉は欠かせません。<br>
+        これは「作る・試す・出す」という工程を自動化し、スピードと品質を両立させるための仕組みです。</p>
+        <p>似たような用語である「CI」「継続的デリバリ」「継続的デプロイメント」の違いを、自動化の範囲で整理します。</p>
+
+        <div class="key-point">
+          <strong>1行要約</strong><br>
+          CIは「テストまで自動化」、継続的デリバリは「リリース手前まで自動化」、継続的デプロイメントは「本番反映まで全自動化」。
+        </div>
+
+        <h2>1. 自動化範囲の違いを図解</h2>
+        <p>どこまで機械（ツール）に任せて、どこから人がやるのか？の違いです。</p>
+
+        <div class="diagram-section">
+          <div class="pipeline-container">
+            
+            <!-- CI -->
+            <div class="pipeline-row">
+              <span class="pl-title">① 継続的インテグレーション (CI)</span>
+              <div class="pl-steps">
+                <div class="pl-step bg-dev">Code</div>
+                <div class="pl-arrow">➡</div>
+                <div class="pl-step bg-auto">Build<span class="auto-badge">Auto</span></div>
+                <div class="pl-arrow">➡</div>
+                <div class="pl-step bg-auto">Test<span class="auto-badge">Auto</span></div>
+                <div class="pl-arrow">➡</div>
+                <div class="pl-step bg-none">Deploy</div>
+              </div>
+            </div>
+
+            <!-- CD (Delivery) -->
+            <div class="pipeline-row">
+              <span class="pl-title">② 継続的デリバリ (Continuous Delivery)</span>
+              <div class="pl-steps">
+                <div class="pl-step bg-dev">Code</div>
+                <div class="pl-arrow">➡</div>
+                <div class="pl-step bg-auto">Build</div>
+                <div class="pl-arrow">➡</div>
+                <div class="pl-step bg-auto">Test</div>
+                <div class="pl-arrow">➡</div>
+                <div class="pl-step bg-manual">承認・Release<span class="manual-badge">Manual</span></div>
+              </div>
+              <p style="font-size:0.8rem; margin-top:0.5rem; text-align:right; color:#e67e22;">
+                ※いつでも出せる状態で待機
+              </p>
+            </div>
+
+            <!-- CD (Deployment) -->
+            <div class="pipeline-row">
+              <span class="pl-title">③ 継続的デプロイメント (Continuous Deployment)</span>
+              <div class="pl-steps">
+                <div class="pl-step bg-dev">Code</div>
+                <div class="pl-arrow">➡</div>
+                <div class="pl-step bg-auto">Build</div>
+                <div class="pl-arrow">➡</div>
+                <div class="pl-step bg-auto">Test</div>
+                <div class="pl-arrow">➡</div>
+                <div class="pl-step bg-auto">Release<span class="auto-badge">Auto</span></div>
+              </div>
+              <p style="font-size:0.8rem; margin-top:0.5rem; text-align:right; color:#27ae60;">
+                ※テストが通れば即本番へ
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+        <h2>2. 各用語の詳細</h2>
+
+        <h3>① 継続的インテグレーション (CI)</h3>
+        <p>開発者が書いたコードを頻繁に統合（インテグレーション）し、そのたびに自動テストを行う手法です。<br>
+        <strong>目的：</strong> バグの早期発見。「後でまとめてやったら動かない」を防ぐ。</p>
+
+        <h3>② 継続的デリバリ (CD)</h3>
+        <p>CIを拡張し、本番環境にリリースできる状態（リリース候補）を常に自動生成しておく手法です。<br>
+        <strong>特徴：</strong> 最後のリリースのボタンを押すのは「人」です。ビジネス上のタイミングを見計らってリリースできます。</p>
+
+        <h3>③ 継続的デプロイメント (CD)</h3>
+        <p>さらに進んで、テストに通ったコードは自動的に本番環境へ反映（デプロイ）してしまう手法です。<br>
+        <strong>目的：</strong> リードタイムの最小化。Webサービスなどで採用されます。</p>
+
+        <h2>3. 比較まとめ表</h2>
+        <p>試験対策として、用語の違いを整理します。</p>
+
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>用語</th>
+              <th>自動化の範囲</th>
+              <th>本番リリース</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>CI</strong><br>(Integration)</td>
+              <td>ビルド・テストまで</td>
+              <td>手動（または対象外）</td>
+            </tr>
+            <tr>
+              <td><strong>CD</strong><br>(Delivery)</td>
+              <td>リリース準備まで</td>
+              <td><strong>手動（承認後）</strong></td>
+            </tr>
+            <tr>
+              <td><strong>CD</strong><br>(Deployment)</td>
+              <td>本番反映まで全て</td>
+              <td><strong>自動</strong></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>4. 覚え方（語呂合わせ）</h2>
+        <p>似た言葉が多いので、キーワードで紐付けましょう。</p>
+
+        <div class="diagram-section" style="background:transparent; border:none; padding:0;">
+          <div class="memo-box">
+            <span class="memo-line">CI ＝ テスト（品質チェック）</span>
+            <span class="memo-line">CD(Delivery) ＝ 準備（承認待ち）</span>
+            <span class="memo-line">CD(Deployment) ＝ 即公開（全自動）</span>
+          </div>
+        </div>
+
+        <h2>まとめ</h2>
+        <ul>
+          <li><strong>CI：</strong> まめに統合してテストする。</li>
+          <li><strong>継続的デリバリ：</strong> いつでも出せるようにしておく。</li>
+          <li><strong>継続的デプロイメント：</strong> 勝手に出す（テストが通れば）。</li>
+        </ul>
+        <p>DevOpsを実現するための重要なパーツです。</p>
+
+        <!-- GEN: REFERENCES -->
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> IT passport study map. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
