@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>クラスタリングの意味と役割 - IT passport study map</title>
+  <meta name="description" content="システム構成におけるクラスタリングと、AI・データ分析におけるクラスタリングの違いを解説。さらにロードバランシングとの関係や役割分担を図解で整理します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="クラスタリングの意味と役割" />
+  <meta property="og:description" content="システム構成におけるクラスタリングと、AI・データ分析におけるクラスタリングの違いを解説。さらにロードバランシングとの関係や役割分担を図解で整理します。" />
+  
+  <!-- Assets: 記事は docs/posts/<id>/index.html → ../../ 固定 -->
+  <link rel="stylesheet" href="../../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS（図解・補助CSS） -->
+  <style>
+    /* 共通図解コンテナ */
+    .diagram-section {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* 分野別分岐図 */
+    .branch-diagram {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 500px;
+    }
+    .root-node {
+      background: #333;
+      color: #fff;
+      padding: 0.8rem 2rem;
+      border-radius: 50px;
+      font-weight: bold;
+      margin-bottom: 1rem;
+      position: relative;
+    }
+    .root-node::after {
+      content: "コア概念：まとめる・束ねる";
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.8rem;
+      color: #666;
+      white-space: nowrap;
+    }
+    
+    .branch-row {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      position: relative;
+      padding-top: 20px;
+    }
+    /* 分岐線 */
+    .branch-row::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 50%;
+      height: 20px;
+      border-left: 2px solid #ccc;
+    }
+    .branch-row::after {
+      content: "";
+      position: absolute;
+      top: 20px;
+      left: 25%;
+      right: 25%;
+      border-top: 2px solid #ccc;
+    }
+
+    .branch-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+    .branch-item::before {
+      content: "";
+      position: absolute;
+      top: 0; /* 親の横線と同じ高さ */
+      height: 20px;
+      border-left: 2px solid #ccc;
+      top: -20px; /* 補正 */
+    }
+
+    .type-card {
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 1rem;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .tc-title {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1rem;
+    }
+    .tc-sys { color: #0056b3; border-bottom: 2px solid #0056b3; }
+    .tc-ai { color: #e67e22; border-bottom: 2px solid #e67e22; }
+
+    /* システムクラスタ図 */
+    .sys-cluster {
+      border: 2px dashed #0056b3;
+      background: #eef6ff;
+      padding: 1.5rem;
+      border-radius: 8px;
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      position: relative;
+      margin-top: 1rem;
+    }
+    .sys-cluster::before {
+      content: "1つのシステムとして動作";
+      position: absolute;
+      bottom: -25px;
+      color: #0056b3;
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+    .server-icon {
+      width: 50px;
+      height: 60px;
+      background: #fff;
+      border: 2px solid #0056b3;
+      border-radius: 4px;
+      position: relative;
+    }
+    .server-icon::after {
+      content: "";
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      height: 4px;
+      background: #0056b3;
+      box-shadow: 0 10px 0 #0056b3;
+    }
+
+    /* AIクラスタ図 */
+    .ai-cluster {
+      width: 180px;
+      height: 120px;
+      background: #fff;
+      border: 1px solid #ccc;
+      position: relative;
+      margin-top: 1rem;
+      border-radius: 4px;
+    }
+    .data-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      position: absolute;
+    }
+    /* Group A */
+    .g-a { background: #e67e22; }
+    .ga-area {
+      position: absolute;
+      border: 1px dashed #e67e22;
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      top: 10px;
+      left: 10px;
+      background: rgba(230, 126, 34, 0.1);
+    }
+    /* Group B */
+    .g-b { background: #27ae60; }
+    .gb-area {
+      position: absolute;
+      border: 1px dashed #27ae60;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      bottom: 10px;
+      right: 20px;
+      background: rgba(39, 174, 96, 0.1);
+    }
+
+    /* LB vs Cluster 図 */
+    .lb-cluster-map {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 450px;
+    }
+    .user { font-size: 1.5rem; margin-bottom: 0.5rem; }
+    .arrow-d { font-size: 1.2rem; color: #999; font-weight: bold; }
+    
+    .lb-box {
+      background: #333;
+      color: #fff;
+      padding: 0.8rem 2rem;
+      border-radius: 6px;
+      font-weight: bold;
+      text-align: center;
+      margin: 0.5rem 0;
+      position: relative;
+    }
+    .lb-label {
+      position: absolute;
+      right: -140px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.8rem;
+      color: #333;
+      width: 130px;
+      text-align: left;
+    }
+    
+    .distribute-arrows {
+      display: flex;
+      justify-content: space-around;
+      width: 80%;
+      color: #0056b3;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+    
+    .cluster-box {
+      border: 2px solid #0056b3;
+      background: #eef6ff;
+      padding: 1.5rem;
+      border-radius: 8px;
+      width: 90%;
+      display: flex;
+      justify-content: space-around;
+      position: relative;
+    }
+    .cluster-label {
+      position: absolute;
+      right: -140px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.8rem;
+      color: #0056b3;
+      width: 130px;
+      text-align: left;
+      font-weight: bold;
+    }
+    .cluster-inner-label {
+      position: absolute;
+      top: -12px;
+      left: 10px;
+      background: #0056b3;
+      color: #fff;
+      font-size: 0.8rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    .srv-mini {
+      background: #fff;
+      border: 1px solid #0056b3;
+      padding: 0.5rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+    }
+
+    /* 比較テーブル */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      margin: 1rem 0;
+    }
+    .comparison-table th, .comparison-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+    .comparison-table th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+      width: 25%;
+    }
+    .hl-sys { background: #eef6ff; font-weight: bold; }
+    .hl-ai { background: #fffaf0; font-weight: bold; }
+
+    /* ポイント強調 */
+    .key-point {
+      background-color: #f4f4f4;
+      border-left: 4px solid #333;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .key-point strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1em;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 600px) {
+      .lb-label, .cluster-label {
+        position: static;
+        transform: none;
+        width: 100%;
+        text-align: center;
+        margin-top: 5px;
+        display: block;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a href="../../index.html" class="site-title">IT passport study map</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-30">
+            2026.01.30 / テクノロジ系
+          </time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">クラスタリングの意味と役割</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list">
+            <li class="tag">#クラスタリング</li>
+            <li class="tag">#AI</li>
+            <li class="tag">#システム構成</li>
+            <li class="tag">#ロードバランサ</li>
+            <li class="tag">#データ分析</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>「クラスタリング」という言葉は、ITの世界では2つの異なる意味で使われます。<br>
+        1つはシステムを落とさないための「インフラ技術」、もう1つはデータを分類する「AI分析技術」です。</p>
+        <p>この2つの違いと、インフラ分野でセットで登場する「ロードバランシング」との関係を整理します。</p>
+
+        <div class="key-point">
+          <strong>1行要約</strong><br>
+          クラスタリングとは「似たものや役割が同じものをまとめて（束ねて）、一つの塊として扱う」こと。対象が「サーバー」か「データ」かで意味が変わる。
+        </div>
+
+        <h2>1. 2つのクラスタリング（違いの整理）</h2>
+        <p>「何を束ねるか」で分類されます。</p>
+
+        <div class="diagram-section">
+          <div class="branch-diagram">
+            <div class="root-node">クラスタリング</div>
+            
+            <div class="branch-row">
+              
+              <!-- システム構成 -->
+              <div class="branch-item">
+                <div class="type-card">
+                  <span class="tc-title tc-sys">システム構成</span>
+                  <div style="font-size:0.9rem;">
+                    <strong>サーバーを束ねる</strong><br>
+                    可用性・冗長化
+                  </div>
+                  <div class="sys-cluster">
+                    <div class="server-icon"></div>
+                    <div class="server-icon"></div>
+                    <div class="server-icon"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- データ分析 -->
+              <div class="branch-item">
+                <div class="type-card">
+                  <span class="tc-title tc-ai">AI・データ分析</span>
+                  <div style="font-size:0.9rem;">
+                    <strong>データを束ねる</strong><br>
+                    グループ化・傾向把握
+                  </div>
+                  <div class="ai-cluster">
+                    <div class="ga-area"></div>
+                    <div class="data-dot g-a" style="top:25px; left:25px;"></div>
+                    <div class="data-dot g-a" style="top:40px; left:35px;"></div>
+                    <div class="data-dot g-a" style="top:30px; left:50px;"></div>
+                    
+                    <div class="gb-area"></div>
+                    <div class="data-dot g-b" style="bottom:25px; right:30px;"></div>
+                    <div class="data-dot g-b" style="bottom:35px; right:45px;"></div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>項目</th>
+              <th>システム構成</th>
+              <th>AI・データ分析</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>対象</strong></td>
+              <td>サーバー・機器</td>
+              <td>データ点・顧客情報など</td>
+            </tr>
+            <tr>
+              <td><strong>目的</strong></td>
+              <td>止まらないようにする<br>（可用性・冗長化）</td>
+              <td>似たものを集める<br>（パターン発見）</td>
+            </tr>
+            <tr>
+              <td><strong>IT分野</strong></td>
+              <td class="hl-sys">インフラ・ネットワーク</td>
+              <td class="hl-ai">機械学習・統計</td>
+            </tr>
+            <tr>
+              <td><strong>キーワード</strong></td>
+              <td>HAクラスタ、冗長構成</td>
+              <td>k-means、教師なし学習</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>2. ロードバランシングとの関係（インフラ編）</h2>
+        <p>システム構成の話では、<strong>「クラスタリング（束ねる）」</strong>と<strong>「ロードバランシング（配る）」</strong>がセットで登場します。<br>
+        この2つは役割が異なります。</p>
+
+        <div class="diagram-section">
+          <div class="lb-cluster-map">
+            <div class="user">👤</div>
+            <div class="arrow-d">↓ アクセス</div>
+            
+            <div class="lb-box">
+              ロードバランサ (LB)
+              <span class="lb-label">【攻め】<br>仕事を均等に<strong>配る</strong><br>(性能・負荷分散)</span>
+            </div>
+
+            <div class="distribute-arrows">
+              <span>↙</span><span>↓</span><span>↘</span>
+            </div>
+
+            <div class="cluster-box">
+              <span class="cluster-inner-label">クラスタ（チーム）</span>
+              <div class="srv-mini">Srv A</div>
+              <div class="srv-mini">Srv B</div>
+              <div class="srv-mini">Srv C</div>
+              
+              <span class="cluster-label">【守り】<br>複数台で<strong>束ねる</strong><br>(可用性・冗長化)</span>
+            </div>
+          </div>
+          <p style="font-size:0.9rem; color:#666; margin-top:1.5rem;">
+            LBが配り、クラスタが受け止める。片方が倒れてもチームでカバーする。
+          </p>
+        </div>
+
+        <h3>役割の違いまとめ</h3>
+        <ul>
+          <li><strong>ロードバランシング（負荷分散）：</strong> アクセスを複数のサーバーに振り分けて、1台あたりの負担を減らすこと。「配る」技術。</li>
+          <li><strong>クラスタリング（冗長化）：</strong> 複数のサーバーを1つのシステムに見せかけ、故障時に引き継げる（フェイルオーバー）ようにすること。「束ねる」技術。</li>
+        </ul>
+
+        <h2>まとめ</h2>
+        <p>ITパスポート試験で「クラスタリング」という言葉が出たら、文脈で判断しましょう。</p>
+        <ul>
+          <li><strong>「サーバーの信頼性」「冗長化」</strong>の話なら → <strong>システムのクラスタ</strong></li>
+          <li><strong>「顧客分析」「グループ分け」</strong>の話なら → <strong>AIのクラスタリング</strong></li>
+        </ul>
+        <p>言葉は同じでも、「何を束ねているか」を見れば正解が分かります。</p>
+
+        <!-- GEN: REFERENCES -->
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> IT passport study map. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
+
