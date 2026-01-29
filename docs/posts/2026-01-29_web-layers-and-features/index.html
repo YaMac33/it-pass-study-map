@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>ウェブの層と特徴 - IT passport study map</title>
+  <meta name="description" content="サーフェスウェブ、ディープウェブ、ダークウェブの違いと仕組みを解説。検索エンジンで見つかる範囲と、専用ブラウザが必要な匿名空間の構造を図解で整理します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="ウェブの層と特徴" />
+  <meta property="og:description" content="サーフェスウェブ、ディープウェブ、ダークウェブの違いと仕組みを解説。検索エンジンで見つかる範囲と、専用ブラウザが必要な匿名空間の構造を図解で整理します。" />
+  
+  <!-- Assets: 記事は docs/posts/<id>/index.html → ../../ 固定 -->
+  <link rel="stylesheet" href="../../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS（図解・補助CSS） -->
+  <style>
+    /* 共通図解コンテナ */
+    .diagram-section {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* ウェブの3層構造図 */
+    .web-layers {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      max-width: 400px;
+      position: relative;
+    }
+    .layer-box {
+      padding: 1.5rem;
+      text-align: center;
+      color: #fff;
+      font-weight: bold;
+      position: relative;
+      margin-bottom: 2px;
+    }
+    
+    /* サーフェス（上） */
+    .l-surface {
+      background: #3498db;
+      border-radius: 12px 12px 0 0;
+      height: 80px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .l-surface::after {
+      content: "Google等で検索可能";
+      display: block;
+      font-size: 0.75rem;
+      font-weight: normal;
+      margin-top: 4px;
+      opacity: 0.9;
+    }
+
+    /* 波線（境界） */
+    .water-line {
+      height: 4px;
+      background: #fff;
+      border-top: 2px dashed #0056b3;
+      margin: 2px 0;
+      position: relative;
+    }
+    .water-line::after {
+      content: "検索エンジンの限界";
+      position: absolute;
+      right: 0;
+      top: -20px;
+      color: #0056b3;
+      font-size: 0.75rem;
+      background: #fff;
+      padding: 1px 4px;
+    }
+
+    /* ディープ（中） */
+    .l-deep {
+      background: #2c3e50;
+      height: 120px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .l-deep::after {
+      content: "ログイン必須・検索除外";
+      display: block;
+      font-size: 0.75rem;
+      font-weight: normal;
+      margin-top: 4px;
+      opacity: 0.8;
+    }
+
+    /* ダーク（下） */
+    .l-dark {
+      background: #000;
+      border-radius: 0 0 12px 12px;
+      height: 100px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border: 2px solid #555;
+    }
+    .l-dark::after {
+      content: "専用ツール(Tor)が必要";
+      display: block;
+      font-size: 0.75rem;
+      font-weight: normal;
+      margin-top: 4px;
+      color: #e67e22;
+    }
+
+    /* オニオンルーティング図 */
+    .onion-flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+      max-width: 600px;
+      flex-wrap: wrap;
+    }
+    .onion-node {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: #fff;
+      border: 2px solid #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      position: relative;
+    }
+    /* 玉ねぎの皮（暗号化層） */
+    .onion-layers {
+      position: relative;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .layer-1 { position: absolute; width: 100%; height: 100%; border: 2px solid #ccc; border-radius: 50%; }
+    .layer-2 { position: absolute; width: 80%; height: 80%; border: 2px solid #999; border-radius: 50%; }
+    .layer-3 { position: absolute; width: 60%; height: 60%; border: 2px solid #333; border-radius: 50%; background: #333; }
+    
+    .arrow-right {
+      color: #999;
+      font-weight: bold;
+    }
+    
+    /* 比較テーブル */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      margin: 1rem 0;
+    }
+    .comparison-table th, .comparison-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+    .comparison-table th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+      width: 25%;
+    }
+    .bg-dark { background: #333; color: #fff; }
+
+    /* ポイント強調 */
+    .key-point {
+      background-color: #f4f4f4;
+      border-left: 4px solid #333;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .key-point strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1em;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 600px) {
+      .onion-flow {
+        flex-direction: column;
+      }
+      .arrow-right {
+        transform: rotate(90deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a href="../../index.html" class="site-title">IT passport study map</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-29">
+            2026.01.29 / テクノロジ系
+          </time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">ウェブの層と特徴</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list">
+            <li class="tag">#ウェブ</li>
+            <li class="tag">#インターネット</li>
+            <li class="tag">#ダークウェブ</li>
+            <li class="tag">#セキュリティ</li>
+            <li class="tag">#Tor</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>私たちが普段使っているWebサイトは、インターネット全体のほんの一部に過ぎません。<br>
+        Webの世界は、アクセスしやすさや匿名性のレベルによって3つの層に分類されます。</p>
+
+        <div class="key-point">
+          <strong>1行要約</strong><br>
+          誰でも検索できる「サーフェス」、ログインが必要な「ディープ」、特殊なツールがないと入れない「ダーク」。
+        </div>
+
+        <h2>1. ウェブの3層構造（氷山モデル）</h2>
+        <p>海に浮かぶ氷山のように、見えている部分はわずかです。</p>
+
+        <div class="diagram-section">
+          <div class="web-layers">
+            
+            <!-- Surface -->
+            <div class="layer-box l-surface">
+              サーフェスウェブ (表層)
+            </div>
+
+            <div class="water-line"></div>
+
+            <!-- Deep -->
+            <div class="layer-box l-deep">
+              ディープウェブ (深層)
+            </div>
+
+            <!-- Dark -->
+            <div class="layer-box l-dark">
+              ダークウェブ (闇)
+            </div>
+
+          </div>
+          <p style="font-size:0.9rem; color:#666; margin-top:1rem;">
+            ※ディープウェブが情報の量としては最も多いと言われています。
+          </p>
+        </div>
+
+        <h2>2. 各層の詳細と誤解の解消</h2>
+
+        <h3>① サーフェスウェブ（Surface Web）</h3>
+        <p>GoogleやYahoo!などの検索エンジンで検索・閲覧できる、一般的なWebサイトです。<br>
+        <strong>例：</strong> ニュースサイト、企業のHP、ブログ、Youtube（公開動画）</p>
+
+        <h3>② ディープウェブ（Deep Web）</h3>
+        <p>検索エンジンのロボット（クローラー）がアクセスできないページ全般です。<br>
+        「怪しい」という意味ではなく、<strong>会員制やプライベートな情報</strong>がここに含まれます。</p>
+        <ul>
+          <li><strong>例：</strong> Gmailの受信トレイ、社内イントラネット、ネットバンキングのマイページ。</li>
+          <li><strong>特徴：</strong> ID・パスワードが必要、または動的に生成されるページ。</li>
+        </ul>
+
+        <h3>③ ダークウェブ（Dark Web）</h3>
+        <p>ディープウェブの一部ですが、<strong>特殊なソフト（Torなど）を使わないとアクセスできない</strong>領域です。<br>
+        通信の匿名性が非常に高いため、サイバー犯罪の温床になりやすいですが、内部告発や言論統制のある国での通信手段としても使われます。</p>
+        <ul>
+          <li><strong>例：</strong> 違法取引サイト、匿名掲示板、.onionドメインのサイト。</li>
+          <li><strong>リスク：</strong> マルウェア感染、詐欺、違法情報の閲覧。</li>
+        </ul>
+
+        <h2>3. 匿名化技術：オニオンルーティング</h2>
+        <p>ダークウェブへのアクセスに使われる技術「Tor（トーア）」は、<strong>オニオンルーティング</strong>という仕組みを使っています。<br>
+        玉ねぎ（オニオン）のように暗号を何重にも重ねることで、誰が通信しているかを隠します。</p>
+
+        <div class="diagram-section">
+          <div class="onion-flow">
+            <div class="onion-node">💻</div>
+            <div class="arrow-right">➡</div>
+            
+            <!-- 中継ノード1 -->
+            <div class="onion-layers">
+              <div class="layer-1"></div>
+              <div class="layer-2"></div>
+              <div class="layer-3"></div>
+            </div>
+            
+            <div class="arrow-right">➡</div>
+
+            <!-- 中継ノード2 -->
+            <div class="onion-layers">
+              <div class="layer-2"></div>
+              <div class="layer-3"></div>
+            </div>
+
+            <div class="arrow-right">➡</div>
+            
+            <!-- 出口ノード -->
+            <div class="onion-node" style="background:#333; color:#fff;">●</div>
+            
+            <div class="arrow-right">➡</div>
+            <div class="onion-node" style="border-radius:4px;">Web</div>
+          </div>
+          <p style="font-size:0.8rem; color:#666; margin-top:0.5rem;">
+            中継するたびに暗号（皮）が1枚ずつ剥がれ、次の行き先だけが分かる。
+          </p>
+        </div>
+
+        <h2>4. 比較まとめ</h2>
+        <p>試験対策として、それぞれの特徴を整理します。</p>
+
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>用語</th>
+              <th>検索</th>
+              <th>アクセス方法</th>
+              <th>主な用途</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>サーフェス</strong></td>
+              <td>可能</td>
+              <td>普通のブラウザ</td>
+              <td>情報発信、広告</td>
+            </tr>
+            <tr>
+              <td><strong>ディープ</strong></td>
+              <td>不可</td>
+              <td>ログイン・検索除外</td>
+              <td><strong>個人情報、社内情報</strong></td>
+            </tr>
+            <tr>
+              <td class="bg-dark"><strong>ダーク</strong></td>
+              <td class="bg-dark">不可</td>
+              <td class="bg-dark"><strong>専用ツール (Tor)</strong></td>
+              <td class="bg-dark">匿名通信、闇市場</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>まとめ</h2>
+        <p>「ディープウェブ＝悪い場所」という誤解に注意しましょう。</p>
+        <ul>
+          <li><strong>ディープ：</strong>「プライベートな場所」（メールや口座）。合法で安全。</li>
+          <li><strong>ダーク：</strong>「匿名で隠れた場所」。犯罪に使われやすい。</li>
+        </ul>
+        <p>試験で「検索エンジンで検索できないWebページ」と出たら、それはディープウェブのことです。</p>
+
+        <!-- GEN: REFERENCES -->
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> IT passport study map. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
