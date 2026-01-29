@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>システム可用性とセキュリティ対策 - IT passport study map</title>
+  <meta name="description" content="可用性向上のための冗長化手法（RAID、フォールトトレラント）や、階層的なセキュリティ対策（DMZ、WAF、DLP）について、システム構成図を用いて解説します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="システム可用性とセキュリティ対策" />
+  <meta property="og:description" content="可用性向上のための冗長化手法（RAID、フォールトトレラント）や、階層的なセキュリティ対策（DMZ、WAF、DLP）について、システム構成図を用いて解説します。" />
+  
+  <!-- Assets: 記事は docs/posts/<id>/index.html → ../../ 固定 -->
+  <link rel="stylesheet" href="../../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS（図解・補助CSS） -->
+  <style>
+    /* 共通図解コンテナ */
+    .diagram-section {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* システム構成図 */
+    .system-map {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 600px;
+      gap: 1rem;
+    }
+
+    /* インターネット */
+    .zone-internet {
+      width: 120px;
+      padding: 0.8rem;
+      background: #333;
+      color: #fff;
+      border-radius: 50px;
+      text-align: center;
+      font-weight: bold;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    /* 矢印 */
+    .arrow-down {
+      font-size: 1.5rem;
+      color: #999;
+      font-weight: bold;
+      margin: -0.5rem 0;
+    }
+
+    /* FW/WAF */
+    .box-fw {
+      background: #eef6ff;
+      border: 2px solid #0056b3;
+      border-radius: 6px;
+      padding: 0.8rem 2rem;
+      text-align: center;
+      font-weight: bold;
+      color: #0056b3;
+      position: relative;
+    }
+    .box-fw::after {
+      content: "🛡️ 通信制御・防御";
+      display: block;
+      font-size: 0.75rem;
+      margin-top: 4px;
+      font-weight: normal;
+    }
+
+    /* DMZエリア */
+    .zone-dmz {
+      width: 90%;
+      border: 2px dashed #e67e22;
+      background: #fffaf0;
+      padding: 1.5rem;
+      border-radius: 8px;
+      position: relative;
+      text-align: center;
+    }
+    .label-dmz {
+      position: absolute;
+      top: -12px;
+      left: 20px;
+      background: #e67e22;
+      color: #fff;
+      font-size: 0.85rem;
+      padding: 2px 10px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    .server-cluster {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .server-icon {
+      background: #fff;
+      border: 1px solid #e67e22;
+      padding: 0.5rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+    }
+
+    /* 内部LANエリア */
+    .zone-lan {
+      width: 100%;
+      border: 2px solid #27ae60;
+      background: #f0fff4;
+      padding: 2rem 1rem 1rem;
+      border-radius: 8px;
+      position: relative;
+    }
+    .label-lan {
+      position: absolute;
+      top: -12px;
+      left: 20px;
+      background: #27ae60;
+      color: #fff;
+      font-size: 0.85rem;
+      padding: 2px 10px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    
+    .lan-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    .lan-item {
+      background: #fff;
+      border: 1px solid #27ae60;
+      padding: 0.8rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      text-align: center;
+    }
+    .item-title {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 0.3rem;
+      color: #27ae60;
+    }
+    .item-tech {
+      font-size: 0.75rem;
+      background: #eee;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #333;
+    }
+
+    /* 用語解説カード */
+    .term-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      width: 100%;
+    }
+    .term-card {
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .tc-header {
+      padding: 0.8rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .tc-body {
+      padding: 1rem;
+      font-size: 0.9rem;
+    }
+    /* 可用性カラー */
+    .th-avail { background: #eef6ff; color: #0056b3; border-bottom: 2px solid #0056b3; }
+    /* セキュリティカラー */
+    .th-sec { background: #fff5f5; color: #d00; border-bottom: 2px solid #d00; }
+
+    /* ポイント強調 */
+    .key-point {
+      background-color: #f4f4f4;
+      border-left: 4px solid #333;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .key-point strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1em;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 600px) {
+      .lan-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a href="../../index.html" class="site-title">IT passport study map</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-29">
+            2026.01.29 / テクノロジ系
+          </time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">システム可用性とセキュリティ対策</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list">
+            <li class="tag">#可用性</li>
+            <li class="tag">#冗長化</li>
+            <li class="tag">#セキュリティ</li>
+            <li class="tag">#DLP</li>
+            <li class="tag">#RAID</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>企業システムは、「止まらないこと（可用性）」と「守ること（セキュリティ）」の両立が求められます。<br>
+        外部からの攻撃を防ぎつつ、万が一機器が壊れてもサービスを継続するための全体像を図解で整理します。</p>
+
+        <div class="key-point">
+          <strong>1行要約</strong><br>
+          「冗長化（RAID/レプリケーション）」で故障に備え、「多層防御（FW/WAF/DLP）」で侵入と漏洩を防ぐ。
+        </div>
+
+        <h2>1. システム構成と対策マップ</h2>
+        <p>外部（インターネット）から内部（社内LAN）まで、段階的に防御と冗長化が行われています。</p>
+
+        <div class="diagram-section">
+          <div class="system-map">
+            
+            <div class="zone-internet">Internet</div>
+            
+            <div class="arrow-down">⬇</div>
+
+            <!-- 第1防衛ライン -->
+            <div class="box-fw">
+              FW (ファイアウォール) ＋ WAF
+            </div>
+
+            <div class="arrow-down">⬇</div>
+
+            <!-- DMZ -->
+            <div class="zone-dmz">
+              <span class="label-dmz">DMZ (公開エリア)</span>
+              <p style="font-size:0.8rem; margin-bottom:0.5rem; color:#666;">外部向けのWebサーバなど</p>
+              <div class="server-cluster">
+                <div class="server-icon">Webサーバ A</div>
+                <div class="server-icon">Webサーバ B</div>
+              </div>
+              <span style="font-size:0.7rem; display:block; margin-top:4px; font-weight:bold; color:#e67e22;">
+                クラスタリングで冗長化
+              </span>
+            </div>
+
+            <div class="arrow-down">⬇</div>
+
+            <div class="box-fw" style="background:#fff; border-color:#666; color:#666;">
+              内部FW (アクセス制御)
+            </div>
+
+            <div class="arrow-down">⬇</div>
+
+            <!-- 内部LAN -->
+            <div class="zone-lan">
+              <span class="label-lan">内部ネットワーク (社内)</span>
+              <div class="lan-grid">
+                <div class="lan-item">
+                  <span class="item-title">DBサーバ</span>
+                  <span class="item-tech">レプリケーション</span>
+                  <span class="item-tech">RAID</span>
+                </div>
+                <div class="lan-item">
+                  <span class="item-title">管理・監視</span>
+                  <span class="item-tech">DLP (漏洩防止)</span>
+                </div>
+                <div class="lan-item">
+                  <span class="item-title">ネットワーク機器</span>
+                  <span class="item-tech">L2/L3スイッチ</span>
+                  <span class="item-tech">PoE</span>
+                </div>
+                <div class="lan-item">
+                  <span class="item-title">ユーザー端末</span>
+                  <span class="item-tech">ウイルス対策</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <h2>2. 「止まらない」ための技術（可用性）</h2>
+        <p>機器はいつか必ず壊れます。壊れてもシステム全体が止まらないようにする工夫です。</p>
+
+        <div class="term-container">
+          <div class="term-card">
+            <div class="tc-header th-avail">
+              <span>⚙️ フォールトトレラント</span>
+            </div>
+            <div class="tc-body">
+              <strong>「故障しても止まらない」設計。</strong><br>
+              予備機を常に動かしておき、故障時に瞬時に切り替える（クラスタリング）や、電源を二重化するなどの対策。
+            </div>
+          </div>
+
+          <div class="term-card">
+            <div class="tc-header th-avail">
+              <span>💿 RAID (レイド)</span>
+            </div>
+            <div class="tc-body">
+              <strong>「ディスクの冗長化」。</strong><br>
+              複数のHDDを束ねて1つのドライブとして扱う。<br>
+              ・RAID 1：ミラーリング（同じデータを2か所に）<br>
+              ・RAID 5：分散＋パリティ（1台壊れても復旧可）
+            </div>
+          </div>
+
+          <div class="term-card">
+            <div class="tc-header th-avail">
+              <span>🔄 レプリケーション</span>
+            </div>
+            <div class="tc-body">
+              <strong>「データの複製」。</strong><br>
+              データベースなどを別サーバにリアルタイムでコピーし、正サーバがダウンした際に副サーバで継続させる。
+            </div>
+          </div>
+        </div>
+
+        <h2>3. 「守る」ための技術（セキュリティ）</h2>
+        <p>侵入を防ぐ「入口対策」と、漏洩を防ぐ「出口対策」があります。</p>
+
+        <div class="term-container">
+          <div class="term-card">
+            <div class="tc-header th-sec">
+              <span>🏰 DMZ ＋ WAF</span>
+            </div>
+            <div class="tc-body">
+              <strong>「外部攻撃からの防御」。</strong><br>
+              外部公開サーバを隔離エリア（DMZ）に置き、WAFでWebアプリへの攻撃（SQLインジェクション等）をブロックする。
+            </div>
+          </div>
+
+          <div class="term-card">
+            <div class="tc-header th-sec">
+              <span>🚫 DLP</span>
+            </div>
+            <div class="tc-body">
+              <strong>「内部情報の流出防止」。</strong><br>
+              機密情報（マイナンバーや設計図）が含まれるデータの持ち出しや送信を検知・ブロックする。
+            </div>
+          </div>
+        </div>
+
+        <h2>まとめ</h2>
+        <p>システム設計の基本は、以下の2つの軸で整理できます。</p>
+        <ul>
+          <li><strong>可用性（Availability）：</strong> 冗長化して「予備」を持つ。（RAID, レプリケーション, クラスタ）</li>
+          <li><strong>機密性（Confidentiality）：</strong> 適切な場所に関所を置く。（FW, WAF, DLP）</li>
+        </ul>
+
+        <!-- GEN: REFERENCES -->
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> IT passport study map. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
