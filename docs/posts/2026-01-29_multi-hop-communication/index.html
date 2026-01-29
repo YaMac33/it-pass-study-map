@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>マルチホップ通信の基本 - IT passport study map</title>
+  <meta name="description" content="マルチホップ通信の仕組みとメリット・デメリットを解説。シングルホップとの違いや、無線メッシュネットワーク、アドホック通信での活用事例を図解します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="マルチホップ通信の基本" />
+  <meta property="og:description" content="マルチホップ通信の仕組みとメリット・デメリットを解説。シングルホップとの違いや、無線メッシュネットワーク、アドホック通信での活用事例を図解します。" />
+  
+  <!-- Assets: 記事は docs/posts/<id>/index.html → ../../ 固定 -->
+  <link rel="stylesheet" href="../../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS（図解・補助CSS） -->
+  <style>
+    /* 共通図解コンテナ */
+    .diagram-section {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* ホップ比較図 */
+    .hop-comparison {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      width: 100%;
+      flex-wrap: wrap;
+    }
+    .hop-box {
+      flex: 1;
+      min-width: 280px;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .hop-title {
+      font-weight: bold;
+      margin-bottom: 1.5rem;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      color: #fff;
+      background: #666;
+    }
+    .hop-title.multi {
+      background: #0056b3;
+    }
+
+    /* ノードと線 */
+    .comm-path {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      position: relative;
+      height: 60px;
+    }
+    .node {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #333;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 0.8rem;
+      z-index: 2;
+    }
+    .node.relay {
+      background: #fff;
+      border: 2px solid #0056b3;
+      color: #0056b3;
+      width: 30px;
+      height: 30px;
+    }
+    
+    /* 矢印 */
+    .arrow-long {
+      position: absolute;
+      top: 50%;
+      left: 40px;
+      right: 40px;
+      height: 2px;
+      background: #333;
+      transform: translateY(-50%);
+    }
+    .arrow-long::after {
+      content: "▶";
+      position: absolute;
+      right: 0;
+      top: -10px;
+      font-size: 1.2rem;
+    }
+
+    .arrow-multi {
+      display: flex;
+      flex: 1;
+      align-items: center;
+      justify-content: center;
+      color: #0056b3;
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
+    /* メッシュネットワーク図 */
+    .mesh-diagram {
+      position: relative;
+      width: 250px;
+      height: 200px;
+    }
+    .mesh-node {
+      position: absolute;
+      width: 36px;
+      height: 36px;
+      background: #fff;
+      border: 2px solid #e67e22;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: #e67e22;
+      z-index: 2;
+    }
+    .mn-a { bottom: 20px; left: 20px; }
+    .mn-b { top: 20px; left: 50%; transform: translateX(-50%); }
+    .mn-c { bottom: 60px; left: 50%; transform: translateX(-50%); }
+    .mn-d { bottom: 20px; right: 20px; }
+
+    /* 経路 */
+    .route-line {
+      position: absolute;
+      background: #ccc;
+      height: 2px;
+      z-index: 1;
+    }
+    /* 迂回ルートのイメージ */
+    .route-active {
+      background: #e67e22;
+      height: 3px;
+    }
+    .fail-mark {
+      position: absolute;
+      font-size: 1.5rem;
+      color: #d00;
+      font-weight: bold;
+      z-index: 3;
+    }
+
+    /* 比較テーブル */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      margin: 1rem 0;
+    }
+    .comparison-table th, .comparison-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+    .comparison-table th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+      width: 30%;
+    }
+    .comparison-table td:nth-child(3) { background: #eef6ff; font-weight:bold; }
+
+    /* ポイント強調 */
+    .key-point {
+      background-color: #f4f4f4;
+      border-left: 4px solid #333;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .key-point strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1em;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 600px) {
+      .hop-comparison {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a href="../../index.html" class="site-title">IT passport study map</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-29">
+            2026.01.29 / テクノロジ系
+          </time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">マルチホップ通信の基本</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list">
+            <li class="tag">#マルチホップ</li>
+            <li class="tag">#通信</li>
+            <li class="tag">#ネットワーク</li>
+            <li class="tag">#ITパスポート</li>
+            <li class="tag">#シングルホップ</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>ネットワーク通信において、データが目的地に届くまでの「道のり」には2つの種類があります。<br>
+        直接届けるか、誰かに中継してもらうか。この「中継」の仕組みこそが、インターネットや最新のIoTを支える<strong>「マルチホップ通信」</strong>です。</p>
+
+        <div class="key-point">
+          <strong>1行要約</strong><br>
+          マルチホップ通信とは、複数の端末（中継点）をバケツリレーのように経由して、遠くの目的地までデータを届ける通信方式のこと。
+        </div>
+
+        <h2>1. シングルホップとマルチホップの違い</h2>
+        <p>「ホップ（Hop）」とは、通信のジャンプ（中継）のことです。</p>
+
+        <div class="diagram-section">
+          <div class="hop-comparison">
+            
+            <!-- シングルホップ -->
+            <div class="hop-box">
+              <span class="hop-title">シングルホップ</span>
+              <div class="comm-path">
+                <div class="node">A</div>
+                <div class="arrow-long"></div>
+                <div class="node">B</div>
+              </div>
+              <p style="font-size:0.85rem; color:#666; margin-top:1rem;">
+                直接通信。<br>
+                シンプルだが、電波が届く範囲しか通信できない。
+              </p>
+            </div>
+
+            <!-- マルチホップ -->
+            <div class="hop-box">
+              <span class="hop-title multi">マルチホップ</span>
+              <div class="comm-path">
+                <div class="node">A</div>
+                <div class="arrow-multi">→</div>
+                <div class="node relay">1</div>
+                <div class="arrow-multi">→</div>
+                <div class="node relay">2</div>
+                <div class="arrow-multi">→</div>
+                <div class="node">B</div>
+              </div>
+              <p style="font-size:0.85rem; color:#0056b3; margin-top:1rem;">
+                中継（リレー）通信。<br>
+                遠くまで届き、障害時は別のルートを通れる。
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+        <h2>2. 代表的な利用シーン</h2>
+        <p>「中継ができる」という特性は、以下のような場面で力を発揮します。</p>
+
+        <h3>① 無線メッシュネットワーク</h3>
+        <p>Wi-Fiのエリアを広げる技術です。各端末が中継機となり、網の目（メッシュ）のような通信網を作ります。</p>
+
+        <div class="diagram-section">
+          <div class="mesh-diagram">
+            <!-- Nodes -->
+            <div class="mesh-node mn-a">A</div>
+            <div class="mesh-node mn-b">B</div>
+            <div class="mesh-node mn-c">C</div>
+            <div class="mesh-node mn-d">D</div>
+            
+            <!-- 障害 -->
+            <div class="fail-mark" style="bottom:20px; left:45%;">❌</div>
+
+            <!-- Lines -->
+            <!-- A -> C (Fail) -->
+            <div class="route-line" style="width:60px; bottom:38px; left:55px; transform:rotate(-15deg);"></div>
+            
+            <!-- A -> B (Active) -->
+            <div class="route-line route-active" style="width:100px; bottom:90px; left:40px; transform:rotate(-60deg);"></div>
+            <!-- B -> D (Active) -->
+            <div class="route-line route-active" style="width:100px; bottom:90px; right:40px; transform:rotate(60deg);"></div>
+            
+            <!-- C -> D -->
+            <div class="route-line" style="width:60px; bottom:38px; right:55px; transform:rotate(15deg);"></div>
+          </div>
+          <p style="font-size:0.85rem; color:#e67e22; margin-top:0.5rem;">
+            AからDへ送りたいが、下のルートが不通。<br>
+            → Bを経由するルートを自動選択（障害回避）。
+          </p>
+        </div>
+
+        <h3>② アドホックネットワーク</h3>
+        <p>基地局がない場所（災害時や山間部）でも、スマホ同士が直接つながり、中継しあうことで通信網を作ることができます。</p>
+
+        <h3>③ インターネットそのもの</h3>
+        <p>私たちがWebサイトを見るとき、データは世界中の数多くのルータを「ホップ」して届いています。インターネットは巨大なマルチホップネットワークと言えます。</p>
+
+        <h2>3. メリット・デメリット比較</h2>
+        <p>試験対策として、特徴を整理します。</p>
+
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>項目</th>
+              <th>シングルホップ</th>
+              <th>マルチホップ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>通信範囲</strong></td>
+              <td>限定的（直接届く範囲）</td>
+              <td><strong>広範囲</strong>（中継で延伸）</td>
+            </tr>
+            <tr>
+              <td><strong>信頼性</strong></td>
+              <td>障害に弱い</td>
+              <td><strong>高い</strong>（迂回ルート）</td>
+            </tr>
+            <tr>
+              <td><strong>インフラ</strong></td>
+              <td>基地局が必要</td>
+              <td><strong>不要</strong>（端末同士で構成可）</td>
+            </tr>
+            <tr>
+              <td><strong>遅延・速度</strong></td>
+              <td>速い</td>
+              <td>遅くなる（中継の分だけ）</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>まとめ</h2>
+        <p>ITパスポート試験で「マルチホップ」が出たら、以下のキーワードを連想しましょう。</p>
+        <ul>
+          <li><strong>中継・リレー：</strong> バケツリレーでデータを運ぶ。</li>
+          <li><strong>柔軟性・耐障害性：</strong> 道がふさがっても別の道を行ける。</li>
+          <li><strong>遅延：</strong> 中継する回数が増えるほど、時間はかかる。</li>
+        </ul>
+
+        <!-- GEN: REFERENCES -->
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> IT passport study map. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
