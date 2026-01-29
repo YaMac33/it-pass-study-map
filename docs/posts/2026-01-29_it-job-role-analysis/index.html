@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>IT職種の役割整理 - IT passport study map</title>
+  <meta name="description" content="データサイエンティスト、システムアーキテクト、システム監査技術者、情報処理安全確保支援士。ITパスポート試験で問われる高度IT人材の役割と違いを図解で整理します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="IT職種の役割整理" />
+  <meta property="og:description" content="データサイエンティスト、システムアーキテクト、システム監査技術者、情報処理安全確保支援士。ITパスポート試験で問われる高度IT人材の役割と違いを図解で整理します。" />
+  
+  <!-- Assets: 記事は docs/posts/<id>/index.html → ../../ 固定 -->
+  <link rel="stylesheet" href="../../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS（図解・補助CSS） -->
+  <style>
+    /* 共通図解コンテナ */
+    .diagram-section {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* 全体俯瞰図 */
+    .role-map {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 500px;
+      position: relative;
+    }
+    
+    .box-biz {
+      background: #333;
+      color: #fff;
+      padding: 0.8rem 2rem;
+      border-radius: 6px;
+      font-weight: bold;
+      margin-bottom: 1.5rem;
+    }
+
+    .role-row {
+      display: flex;
+      gap: 1rem;
+      width: 100%;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+    .role-box {
+      flex: 1;
+      background: #fff;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      padding: 1rem 0.5rem;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .role-icon {
+      font-size: 2rem;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    .role-name {
+      font-weight: bold;
+      font-size: 0.9rem;
+      display: block;
+      margin-bottom: 0.3rem;
+      line-height: 1.3;
+    }
+    .role-desc {
+      font-size: 0.75rem;
+      color: #666;
+    }
+
+    /* 個別色設定 */
+    .rb-ds { border-color: #0056b3; } /* Data Scientist */
+    .rb-sa { border-color: #e67e22; } /* System Architect */
+    .rb-au { border-color: #27ae60; background: #f0fff4; } /* Audit */
+    .rb-sc { border-color: #d00; background: #fff5f5; } /* Security */
+
+    /* 矢印 */
+    .arrow-down {
+      font-size: 1.5rem;
+      color: #999;
+      font-weight: bold;
+      margin: -0.5rem 0 0.5rem;
+    }
+    .system-core {
+      width: 100%;
+      padding: 1.5rem;
+      border: 2px dashed #666;
+      border-radius: 8px;
+      background: #eee;
+      text-align: center;
+      font-weight: bold;
+      color: #555;
+      margin-bottom: 1.5rem;
+    }
+    .support-line {
+      position: absolute;
+      bottom: 25px; /* 監査・セキスペの上 */
+      left: 20px;
+      right: 20px;
+      border-top: 2px dashed #999;
+      z-index: 0;
+    }
+    .support-label {
+      position: absolute;
+      bottom: 35px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.8rem;
+      color: #666;
+      background: #f9f9f9;
+      padding: 0 10px;
+    }
+
+    /* 比較テーブル */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      margin: 1rem 0;
+    }
+    .comparison-table th, .comparison-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+    .comparison-table th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+      width: 30%;
+      text-align: center;
+    }
+
+    /* ポイント強調 */
+    .key-point {
+      background-color: #f4f4f4;
+      border-left: 4px solid #333;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .key-point strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1em;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 600px) {
+      .role-row {
+        flex-direction: column;
+      }
+      .support-line, .support-label {
+        display: none; /* スマホでは線を消す */
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a href="../../index.html" class="site-title">IT passport study map</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-29">
+            2026.01.29 / マネジメント系
+          </time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">IT職種の役割整理</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list">
+            <li class="tag">#IT職種</li>
+            <li class="tag">#データサイエンティスト</li>
+            <li class="tag">#システムアーキテクト</li>
+            <li class="tag">#システム監査</li>
+            <li class="tag">#情報処理安全確保支援士</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>ITパスポート試験には、様々な「高度IT人材」の職種名が登場します。<br>
+        名前が似ていたり、役割がイメージしづらかったりするこれらの職種を、**「システムに対して何をする人か」**という視点で整理します。</p>
+
+        <div class="key-point">
+          <strong>1行要約</strong><br>
+          データサイエンティストは「分析」、アーキテクトは「設計」、監査技術者は「チェック」、安全確保支援士は「防御」を担当するプロフェッショナル。
+        </div>
+
+        <h2>1. 全体像：システムに対する立ち位置</h2>
+        <p>ビジネスの課題からシステムが生まれ、それが守られるまでの流れの中に、各職種がどう関わるかを図解しました。</p>
+
+        <div class="diagram-section">
+          <div class="role-map">
+            
+            <div class="box-biz">ビジネス課題・経営戦略</div>
+            
+            <div class="arrow-down">⬇</div>
+
+            <div class="role-row">
+              <!-- DS -->
+              <div class="role-box rb-ds">
+                <span class="role-icon">📊</span>
+                <span class="role-name">データ<br>サイエンティスト</span>
+                <span class="role-desc">分析・予測・示唆</span>
+              </div>
+              <!-- SA -->
+              <div class="role-box rb-sa">
+                <span class="role-icon">📐</span>
+                <span class="role-name">システム<br>アーキテクト</span>
+                <span class="role-desc">設計・骨組み決定</span>
+              </div>
+            </div>
+
+            <div class="arrow-down">⬇ 構築・運用</div>
+
+            <div class="system-core">
+              ITシステム
+            </div>
+
+            <div class="support-line"></div>
+            <span class="support-label">第三者視点 & 専門的支援</span>
+
+            <div class="role-row">
+              <!-- AU -->
+              <div class="role-box rb-au">
+                <span class="role-icon">📝</span>
+                <span class="role-name">システム<br>監査技術者</span>
+                <span class="role-desc">ルールの適合性チェック</span>
+              </div>
+              <!-- SC -->
+              <div class="role-box rb-sc">
+                <span class="role-icon">🛡️</span>
+                <span class="role-name">情報処理<br>安全確保支援士</span>
+                <span class="role-desc">セキュリティ確保・助言</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <h2>2. 各職種の役割詳細</h2>
+
+        <h3>① データサイエンティスト</h3>
+        <p><strong>「データから価値を見つける人」</strong><br>
+        ビッグデータや統計学、AI（機械学習）を駆使して、ビジネスの課題解決につながる知見を引き出します。</p>
+        <ul>
+          <li><strong>キーワード：</strong> AI、統計、分析、モデル化、ビッグデータ。</li>
+        </ul>
+
+        <h3>② システムアーキテクト</h3>
+        <p><strong>「システムの設計図を書く人」</strong><br>
+        要件定義に基づき、システム全体の構造（アーキテクチャ）を設計します。どの技術を使うか、どう連携させるかの「骨組み」を作ります。</p>
+        <ul>
+          <li><strong>キーワード：</strong> 設計、構成、方式決定、非機能要件。</li>
+        </ul>
+
+        <h3>③ システム監査技術者</h3>
+        <p><strong>「ちゃんと守られてるか確認する人」</strong><br>
+        独立した立場で、システムがルール通りに運用されているか、リスク対策は十分かを点検・評価し、改善を勧告します。</p>
+        <ul>
+          <li><strong>キーワード：</strong> 独立性、客観性、監査、内部統制。</li>
+        </ul>
+
+        <h3>④ 情報処理安全確保支援士（登録セキスペ）</h3>
+        <p><strong>「セキュリティの守護者」</strong><br>
+        サイバー攻撃の脅威から組織を守るため、対策の設計や事故対応の支援を行います。国家資格としての名称です。</p>
+        <ul>
+          <li><strong>キーワード：</strong> セキュリティ、脆弱性対策、インシデント対応、助言。</li>
+        </ul>
+
+        <h2>3. 役割比較まとめ</h2>
+        <p>試験対策として、それぞれの「アクション」を整理します。</p>
+
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>職種</th>
+              <th>アクション</th>
+              <th>試験でのポイント</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>データサイエンティスト</strong></td>
+              <td><strong>分析する</strong></td>
+              <td>数学とITとビジネスの知識を併せ持つ。</td>
+            </tr>
+            <tr>
+              <td><strong>システムアーキテクト</strong></td>
+              <td><strong>設計する</strong></td>
+              <td>開発の上流工程（要件定義・設計）の責任者。</td>
+            </tr>
+            <tr>
+              <td><strong>システム監査技術者</strong></td>
+              <td><strong>点検する</strong></td>
+              <td>「独立した立場」であることが最重要。</td>
+            </tr>
+            <tr>
+              <td><strong>安全確保支援士</strong></td>
+              <td><strong>守る</strong></td>
+              <td>士業（国家資格）。セキュリティの専門家。</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>まとめ</h2>
+        <p>迷ったときは、以下のフレーズで思い出してください。</p>
+        <ul>
+          <li>データを見て未来を語るのが<strong>サイエンティスト</strong>。</li>
+          <li>システムの骨格を作るのが<strong>アーキテクト</strong>。</li>
+          <li>ルール通りかチェックするのが<strong>監査技術者</strong>。</li>
+          <li>攻撃から守るのが<strong>安全確保支援士</strong>。</li>
+        </ul>
+
+        <!-- GEN: REFERENCES -->
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> IT passport study map. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
