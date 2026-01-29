@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>端末からインターネット通信の流れ - IT passport study map</title>
+  <meta name="description" content="端末からWebサーバーまでの通信フローを全階層で解説。DNS、TCP/IP、MACアドレス、ルーティング、そしてHTTPSやWAFなどのセキュリティ技術がどこで機能しているかを図解します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="端末からインターネット通信の流れ" />
+  <meta property="og:description" content="端末からWebサーバーまでの通信フローを全階層で解説。DNS、TCP/IP、MACアドレス、ルーティング、そしてHTTPSやWAFなどのセキュリティ技術がどこで機能しているかを図解します。" />
+  
+  <!-- Assets: 記事は docs/posts/<id>/index.html → ../../ 固定 -->
+  <link rel="stylesheet" href="../../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS（図解・補助CSS） -->
+  <style>
+    /* 共通図解コンテナ */
+    .diagram-section {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* 通信階層スタック図 */
+    .layer-stack {
+      width: 100%;
+      max-width: 500px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+    }
+    .stack-item {
+      display: flex;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .layer-name {
+      width: 120px;
+      padding: 0.8rem;
+      font-weight: bold;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 0.8rem;
+    }
+    .layer-content {
+      flex: 1;
+      padding: 0.8rem;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-left: none;
+      border-radius: 0 6px 6px 0;
+    }
+    .tag {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      margin-right: 4px;
+      margin-bottom: 4px;
+      font-weight: bold;
+    }
+
+    /* 各層の色設定 */
+    .l-app { background: #e67e22; }
+    .l-trans { background: #f1c40f; }
+    .l-net { background: #27ae60; }
+    .l-link { background: #0056b3; }
+    .l-phys { background: #333; }
+
+    /* 通信フロー図（ステップ） */
+    .flow-container {
+      width: 100%;
+      max-width: 600px;
+      position: relative;
+      padding-left: 20px;
+      border-left: 4px solid #ddd;
+    }
+    .flow-step {
+      position: relative;
+      margin-bottom: 2rem;
+      padding-left: 1.5rem;
+    }
+    .flow-step::before {
+      content: "";
+      position: absolute;
+      left: -26px; /* 線の上 */
+      top: 0;
+      width: 16px;
+      height: 16px;
+      background: #fff;
+      border: 4px solid #666;
+      border-radius: 50%;
+    }
+    .flow-step.highlight::before {
+      border-color: #0056b3;
+      background: #0056b3;
+    }
+    
+    .step-header {
+      font-weight: bold;
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      color: #333;
+    }
+    .step-detail {
+      background: #fff;
+      border: 1px solid #ccc;
+      padding: 1rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+    .detail-item {
+      margin-bottom: 0.5rem;
+      padding-left: 1rem;
+      position: relative;
+    }
+    .detail-item::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: #0056b3;
+      font-weight: bold;
+    }
+
+    /* セキュリティガード図 */
+    .security-guard {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      background: #eef6ff;
+      border: 2px dashed #0056b3;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      font-weight: bold;
+      color: #0056b3;
+    }
+    .sg-item {
+      text-align: center;
+      flex: 1;
+      border-right: 1px dashed #0056b3;
+    }
+    .sg-item:last-child { border-right: none; }
+    .sg-icon { font-size: 1.5rem; display: block; margin-bottom: 0.2rem; }
+
+    /* ポイント強調 */
+    .key-point {
+      background-color: #f4f4f4;
+      border-left: 4px solid #333;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .key-point strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1em;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 600px) {
+      .stack-item {
+        flex-direction: column;
+      }
+      .layer-name {
+        width: 100%;
+        padding: 0.5rem;
+        border-radius: 6px 6px 0 0;
+      }
+      .layer-content {
+        border-radius: 0 0 6px 6px;
+        border-left: 1px solid #ddd;
+        border-top: none;
+      }
+      .security-guard {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      .sg-item {
+        border-right: none;
+        border-bottom: 1px dashed #0056b3;
+        padding-bottom: 0.5rem;
+      }
+      .sg-item:last-child { border-bottom: none; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a href="../../index.html" class="site-title">IT passport study map</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-29">
+            2026.01.29 / テクノロジ系
+          </time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">端末からインターネット通信の流れ</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list">
+            <li class="tag">#ネットワーク</li>
+            <li class="tag">#通信</li>
+            <li class="tag">#ITパスポート</li>
+            <li class="tag">#階層モデル</li>
+            <li class="tag">#セキュリティ</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>私たちが普段、スマホやPCでWebサイトを見るとき、裏側では驚くほど多くの技術が連携しています。<br>
+        「ボタンを押してから画面が表示されるまで」の数秒間に何が起きているのか？ 通信の階層構造と流れを解剖します。</p>
+
+        <div class="key-point">
+          <strong>1行要約</strong><br>
+          アプリが要求し、TCPが整理し、IPが宛先を決め、MACが隣へ運び、物理的な電波が飛ぶ。このバケツリレーで通信は成り立っている。
+        </div>
+
+        <h2>1. 通信の階層構造（スタック）</h2>
+        <p>データは上から下へ「カプセル化（封筒に入れる）」されて送り出され、受け取り側では下から上へ開封されます。</p>
+
+        <div class="diagram-section">
+          <div class="layer-stack">
+            
+            <!-- アプリ層 -->
+            <div class="stack-item">
+              <div class="layer-name l-app">アプリケーション</div>
+              <div class="layer-content">
+                <span class="tag" style="background:#fff3cd; color:#e67e22;">HTTP/HTTPS</span>
+                <span class="tag" style="background:#fff3cd; color:#e67e22;">DNS</span>
+                <br>「何がしたいか」<br>(Web閲覧、メールなど)
+              </div>
+            </div>
+
+            <!-- トランスポート層 -->
+            <div class="stack-item">
+              <div class="layer-name l-trans">トランスポート</div>
+              <div class="layer-content">
+                <span class="tag" style="background:#fff9c4; color:#f1c40f;">TCP</span>
+                <span class="tag" style="background:#fff9c4; color:#f1c40f;">UDP</span>
+                <span class="tag" style="background:#fff9c4; color:#f1c40f;">ポート番号</span>
+                <br>「どのアプリに、どう届けるか」<br>(信頼性、順序制御)
+              </div>
+            </div>
+
+            <!-- ネットワーク層 -->
+            <div class="stack-item">
+              <div class="layer-name l-net">ネットワーク</div>
+              <div class="layer-content">
+                <span class="tag" style="background:#e8f8f5; color:#27ae60;">IPアドレス</span>
+                <span class="tag" style="background:#e8f8f5; color:#27ae60;">ルーター</span>
+                <br>「最終宛先はどこか」<br>(インターネット上の住所)
+              </div>
+            </div>
+
+            <!-- データリンク層 -->
+            <div class="stack-item">
+              <div class="layer-name l-link">データリンク</div>
+              <div class="layer-content">
+                <span class="tag" style="background:#eef6ff; color:#0056b3;">MACアドレス</span>
+                <span class="tag" style="background:#eef6ff; color:#0056b3;">Wi-Fi (WPA3)</span>
+                <br>「隣の機器へどう渡すか」<br>(同一LAN内の転送)
+              </div>
+            </div>
+
+            <!-- 物理層 -->
+            <div class="stack-item">
+              <div class="layer-name l-phys">物理</div>
+              <div class="layer-content">
+                <span class="tag" style="background:#eee; color:#333;">電波</span>
+                <span class="tag" style="background:#eee; color:#333;">光ファイバー</span>
+                <br>「信号として送る」<br>(0と1の電気・光信号)
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <h2>2. 通信の全フロー（超詳細版）</h2>
+        <p>あなたが「https://example.com」にアクセスした瞬間からの物語です。</p>
+
+        <div class="diagram-section">
+          <div class="flow-container">
+            
+            <div class="flow-step highlight">
+              <div class="step-header">1. 準備フェーズ（名前解決）</div>
+              <div class="step-detail">
+                <div class="detail-item"><strong>DNS問い合わせ：</strong>「example.com」のIPアドレスを知るため、DNSサーバーに質問します。</div>
+                <div class="detail-item"><strong>TCPハンドシェイク：</strong>相手と通信を始めるための挨拶（SYN → SYN-ACK → ACK）を行い、接続を確立します。</div>
+              </div>
+            </div>
+
+            <div class="flow-step highlight">
+              <div class="step-header">2. 配送フェーズ（LANからWANへ）</div>
+              <div class="step-detail">
+                <div class="detail-item"><strong>無線LAN：</strong>WPA3などで暗号化され、Wi-Fi電波としてアクセスポイントへ飛びます。</div>
+                <div class="detail-item"><strong>スイッチング：</strong>MACアドレスを使って、LAN内のルーターまでデータが運ばれます。</div>
+                <div class="detail-item"><strong>ルーティング：</strong>ルーターがIPアドレスを見て、「インターネットの向こう側」へパケットを送り出します。</div>
+              </div>
+            </div>
+
+            <div class="flow-step highlight">
+              <div class="step-header">3. 応答フェーズ（サーバー処理）</div>
+              <div class="step-detail">
+                <div class="detail-item"><strong>セキュリティチェック：</strong>ファイアウォールやWAFが、不正なアクセスでないか検査します。</div>
+                <div class="detail-item"><strong>HTTPS通信：</strong>TLS/SSLで暗号化されたリクエストをサーバーが復号・処理します。</div>
+                <div class="detail-item"><strong>レスポンス：</strong>HTMLや画像データが、来た道を逆順で戻り、ブラウザに表示されます。</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <h2>3. セキュリティは「途中」で守る</h2>
+        <p>通信の各段階で、異なる技術がセキュリティを守っています。</p>
+
+        <div class="diagram-section">
+          <div class="security-guard">
+            <div class="sg-item">
+              <span class="sg-icon">📶</span>
+              WPA3<br>
+              (Wi-Fi区間)
+            </div>
+            <div class="sg-item">
+              <span class="sg-icon">🧱</span>
+              Firewall<br>
+              (ルーター・出入口)
+            </div>
+            <div class="sg-item">
+              <span class="sg-icon">🛡️</span>
+              TLS/SSL<br>
+              (通信経路全体)
+            </div>
+            <div class="sg-item">
+              <span class="sg-icon">🕸️</span>
+              WAF<br>
+              (Webアプリ防御)
+            </div>
+          </div>
+        </div>
+
+        <h2>まとめ</h2>
+        <p>インターネット通信は、以下の役割分担による「バケツリレー」です。</p>
+        <ul>
+          <li><strong>物理・データリンク層：</strong> 隣まで運ぶ（電波・MAC）。</li>
+          <li><strong>ネットワーク層：</strong> 遠くへ運ぶ（IP・ルーター）。</li>
+          <li><strong>トランスポート層：</strong> 正確に届ける（TCP）。</li>
+          <li><strong>アプリケーション層：</strong> 内容を扱う（HTTP）。</li>
+        </ul>
+        <p>この全体像が見えていると、ネットワーク障害の切り分けや、セキュリティ対策の位置づけが明確になります。</p>
+
+        <!-- GEN: REFERENCES -->
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> IT passport study map. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
