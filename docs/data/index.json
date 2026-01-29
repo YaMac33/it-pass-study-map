@@ -1,5 +1,21 @@
 [
   {
+    "id": "2026-01-29_system-availability-security",
+    "timestamp": "2026-01-29T17:23:53+09:00",
+    "title": "システム可用性とセキュリティ対策",
+    "summary": "企業システムの可用性とセキュリティを両立させる方法を解説します。冗長化手法や階層的な防御策を紹介します。",
+    "tags": [
+      "可用性",
+      "冗長化",
+      "セキュリティ",
+      "DLP",
+      "RAID"
+    ],
+    "category_lv1": "テクノロジ系",
+    "category_lv2": "セキュリティ",
+    "post_path": "posts/2026-01-29_system-availability-security/"
+  },
+  {
     "id": "2026-01-29_dlpsetup",
     "timestamp": "2026-01-29T16:56:08+09:00",
     "title": "企業ネットワークにおけるDLPの設置",
