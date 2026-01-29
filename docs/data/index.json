@@ -1,5 +1,21 @@
 [
   {
+    "id": "2026-01-29_ci-cd-automated-processes",
+    "timestamp": "2026-01-29T15:35:19+09:00",
+    "title": "継続的インテグレーションとデリバリ",
+    "summary": "CI/CDの違いと仕組みを解説し、開発プロセスの自動化を整理します。重要なキーワードに基づく理解を深める内容です。",
+    "tags": [
+      "CI",
+      "CD",
+      "自動化",
+      "開発手法",
+      "DevOps"
+    ],
+    "category_lv1": "マネジメント系",
+    "category_lv2": "サービスマネジメント",
+    "post_path": "posts/2026-01-29_ci-cd-automated-processes/"
+  },
+  {
     "id": "2026-01-29_web-layers-and-features",
     "timestamp": "2026-01-29T15:22:42+09:00",
     "title": "ウェブの層と特徴",
