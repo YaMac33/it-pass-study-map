@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>シグニファイアとアフォーダンス - IT passport study map</title>
+  <meta name="description" content="HCIやデザインの重要概念であるシグニファイアとアフォーダンスの違いを解説。操作を誘導する「サイン」と、行動を可能にする「性質」の関係を図解で整理します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="シグニファイアとアフォーダンス" />
+  <meta property="og:description" content="HCIやデザインの重要概念であるシグニファイアとアフォーダンスの違いを解説。操作を誘導する「サイン」と、行動を可能にする「性質」の関係を図解で整理します。" />
+  
+  <!-- Assets: 記事は docs/posts/<id>/index.html → ../../ 固定 -->
+  <link rel="stylesheet" href="../../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS（図解・補助CSS） -->
+  <style>
+    /* 共通図解コンテナ */
+    .diagram-section {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* ドアの比較図 */
+    .door-comparison {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      width: 100%;
+      flex-wrap: wrap;
+    }
+    .door-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .door {
+      width: 120px;
+      height: 180px;
+      background: #ddd;
+      border: 4px solid #999;
+      position: relative;
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    /* アフォーダンス（取っ手） */
+    .handle {
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      width: 10px;
+      height: 40px;
+      background: #666;
+      border-radius: 4px;
+      box-shadow: 2px 2px 2px rgba(0,0,0,0.2);
+    }
+    /* シグニファイア（文字・プレート） */
+    .plate {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #fff;
+      border: 1px solid #ccc;
+      padding: 2px 8px;
+      font-size: 0.7rem;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .concept-label {
+      font-weight: bold;
+      color: #0056b3;
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+    }
+    .concept-desc {
+      font-size: 0.8rem;
+      color: #666;
+      text-align: center;
+      max-width: 150px;
+    }
+
+    /* UIボタンの例 */
+    .ui-example {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      padding: 1.5rem;
+      border-radius: 8px;
+      border: 1px dashed #ccc;
+      width: 100%;
+      max-width: 500px;
+    }
+    .btn-flat {
+      padding: 0.5rem 1rem;
+      border: 1px solid #ccc;
+      background: #eee;
+      color: #999;
+    }
+    .btn-3d {
+      padding: 0.5rem 1rem;
+      background: #0056b3;
+      color: #fff;
+      font-weight: bold;
+      border-radius: 4px;
+      box-shadow: 0 4px 0 #004494;
+      transform: translateY(-2px);
+    }
+    .cursor-hand {
+      font-size: 1.5rem;
+      position: absolute;
+      bottom: -10px;
+      right: -10px;
+    }
+
+    /* 比較テーブル */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      margin: 1rem 0;
+    }
+    .comparison-table th, .comparison-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+    .comparison-table th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+      width: 30%;
+    }
+    .hl-aff { background-color: #eef6ff; font-weight: bold; color: #0056b3; }
+    .hl-sig { background-color: #fffaf0; font-weight: bold; color: #e67e22; }
+
+    /* ポイント強調 */
+    .key-point {
+      background-color: #f4f4f4;
+      border-left: 4px solid #333;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .key-point strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1em;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 600px) {
+      .door-comparison {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a href="../../index.html" class="site-title">IT passport study map</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-29">
+            2026.01.29 / テクノロジ系
+          </time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">シグニファイアとアフォーダンス</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list">
+            <li class="tag">#HCI</li>
+            <li class="tag">#デザイン</li>
+            <li class="tag">#シグニファイア</li>
+            <li class="tag">#アフォーダンス</li>
+            <li class="tag">#ユーザ体験</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>使いやすいシステムやアプリを作るためには、ユーザーが「どう操作すればいいか」を直感的に理解できるデザインが必要です。<br>
+        この分野（HCI：ヒューマンコンピュータインタラクション）で頻出する2つの用語、「シグニファイア」と「アフォーダンス」の違いを解説します。</p>
+
+        <div class="key-point">
+          <strong>1行要約</strong><br>
+          アフォーダンスは「（物理的に）操作できる性質」、シグニファイアは「操作方法を教えるサイン（表示）」。
+        </div>
+
+        <h2>1. ドアの例で直感理解</h2>
+        <p>この2つの違いは、ドアの「取っ手」と「文字」で考えると一発で分かります。</p>
+
+        <div class="diagram-section">
+          <div class="door-comparison">
+            
+            <!-- アフォーダンス -->
+            <div class="door-box">
+              <div class="door">
+                <div class="handle"></div>
+              </div>
+              <span class="concept-label hl-aff">アフォーダンス</span>
+              <span class="concept-desc">
+                「取っ手がある」<br>
+                → 握って引けそうだと直感する性質
+              </span>
+            </div>
+
+            <!-- シグニファイア -->
+            <div class="door-box">
+              <div class="door">
+                <div class="plate">PULL（引く）</div>
+              </div>
+              <span class="concept-label hl-sig">シグニファイア</span>
+              <span class="concept-desc">
+                「PULLの文字」<br>
+                → 引くんだなと理解させるサイン
+              </span>
+            </div>
+
+          </div>
+          <p style="font-size:0.9rem; color:#666; margin-top:1rem;">
+            両方揃っていると、ユーザーは迷わず「引く」ことができます。
+          </p>
+        </div>
+
+        <h2>2. 用語の詳細定義</h2>
+
+        <h3>アフォーダンス（Affordance）</h3>
+        <p>「Afford（提供する）」が語源。環境や物が、人間に「ある行動を可能にさせる」性質のことです。<br>
+        <strong>例：</strong>
+        <ul>
+          <li>椅子がある → 「座れる」という行為を提供する。</li>
+          <li>Web画面にリンクがある → 「クリックできる」という機能がある。</li>
+        </ul>
+        </p>
+
+        <h3>シグニファイア（Signifier）</h3>
+        <p>「Sign（合図）」が語源。アフォーダンス（機能）が存在することをユーザーに伝えるための「手がかり・標識」のことです。<br>
+        <strong>例：</strong>
+        <ul>
+          <li>リンクの下線や青色 → 「ここはクリックできますよ」という合図。</li>
+          <li>再生ボタンの三角マーク（▶） → 「押すと再生しますよ」という合図。</li>
+        </ul>
+        </p>
+
+        <h2>3. UIデザインでの具体例</h2>
+        <p>Webやアプリのデザインにおいて、シグニファイアがないとユーザーは操作に気づけません。</p>
+
+        <div class="diagram-section">
+          <div class="ui-example">
+            <div style="text-align:center;">
+              <div class="btn-flat">送信する</div>
+              <p style="font-size:0.8rem; margin-top:0.5rem; color:#d00;">
+                ただの文字に見える<br>（シグニファイア不足）
+              </p>
+            </div>
+            
+            <div style="font-size:2rem; color:#999;">➡</div>
+
+            <div style="text-align:center; position:relative;">
+              <div class="btn-3d">送信する</div>
+              <div class="cursor-hand">👆</div>
+              <p style="font-size:0.8rem; margin-top:0.5rem; color:#0056b3;">
+                立体感・影<br>（押せると分かる！）
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <h2>4. 比較まとめ表</h2>
+        <p>試験対策として、それぞれの役割を整理します。</p>
+
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>用語</th>
+              <th>意味</th>
+              <th>役割</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>アフォーダンス</strong></td>
+              <td class="hl-aff">行動の可能性</td>
+              <td>「できること」を提供する（機能・構造）</td>
+            </tr>
+            <tr>
+              <td><strong>シグニファイア</strong></td>
+              <td class="hl-sig">行動の手がかり</td>
+              <td>「操作方法」を教える（見た目・表示）</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>まとめ</h2>
+        <ul>
+          <li><strong>アフォーダンス：</strong>「機能的にできること（Can）」。</li>
+          <li><strong>シグニファイア：</strong>「こう操作してねという合図（Sign）」。</li>
+        </ul>
+        <p>「ドアノブがないドア（押すところしかない）」に「引く」と書いてあったら混乱しますよね。<br>
+        アフォーダンス（構造）とシグニファイア（表示）を一致させることが、良いデザインの条件です。</p>
+
+        <!-- GEN: REFERENCES -->
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> IT passport study map. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
