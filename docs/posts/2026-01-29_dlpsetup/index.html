@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>企業ネットワークにおけるDLPの設置 - IT passport study map</title>
+  <meta name="description" content="情報漏えい対策システム「DLP」の仕組みと設置場所を解説。端末、ネットワーク、クラウドの各層でどのように情報を監視し、流出を防ぐのかを図解で整理します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="企業ネットワークにおけるDLPの設置" />
+  <meta property="og:description" content="情報漏えい対策システム「DLP」の仕組みと設置場所を解説。端末、ネットワーク、クラウドの各層でどのように情報を監視し、流出を防ぐのかを図解で整理します。" />
+  
+  <!-- Assets: 記事は docs/posts/<id>/index.html → ../../ 固定 -->
+  <link rel="stylesheet" href="../../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS（図解・補助CSS） -->
+  <style>
+    /* 共通図解コンテナ */
+    .diagram-section {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* ネットワーク全体図 */
+    .dlp-network-map {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      max-width: 650px;
+      position: relative;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    /* エリア枠 */
+    .area-internal {
+      border: 2px dashed #666;
+      background: #fff;
+      padding: 1.5rem;
+      border-radius: 8px;
+      position: relative;
+      min-width: 200px;
+      text-align: center;
+    }
+    .area-label {
+      position: absolute;
+      top: -12px;
+      left: 10px;
+      background: #666;
+      color: #fff;
+      font-size: 0.8rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    /* デバイス */
+    .device-pc {
+      background: #eee;
+      border: 2px solid #333;
+      padding: 0.5rem;
+      border-radius: 4px;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      position: relative;
+    }
+    /* エンドポイントDLP */
+    .dlp-agent {
+      background: #d00;
+      color: #fff;
+      font-size: 0.7rem;
+      padding: 2px 4px;
+      border-radius: 2px;
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      font-weight: bold;
+      box-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+    }
+    
+    /* 監視対象アイコン */
+    .monitor-icons {
+      display: flex;
+      gap: 5px;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    /* ゲートウェイ */
+    .gateway-box {
+      background: #eef6ff;
+      border: 2px solid #0056b3;
+      padding: 1rem;
+      border-radius: 6px;
+      text-align: center;
+      font-weight: bold;
+      color: #0056b3;
+      min-width: 120px;
+      position: relative;
+    }
+    .dlp-badge {
+      background: #d00;
+      color: #fff;
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+    }
+
+    /* クラウド */
+    .cloud-area {
+      border: 2px dashed #e67e22;
+      background: #fffaf0;
+      border-radius: 50%;
+      width: 140px;
+      height: 100px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .cloud-dlp {
+      position: absolute;
+      bottom: -10px;
+      background: #d00;
+      color: #fff;
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    /* 矢印 */
+    .arrow-flow {
+      font-size: 1.5rem;
+      color: #999;
+      font-weight: bold;
+    }
+
+    /* 比較テーブル */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      margin: 1rem 0;
+    }
+    .comparison-table th, .comparison-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+    .comparison-table th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+      width: 25%;
+    }
+    .hl-dlp { background-color: #fff5f5; font-weight: bold; color: #d00; }
+
+    /* ポイント強調 */
+    .key-point {
+      background-color: #f4f4f4;
+      border-left: 4px solid #333;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .key-point strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1em;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 600px) {
+      .dlp-network-map {
+        flex-direction: column;
+      }
+      .arrow-flow {
+        transform: rotate(90deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a href="../../index.html" class="site-title">IT passport study map</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-29">
+            2026.01.29 / テクノロジ系
+          </time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">企業ネットワークにおけるDLPの設置</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list">
+            <li class="tag">#DLP</li>
+            <li class="tag">#情報漏えい</li>
+            <li class="tag">#ネットワーク</li>
+            <li class="tag">#セキュリティ</li>
+            <li class="tag">#ITパスポート</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>「うっかり重要なファイルをメールで送ってしまった」「USBメモリにデータをコピーして持ち出してしまった」。<br>
+        こうした内部からの情報漏えいを防ぐためのシステムが<strong>「DLP（Data Loss Prevention）」</strong>です。</p>
+        <p>ファイアウォールなどの「外からの攻撃」を防ぐ仕組みとは異なり、「中からの流出」をどう止めるのか。その配置と役割を図解します。</p>
+
+        <div class="key-point">
+          <strong>1行要約</strong><br>
+          DLPは、社内ネットワーク、端末、クラウドの各出口に設置され、機密情報の流出を監視・ブロックする「情報漏えい防止の門番」である。
+        </div>
+
+        <h2>1. どこに設置されるのか？（3層構造）</h2>
+        <p>情報は様々な経路で外に出ていきます。DLPは主に3つのポイントで監視を行います。</p>
+
+        <div class="diagram-section">
+          <div class="dlp-network-map">
+            
+            <!-- 1. エンドポイント（端末） -->
+            <div class="area-internal">
+              <span class="area-label">社内・端末</span>
+              <div class="device-pc">
+                社員PC
+                <span class="dlp-agent">DLP Agent</span>
+              </div>
+              <div class="monitor-icons">
+                💾 🖨️ 📋
+              </div>
+              <p style="font-size:0.75rem; color:#666; margin-top:5px;">
+                USBコピー・印刷・<br>クリップボードを監視
+              </p>
+            </div>
+
+            <div class="arrow-flow">➡</div>
+
+            <!-- 2. ネットワーク（ゲートウェイ） -->
+            <div class="gateway-box">
+              <span class="dlp-badge">DLP Gate</span>
+              Web / Mail<br>ゲートウェイ
+              <p style="font-size:0.75rem; color:#0056b3; font-weight:normal; margin-top:5px;">
+                送信メール・<br>アップロード監視
+              </p>
+            </div>
+
+            <div class="arrow-flow">➡</div>
+
+            <!-- 3. クラウド -->
+            <div class="cloud-area">
+              <div style="font-size:2rem;">☁️</div>
+              <strong>Cloud</strong>
+              <span class="cloud-dlp">API連携</span>
+            </div>
+
+          </div>
+          <p style="font-size:0.9rem; color:#666; margin-top:1rem;">
+            端末での操作、ネットワーク通過時、クラウド上の共有など、複数の場所でチェックします。
+          </p>
+        </div>
+
+        <h2>2. 具体的な監視経路</h2>
+        <p>DLPは、データの中身（「社外秘」の文字やマイナンバーのパターンなど）を解析し、特定の情報が含まれている場合に動作します。</p>
+
+        <h3>① 端末レベル（エンドポイント）</h3>
+        <ul>
+          <li><strong>USBメモリ：</strong>機密ファイルを持ち出そうとするとブロック。</li>
+          <li><strong>印刷：</strong>プリンタへの出力を検知・記録。</li>
+          <li><strong>コピペ：</strong>機密データをWebメール等へ貼り付ける操作を禁止。</li>
+        </ul>
+
+        <h3>② ネットワークレベル</h3>
+        <ul>
+          <li><strong>メール：</strong>送信メールの本文や添付ファイルを解析し、個人情報が含まれていれば送信を止める。</li>
+          <li><strong>Web送信：</strong>オンラインストレージやSNSへのファイルアップロードを監視。</li>
+        </ul>
+
+        <h3>③ クラウド連携</h3>
+        <ul>
+          <li>BoxやGoogle Driveなどのクラウドストレージ上で、意図しない「公開設定」になっていないか、機密ファイルがアップロードされていないかをAPI経由で監視します。</li>
+        </ul>
+
+        <h2>3. 他のセキュリティ製品との違い</h2>
+        <p>試験では、FW（ファイアウォール）やWAFとの混同に注意が必要です。</p>
+
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>用語</th>
+              <th>守る向き</th>
+              <th>守る対象</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>FW</strong><br>(Firewall)</td>
+              <td>外 → 内</td>
+              <td><strong>ネットワーク</strong>への不正侵入を防ぐ</td>
+            </tr>
+            <tr>
+              <td><strong>WAF</strong><br>(Web App FW)</td>
+              <td>外 → 内</td>
+              <td><strong>Webサイト</strong>への攻撃（SQLi等）を防ぐ</td>
+            </tr>
+            <tr>
+              <td class="hl-dlp"><strong>DLP</strong><br>(Data Loss Prevention)</td>
+              <td class="hl-dlp">内 → 外</td>
+              <td class="hl-dlp"><strong>重要データ</strong>そのものの流出を防ぐ</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>まとめ</h2>
+        <p>DLPの役割を一言で言えば<strong>「情報の門番」</strong>です。</p>
+        <ul>
+          <li><strong>外からの攻撃</strong>を防ぐのが FW / WAF / IDS。</li>
+          <li><strong>中からの漏えい</strong>を防ぐのが DLP。</li>
+        </ul>
+        <p>「USBメモリへのコピー禁止」や「マイナンバーを含むメールの送信ブロック」といった機能は、DLPが担っています。</p>
+
+        <!-- GEN: REFERENCES -->
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> IT passport study map. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
