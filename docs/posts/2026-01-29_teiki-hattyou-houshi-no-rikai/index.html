@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>定期発注方式の理解 - IT passport study map</title>
+  <meta name="description" content="定期発注方式の仕組みと発注量の計算式を解説。在庫推移のグラフや、「目標在庫量」から現在量を引く計算ロジックを図解で整理します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="定期発注方式の理解" />
+  <meta property="og:description" content="定期発注方式の仕組みと発注量の計算式を解説。在庫推移のグラフや、「目標在庫量」から現在量を引く計算ロジックを図解で整理します。" />
+  
+  <!-- Assets: 記事は docs/posts/<id>/index.html → ../../ 固定 -->
+  <link rel="stylesheet" href="../../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS（図解・補助CSS） -->
+  <style>
+    /* 共通図解コンテナ */
+    .diagram-section {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* 在庫推移グラフ */
+    .stock-chart {
+      position: relative;
+      width: 100%;
+      max-width: 500px;
+      height: 250px;
+      border-left: 2px solid #333;
+      border-bottom: 2px solid #333;
+      background: #fff;
+      margin: 1rem 0 2rem 1rem;
+    }
+    .axis-y {
+      position: absolute;
+      top: -25px;
+      left: -20px;
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+    .axis-x {
+      position: absolute;
+      bottom: -25px;
+      right: -20px;
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+
+    /* 安全在庫エリア */
+    .safety-zone {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 40px;
+      background: rgba(230, 126, 34, 0.2);
+      border-top: 1px dashed #e67e22;
+    }
+    .safety-label {
+      position: absolute;
+      right: 5px;
+      top: 5px;
+      font-size: 0.75rem;
+      color: #e67e22;
+      font-weight: bold;
+    }
+
+    /* 在庫の線（CSSで簡易描画） */
+    .stock-line {
+      position: absolute;
+      width: 160px;
+      height: 2px;
+      background: #0056b3;
+      transform-origin: left top;
+    }
+    .sl-1 {
+      top: 20px;
+      left: 0;
+      transform: rotate(30deg);
+    }
+    .sl-2 {
+      top: 100px; /* 納品後 */
+      left: 138px; /* 発注点から少し後 */
+      width: 160px;
+      transform: rotate(30deg);
+    }
+    
+    /* 納品による回復線 */
+    .recovery-line {
+      position: absolute;
+      left: 138px;
+      top: 100px;
+      height: 100px; /* 前の線の終点(100) - 次の始点(20) */
+      border-left: 2px dashed #0056b3;
+    }
+
+    /* 発注ポイント */
+    .order-point {
+      position: absolute;
+      top: 55px; /* sl-1上の点 */
+      left: 60px;
+      width: 10px;
+      height: 10px;
+      background: #d00;
+      border-radius: 50%;
+      z-index: 2;
+    }
+    .order-label {
+      position: absolute;
+      top: -25px;
+      left: -10px;
+      background: #d00;
+      color: #fff;
+      font-size: 0.75rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    
+    /* 期間矢印 */
+    .period-arrow {
+      position: absolute;
+      bottom: 10px;
+      height: 2px;
+      background: #666;
+    }
+    .period-arrow::before, .period-arrow::after {
+      content: "";
+      position: absolute;
+      top: -4px;
+      width: 2px;
+      height: 10px;
+      background: #666;
+    }
+    .period-arrow::before { left: 0; }
+    .period-arrow::after { right: 0; }
+    
+    .pa-interval {
+      left: 60px;
+      width: 140px;
+    }
+    .pa-lead {
+      left: 60px;
+      width: 80px;
+      bottom: 25px; /* 段違いにする */
+    }
+    .pa-text {
+      position: absolute;
+      top: 5px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.75rem;
+      white-space: nowrap;
+    }
+
+    /* 計算式のブロック図 */
+    .formula-stack {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      max-width: 500px;
+      gap: 1rem;
+    }
+    
+    /* 目標在庫量（全体） */
+    .target-bar {
+      display: flex;
+      width: 100%;
+      height: 50px;
+      border: 2px solid #333;
+      border-radius: 6px;
+      overflow: hidden;
+      position: relative;
+    }
+    .tb-usage {
+      flex: 3;
+      background: #eef6ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      color: #0056b3;
+      border-right: 1px dashed #0056b3;
+      flex-direction: column;
+    }
+    .tb-safety {
+      flex: 1;
+      background: #fffaf0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      color: #e67e22;
+      font-weight: bold;
+    }
+    .target-label {
+      position: absolute;
+      top: -25px;
+      left: 0;
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+
+    /* 引くもの（現在庫＋発注残） */
+    .minus-bar {
+      display: flex;
+      width: 60%; /* 目標より少ない */
+      height: 50px;
+      border: 2px dashed #666;
+      border-radius: 6px;
+      margin-left: 0;
+      position: relative;
+    }
+    .mb-stock {
+      flex: 1;
+      background: #eee;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+    }
+    .mb-order {
+      flex: 1;
+      background: #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      border-left: 1px solid #fff;
+    }
+    
+    /* 差分（発注量） */
+    .order-bar {
+      width: 40%; /* 残り */
+      height: 50px;
+      background: #d00;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      border-radius: 6px;
+      position: absolute;
+      right: 0;
+      top: 0;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .order-bar::before {
+      content: "＝ 発注量";
+      position: absolute;
+      bottom: -25px;
+      color: #d00;
+      font-size: 0.9rem;
+    }
+
+    .calc-row {
+      display: flex;
+      width: 100%;
+      position: relative;
+    }
+
+    /* ポイント強調 */
+    .key-point {
+      background-color: #f4f4f4;
+      border-left: 4px solid #333;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .key-point strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1em;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 600px) {
+      .stock-chart {
+        width: 100%;
+        overflow: hidden;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a href="../../index.html" class="site-title">IT passport study map</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-29">
+            2026.01.29 / マネジメント系
+          </time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">定期発注方式の理解</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list">
+            <li class="tag">#物流</li>
+            <li class="tag">#在庫管理</li>
+            <li class="tag">#発注方式</li>
+            <li class="tag">#計算問題</li>
+            <li class="tag">#ビジネス</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>在庫管理の基本手法の一つ「定期発注方式」。<br>
+        「毎週月曜日に発注する」といったシンプルなルールですが、<strong>「毎回何個注文すればいいの？」</strong>という計算式が少し複雑に見えます。</p>
+        <p>この計算式は、図で見ると「足りない分を埋める」だけの単純な引き算であることが分かります。</p>
+
+        <div class="key-point">
+          <strong>1行要約</strong><br>
+          定期発注方式とは、決まった時期に、「次の発注までに必要な量（目標在庫）」から「今持っている量」を引いた分だけ発注する方式。
+        </div>
+
+        <h2>1. 在庫の動きを図で見る</h2>
+        <p>時間が経つと在庫は減っていき、発注して届くと回復します。この波のイメージを持ちましょう。</p>
+
+        <div class="diagram-section">
+          <div class="stock-chart">
+            <div class="axis-y">在庫量</div>
+            <div class="axis-x">時間</div>
+
+            <!-- 在庫ライン -->
+            <div class="stock-line sl-1"></div>
+            
+            <!-- 発注点 -->
+            <div class="order-point"></div>
+            <div class="order-label">発注！</div>
+            
+            <!-- 納品と回復 -->
+            <div class="recovery-line"></div>
+            <div class="stock-line sl-2"></div>
+
+            <!-- 安全在庫 -->
+            <div class="safety-zone">
+              <span class="safety-label">安全在庫 (保険)</span>
+            </div>
+
+            <!-- 期間矢印 -->
+            <div class="period-arrow pa-lead">
+              <span class="pa-text">調達期間 (届くまで)</span>
+            </div>
+            <div class="period-arrow pa-interval" style="bottom:-5px;">
+              <span class="pa-text" style="top:12px;">発注間隔 (次の発注まで)</span>
+            </div>
+
+          </div>
+          <p style="font-size:0.9rem; color:#666; margin-top:1rem;">
+            「届くまでの分」と「次の発注までの分」をカバーできる量が必要です。
+          </p>
+        </div>
+
+        <h2>2. 「どこまで積めばいいか」がポイント</h2>
+        <p>発注する時に考えるべきなのは、<strong>「次に商品が届くまでの間、在庫切れにならない最大量（目標在庫量）」</strong>です。</p>
+        <p>それは以下の合計になります。</p>
+        <ol>
+          <li><strong>発注間隔の消費量：</strong> 次の発注日までに売れる分。</li>
+          <li><strong>調達期間の消費量：</strong> 発注してから届くまでに売れる分。</li>
+          <li><strong>安全在庫：</strong> 予想より売れた時のための予備（保険）。</li>
+        </ol>
+
+        <h2>3. 計算式をブロック図で理解</h2>
+        <p>公式を暗記するのではなく、このブロックの引き算をイメージしてください。</p>
+
+        <div class="diagram-section">
+          <div class="formula-stack">
+            
+            <!-- 目標在庫量 -->
+            <div class="calc-row" style="margin-bottom:0.5rem;">
+              <span class="target-label">目標在庫量（必要な総量）</span>
+              <div class="target-bar">
+                <div class="tb-usage">
+                  (発注間隔 ＋ 調達期間) × 使用量
+                  <span style="font-size:0.7rem; font-weight:normal;">未来に使う分</span>
+                </div>
+                <div class="tb-safety">安全在庫</div>
+              </div>
+            </div>
+
+            <div style="font-size:1.5rem; font-weight:bold; text-align:center; color:#999;">－ (引く)</div>
+
+            <!-- 手持ち -->
+            <div class="calc-row">
+              <div class="minus-bar">
+                <div class="mb-stock">現在庫</div>
+                <div class="mb-order">発注残<br><span style="font-size:0.7rem;">(未納品)</span></div>
+              </div>
+              
+              <!-- 答え -->
+              <div class="order-bar">発注量</div>
+            </div>
+
+          </div>
+        </div>
+
+        <h3>公式のおさらい</h3>
+        <p>上の図を式にするとこうなります。</p>
+        <div style="background:#fff; border:2px solid #333; padding:1rem; font-weight:bold; margin:1rem 0;">
+          発注量 ＝ <br>
+          （発注間隔 ＋ 調達期間）× 使用予定量 ＋ 安全在庫<br>
+          － 現在庫 － 発注残
+        </div>
+
+        <h2>まとめ</h2>
+        <ul>
+          <li><strong>定期発注方式：</strong> 「時期」が決まっていて、「量」を毎回計算する。Aランク商品など重要品向け。</li>
+          <li><strong>定量発注方式：</strong> 「量」が決まっていて、「減ったら（発注点）」発注する。B/Cランク商品向け。</li>
+        </ul>
+        <p>計算式が出たら、「未来に必要な分」から「今ある分（来る予定含む）」を引く、と思い出してください。</p>
+
+        <!-- GEN: REFERENCES -->
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> IT passport study map. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
+
