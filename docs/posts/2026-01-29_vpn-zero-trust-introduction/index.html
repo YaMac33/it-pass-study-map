@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>脱VPNとゼロトラストの概要 - IT passport study map</title>
+  <meta name="description" content="VPN依存の「境界型」から、アクセスごとに検証する「ゼロトラスト」への移行について解説。テレワーク時代に必須のセキュリティ概念を図解で整理します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="脱VPNとゼロトラストの概要" />
+  <meta property="og:description" content="VPN依存の「境界型」から、アクセスごとに検証する「ゼロトラスト」への移行について解説。テレワーク時代に必須のセキュリティ概念を図解で整理します。" />
+  
+  <!-- Assets: 記事は docs/posts/<id>/index.html → ../../ 固定 -->
+  <link rel="stylesheet" href="../../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS（図解・補助CSS） -->
+  <style>
+    /* 共通図解コンテナ */
+    .diagram-section {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* 境界型 vs ゼロトラスト 対比図 */
+    .model-comparison {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      width: 100%;
+      flex-wrap: wrap;
+    }
+    .model-box {
+      flex: 1;
+      min-width: 280px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .model-title {
+      font-weight: bold;
+      margin-bottom: 1rem;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      color: #fff;
+    }
+
+    /* 境界型（Castle） */
+    .perimeter-model {
+      position: relative;
+      width: 220px;
+      height: 180px;
+      border: 4px solid #666; /* 城壁 */
+      background: #fff;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .perimeter-model::before {
+      content: "社内ネットワーク (信頼)";
+      position: absolute;
+      top: 5px;
+      font-size: 0.75rem;
+      color: #666;
+    }
+    .vpn-tunnel {
+      position: absolute;
+      left: -40px;
+      top: 50%;
+      width: 40px;
+      height: 16px;
+      background: #0056b3;
+      transform: translateY(-50%);
+      z-index: 2;
+    }
+    .vpn-label {
+      position: absolute;
+      left: -50px;
+      top: 30%;
+      font-size: 0.7rem;
+      color: #0056b3;
+      font-weight: bold;
+    }
+    .internal-data {
+      font-size: 2rem;
+    }
+    .user-outside {
+      position: absolute;
+      left: -80px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.5rem;
+    }
+
+    /* ゼロトラスト型（No Perimeter） */
+    .zerotrust-model {
+      position: relative;
+      width: 220px;
+      height: 180px;
+      /* 境界なし */
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .cloud-app {
+      background: #eef6ff;
+      border: 1px solid #0056b3;
+      border-radius: 6px;
+      padding: 0.5rem;
+      font-size: 0.8rem;
+      position: relative;
+      color: #0056b3;
+      font-weight: bold;
+    }
+    /* 認証ゲート */
+    .auth-gate {
+      position: absolute;
+      left: -10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #27ae60;
+      color: #fff;
+      font-size: 0.6rem;
+      padding: 2px 4px;
+      border-radius: 4px;
+      z-index: 2;
+    }
+    .cloud-app::before {
+      content: "🛡️"; /* 認証 */
+      position: absolute;
+      left: -10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1rem;
+    }
+
+    /* 脱VPNの流れ図 */
+    .vpn-off-flow {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      width: 100%;
+      max-width: 450px;
+    }
+    .flow-card {
+      background: #fff;
+      border: 1px solid #ccc;
+      padding: 1rem;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .fc-icon {
+      font-size: 2rem;
+    }
+    .fc-content {
+      flex: 1;
+    }
+    .fc-title {
+      font-weight: bold;
+      font-size: 1rem;
+      display: block;
+      color: #333;
+    }
+    .fc-desc {
+      font-size: 0.85rem;
+      color: #666;
+    }
+    .arrow-down {
+      text-align: center;
+      font-size: 1.5rem;
+      color: #999;
+      font-weight: bold;
+    }
+
+    /* 比較テーブル */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      margin: 1rem 0;
+    }
+    .comparison-table th, .comparison-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+    .comparison-table th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+      width: 30%;
+    }
+    .comparison-table td:nth-child(3) { background: #f0f8ff; font-weight:bold; } /* ゼロトラスト */
+
+    /* ポイント強調 */
+    .key-point {
+      background-color: #f4f4f4;
+      border-left: 4px solid #333;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .key-point strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1em;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 600px) {
+      .model-comparison {
+        flex-direction: column;
+        align-items: center;
+      }
+      .perimeter-model, .zerotrust-model {
+        width: 100%;
+        max-width: 300px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a href="../../index.html" class="site-title">IT passport study map</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-29">
+            2026.01.29 / テクノロジ系
+          </time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">脱VPNとゼロトラストの概要</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list">
+            <li class="tag">#ゼロトラスト</li>
+            <li class="tag">#VPN</li>
+            <li class="tag">#セキュリティ</li>
+            <li class="tag">#テレワーク</li>
+            <li class="tag">#クラウド</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>テレワークやクラウド利用が当たり前になった今、従来の「VPNで社内に入れば安全」という考え方が限界を迎えています。<br>
+        そこで登場したのが、<strong>「ゼロトラスト（何も信頼しない）」</strong>という新しいセキュリティの概念です。</p>
+
+        <div class="key-point">
+          <strong>1行要約</strong><br>
+          ゼロトラストとは、「社内・社外の区別なく、すべてのアクセスを疑い、その都度検証する（Never Trust, Always Verify）」という考え方のこと。
+        </div>
+
+        <h2>1. 「境界型」と「ゼロトラスト」の違い</h2>
+        <p>セキュリティの守り方が、場所ベース（境界）から、認証ベース（個々のアクセス）へと変化しています。</p>
+
+        <div class="diagram-section">
+          <div class="model-comparison">
+            
+            <!-- 境界型 -->
+            <div class="model-box">
+              <span class="model-title" style="background:#666;">従来：境界型 (VPN)</span>
+              <div class="perimeter-model">
+                <span class="vpn-label">VPN接続</span>
+                <div class="vpn-tunnel"></div>
+                <div class="user-outside">👤</div>
+                <div class="internal-data">🗄️ 💻</div>
+              </div>
+              <p style="font-size:0.85rem; color:#666; margin-top:0.5rem;">
+                <strong>一度入れば信頼する</strong><br>
+                社内は安全、社外は危険。
+              </p>
+            </div>
+
+            <!-- ゼロトラスト -->
+            <div class="model-box">
+              <span class="model-title" style="background:#0056b3;">新：ゼロトラスト</span>
+              <div class="zerotrust-model">
+                <div class="user-outside" style="left:-40px;">👤</div>
+                
+                <div class="cloud-app">SaaS A</div>
+                <div class="cloud-app">社内Web</div>
+                <div class="cloud-app">File</div>
+              </div>
+              <p style="font-size:0.85rem; color:#0056b3; margin-top:0.5rem;">
+                <strong>アクセスごとに検証</strong><br>
+                どこにいても、都度チェックする。
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+        <h2>2. なぜ「脱VPN」なのか？</h2>
+        <p>従来のVPN依存には、現代の働き方に合わない3つの弱点があります。</p>
+
+        <div class="diagram-section">
+          <div class="vpn-off-flow">
+            <div class="flow-card">
+              <span class="fc-icon">🐌</span>
+              <div class="fc-content">
+                <span class="fc-title">通信速度の遅延</span>
+                <span class="fc-desc">全社員のアクセスがVPN装置に集中し、ボトルネックになる。</span>
+              </div>
+            </div>
+            <div class="arrow-down">↓</div>
+            <div class="flow-card">
+              <span class="fc-icon">🔓</span>
+              <div class="fc-content">
+                <span class="fc-title">侵入後のリスク</span>
+                <span class="fc-desc">一度VPNを突破されると、社内システムが攻撃し放題になる。</span>
+              </div>
+            </div>
+            <div class="arrow-down">↓</div>
+            <div class="flow-card" style="border-color:#0056b3; background:#eef6ff;">
+              <span class="fc-icon">🚀</span>
+              <div class="fc-content">
+                <span class="fc-title">脱VPN（インターネット直結）</span>
+                <span class="fc-desc">クラウドサービスへは直接アクセスし、認証で守る。</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h2>3. ゼロトラストを実現する要素</h2>
+        <p>「VPNをやめる」代わりに、何を強化するのでしょうか？<br>
+        主に以下の技術を組み合わせて実現します。</p>
+        <ul>
+          <li><strong>ID管理（IDaaS）：</strong>クラウド上でIDを一元管理し、アクセス権を制御する。</li>
+          <li><strong>多要素認証（MFA）：</strong>パスワードだけでなく、スマホ通知などで本人確認を強化する。</li>
+          <li><strong>エンドポイントセキュリティ（EDR）：</strong>PC端末（エンドポイント）の挙動を監視し、ウイルス感染を即座に検知する。</li>
+        </ul>
+
+        <h2>4. 比較まとめ</h2>
+        <p>試験対策として、従来型との違いを整理します。</p>
+
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>項目</th>
+              <th>境界型 (VPN)</th>
+              <th>ゼロトラスト</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>信頼の前提</strong></td>
+              <td>社内ネットワーク</td>
+              <td><strong>信頼しない (Zero)</strong></td>
+            </tr>
+            <tr>
+              <td><strong>守る場所</strong></td>
+              <td>ネットワークの境界</td>
+              <td>ID、端末、データ</td>
+            </tr>
+            <tr>
+              <td><strong>検証頻度</strong></td>
+              <td>接続時のみ</td>
+              <td><strong>アクセスの都度</strong></td>
+            </tr>
+            <tr>
+              <td><strong>キーワード</strong></td>
+              <td>VPN, Firewall</td>
+              <td>IDaaS, MFA, EDR</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>まとめ</h2>
+        <p>ITパスポート試験で「ゼロトラスト」が出たら、以下のフレーズを思い出してください。</p>
+        <ul>
+          <li><strong>Never Trust, Always Verify：</strong> 決して信頼せず、常に検証せよ。</li>
+          <li><strong>脱境界：</strong> 社内だから安全、という考え方を捨てる。</li>
+        </ul>
+        <p>「VPN機器という1つの扉に頼るのをやめて、すべての部屋（アプリ）のドアに頑丈な鍵（認証）をつける」イメージです。</p>
+
+        <!-- GEN: REFERENCES -->
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> IT passport study map. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
+
