@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>ハイブリッド暗号方式の活用 - IT passport study map</title>
+  <meta name="description" content="公開鍵暗号と共通鍵暗号を組み合わせた「ハイブリッド暗号方式」を解説。鍵交換の安全性と通信の高速性を両立させる仕組みを図解で整理します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="ハイブリッド暗号方式の活用" />
+  <meta property="og:description" content="公開鍵暗号と共通鍵暗号を組み合わせた「ハイブリッド暗号方式」を解説。鍵交換の安全性と通信の高速性を両立させる仕組みを図解で整理します。" />
+  
+  <!-- Assets: 記事は docs/posts/<id>/index.html → ../../ 固定 -->
+  <link rel="stylesheet" href="../../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS（図解・補助CSS） -->
+  <style>
+    /* 共通図解コンテナ */
+    .diagram-section {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* 暗号方式の比較カード */
+    .crypto-cards {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      width: 100%;
+      flex-wrap: wrap;
+    }
+    .crypto-card {
+      flex: 1;
+      min-width: 240px;
+      background: #fff;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      padding: 1.5rem;
+      text-align: center;
+      position: relative;
+    }
+    
+    /* 共通鍵 */
+    .cc-common { border-color: #e67e22; }
+    .cc-common::before {
+      content: "共通鍵暗号";
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #e67e22;
+      color: #fff;
+      font-weight: bold;
+      padding: 2px 12px;
+      border-radius: 4px;
+    }
+
+    /* 公開鍵 */
+    .cc-public { border-color: #0056b3; }
+    .cc-public::before {
+      content: "公開鍵暗号";
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #0056b3;
+      color: #fff;
+      font-weight: bold;
+      padding: 2px 12px;
+      border-radius: 4px;
+    }
+
+    .card-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+    .pros-cons {
+      text-align: left;
+      font-size: 0.9rem;
+      margin-top: 1rem;
+    }
+    .pc-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    .tag-good { color: #27ae60; font-weight: bold; margin-right: 0.5rem; }
+    .tag-bad { color: #d00; font-weight: bold; margin-right: 0.5rem; }
+
+    /* ハイブリッド方式のフロー図 */
+    .hybrid-flow {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      width: 100%;
+      max-width: 500px;
+      position: relative;
+      padding: 1rem;
+      background: #eef6ff;
+      border-radius: 12px;
+      border: 2px dashed #0056b3;
+    }
+    
+    .hf-step {
+      background: #fff;
+      border: 1px solid #999;
+      border-radius: 6px;
+      padding: 1rem;
+      position: relative;
+    }
+    .step-badge {
+      position: absolute;
+      top: -10px;
+      left: 10px;
+      background: #333;
+      color: #fff;
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    
+    .key-transfer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 0.5rem;
+    }
+    .kt-box {
+      border: 1px solid #ccc;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      background: #f9f9f9;
+    }
+    .kt-arrow {
+      color: #0056b3;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+    
+    .data-transfer {
+      text-align: center;
+      margin-top: 0.5rem;
+      font-weight: bold;
+      color: #e67e22;
+      border: 2px solid #e67e22;
+      padding: 0.5rem;
+      border-radius: 4px;
+      background: #fffaf0;
+    }
+
+    .arrow-down {
+      text-align: center;
+      color: #999;
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin: -0.5rem 0;
+    }
+
+    /* 比較テーブル */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      margin: 1rem 0;
+    }
+    .comparison-table th, .comparison-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+    .comparison-table th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+      width: 25%;
+    }
+    .comparison-table td:nth-child(4) { background: #f0f8ff; font-weight:bold; } /* ハイブリッド */
+
+    /* ポイント強調 */
+    .key-point {
+      background-color: #f4f4f4;
+      border-left: 4px solid #333;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .key-point strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1em;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 600px) {
+      .crypto-cards {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a href="../../index.html" class="site-title">IT passport study map</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-29">
+            2026.01.29 / テクノロジ系
+          </time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">ハイブリッド暗号方式の活用</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list">
+            <li class="tag">#暗号技術</li>
+            <li class="tag">#公開鍵</li>
+            <li class="tag">#共通鍵</li>
+            <li class="tag">#ハイブリッド</li>
+            <li class="tag">#SSL/TLS</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>インターネットの通信を守る暗号技術には、「公開鍵暗号」と「共通鍵暗号」の2種類があります。<br>
+        実は、実際の通信（SSL/TLSなど）では、どちらか一方ではなく、両方の長所を組み合わせた<strong>「ハイブリッド暗号方式」</strong>が使われています。</p>
+
+        <div class="key-point">
+          <strong>1行要約</strong><br>
+          ハイブリッド暗号方式とは、「鍵の受け渡し」には安全な公開鍵暗号を使い、「実際のデータ通信」には高速な共通鍵暗号を使う仕組みのこと。
+        </div>
+
+        <h2>1. なぜ2つを組み合わせるのか？</h2>
+        <p>それぞれの方式には、決定的なメリットとデメリットがあるからです。</p>
+
+        <div class="diagram-section">
+          <div class="crypto-cards">
+            
+            <!-- 共通鍵暗号 -->
+            <div class="crypto-card cc-common">
+              <span class="card-icon">🗝️</span>
+              <div class="pros-cons">
+                <div class="pc-item"><span class="tag-good">◎ 速い</span> データ処理が高速</div>
+                <div class="pc-item"><span class="tag-bad">× 危険</span> 鍵を渡すときに盗まれるリスク</div>
+              </div>
+              <p style="font-size:0.8rem; color:#666; margin-top:1rem;">
+                鍵さえ安全に渡せれば最強だが、<br>その「渡し方」が問題（鍵配送問題）。
+              </p>
+            </div>
+
+            <!-- 公開鍵暗号 -->
+            <div class="crypto-card cc-public">
+              <span class="card-icon">🔓🗝️</span>
+              <div class="pros-cons">
+                <div class="pc-item"><span class="tag-good">◎ 安全</span> 鍵をネットで送らなくていい</div>
+                <div class="pc-item"><span class="tag-bad">× 遅い</span> 計算が複雑で処理が重い</div>
+              </div>
+              <p style="font-size:0.8rem; color:#666; margin-top:1rem;">
+                安全性は高いが、動画などの<br>大容量データを送るには遅すぎる。
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+        <h2>2. ハイブリッド方式の仕組み（図解）</h2>
+        <p>そこで、以下のように役割を分担します。</p>
+        <ul>
+          <li><strong>最初だけ：</strong> 公開鍵暗号を使って「共通鍵」を安全に送る。</li>
+          <li><strong>その後：</strong> 届いた「共通鍵」を使って、高速にデータを送る。</li>
+        </ul>
+
+        <div class="diagram-section">
+          <div class="hybrid-flow">
+            
+            <div class="hf-step">
+              <span class="step-badge">Step 1</span>
+              <strong>共通鍵（セッション鍵）の生成</strong>
+              <div style="font-size:0.85rem; color:#666; margin-top:0.5rem;">
+                送信者が、今回限り使う「共通鍵」を作る。
+              </div>
+            </div>
+
+            <div class="arrow-down">⬇</div>
+
+            <div class="hf-step">
+              <span class="step-badge">Step 2</span>
+              <strong>鍵の配送（公開鍵暗号）</strong>
+              <div class="key-transfer">
+                <div class="kt-box">共通鍵</div>
+                <div class="kt-arrow">🔒 公開鍵で暗号化して送信 ➡</div>
+                <div class="kt-box">受信者</div>
+              </div>
+              <div style="font-size:0.8rem; color:#0056b3; margin-top:0.5rem; text-align:center;">
+                ※中身は小さい「鍵」だけなので、遅くてもOK
+              </div>
+            </div>
+
+            <div class="arrow-down">⬇</div>
+
+            <div class="hf-step">
+              <span class="step-badge">Step 3</span>
+              <strong>データ通信（共通鍵暗号）</strong>
+              <div class="data-transfer">
+                高速暗号化通信スタート 🚀
+              </div>
+              <div style="font-size:0.8rem; color:#e67e22; margin-top:0.5rem; text-align:center;">
+                ※安全に共有できた共通鍵を使って、大容量データをサクサク送る
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <h2>3. 比較まとめ表</h2>
+        <p>試験対策として、それぞれの特徴を整理します。</p>
+
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>項目</th>
+              <th>共通鍵暗号</th>
+              <th>公開鍵暗号</th>
+              <th>ハイブリッド</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>処理速度</strong></td>
+              <td>速い</td>
+              <td>遅い</td>
+              <td><strong>速い</strong>（通信時）</td>
+            </tr>
+            <tr>
+              <td><strong>鍵の配布</strong></td>
+              <td>危険（課題）</td>
+              <td>安全</td>
+              <td><strong>安全</strong>（最初）</td>
+            </tr>
+            <tr>
+              <td><strong>主な用途</strong></td>
+              <td>ファイル暗号化</td>
+              <td>電子署名</td>
+              <td><strong>SSL/TLS (HTTPS)</strong></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>まとめ</h2>
+        <p>ITパスポート試験で「SSL/TLS」や「セキュアな通信」について問われたら、この方式を思い出してください。</p>
+        <ul>
+          <li><strong>公開鍵で、鍵を渡す。</strong>（安全確保）</li>
+          <li><strong>共通鍵で、データを送る。</strong>（速度確保）</li>
+        </ul>
+        <p>「美味しいとこ取り」の賢い仕組みです。</p>
+
+        <!-- GEN: REFERENCES -->
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> IT passport study map. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
