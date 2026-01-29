@@ -1,5 +1,22 @@
 [
   {
+    "id": "2026-01-29_hybrid-encryption-workflow",
+    "timestamp": "2026-01-29T15:46:31+09:00",
+    "title": "ハイブリッド暗号方式の活用",
+    "summary": "公開鍵暗号と共通鍵暗号を組み合わせたハイブリッド暗号方式の特徴を解説します。これにより安全性と通信の高速性が両立されます。",
+    "tags": [
+      "暗号技術",
+      "公開鍵",
+      "共通鍵",
+      "ハイブリッド",
+      "SSL",
+      "TLS"
+    ],
+    "category_lv1": "テクノロジ系",
+    "category_lv2": "セキュリティ",
+    "post_path": "posts/2026-01-29_hybrid-encryption-workflow/"
+  },
+  {
     "id": "2026-01-29_ci-cd-automated-processes",
     "timestamp": "2026-01-29T15:35:19+09:00",
     "title": "継続的インテグレーションとデリバリ",
