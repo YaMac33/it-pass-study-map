@@ -1,0 +1,16 @@
+{
+  "id": "2026-01-29_vpn-zero-trust-introduction",
+  "timestamp": "2026-01-29T14:45:50+09:00",
+  "title": "脱VPNとゼロトラストの概要",
+  "summary": "VPNからゼロトラストへの移行を解説します。テレワーク時代に必要なセキュリティ概念を整理しました。",
+  "tags": [
+    "ゼロトラスト",
+    "VPN",
+    "セキュリティ",
+    "テレワーク",
+    "クラウド"
+  ],
+  "category_lv1": "テクノロジ系",
+  "category_lv2": "セキュリティ",
+  "post_path": "posts/2026-01-29_vpn-zero-trust-introduction/"
+}
