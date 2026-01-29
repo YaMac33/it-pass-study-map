@@ -1,0 +1,16 @@
+{
+  "id": "2026-01-29_internet-communication-flow",
+  "timestamp": "2026-01-29T16:49:47+09:00",
+  "title": "端末からインターネット通信の流れ",
+  "summary": "端末からWebサーバーまでの通信フローを解説します。階層構造とセキュリティ技術について詳しく学びましょう。",
+  "tags": [
+    "ネットワーク",
+    "通信",
+    "ITパスポート",
+    "階層モデル",
+    "セキュリティ"
+  ],
+  "category_lv1": "テクノロジ系",
+  "category_lv2": "ネットワーク",
+  "post_path": "posts/2026-01-29_internet-communication-flow/"
+}
