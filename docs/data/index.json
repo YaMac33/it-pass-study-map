@@ -1,5 +1,21 @@
 [
   {
+    "id": "2026-01-29_web-layers-and-features",
+    "timestamp": "2026-01-29T15:22:42+09:00",
+    "title": "ウェブの層と特徴",
+    "summary": "サーフェスウェブ、ディープウェブ、ダークウェブの違いと仕組みを解説します。各層の特徴を整理し、誤解を解消します。",
+    "tags": [
+      "ウェブ",
+      "インターネット",
+      "ダークウェブ",
+      "セキュリティ",
+      "Tor"
+    ],
+    "category_lv1": "テクノロジ系",
+    "category_lv2": "基礎理論",
+    "post_path": "posts/2026-01-29_web-layers-and-features/"
+  },
+  {
     "id": "2026-01-29_it-job-role-analysis",
     "timestamp": "2026-01-29T15:02:07+09:00",
     "title": "IT職種の役割を整理",
