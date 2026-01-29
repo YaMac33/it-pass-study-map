@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>ホスト名とドメイン名の理解 - IT passport study map</title>
+  <meta name="description" content="ホスト名とドメイン名の違い、およびFQDN（完全修飾ドメイン名）の構造を解説。ネットワーク上の「個々の機器」と「管理グループ」の関係を図解で整理します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="ホスト名とドメイン名の理解" />
+  <meta property="og:description" content="ホスト名とドメイン名の違い、およびFQDN（完全修飾ドメイン名）の構造を解説。ネットワーク上の「個々の機器」と「管理グループ」の関係を図解で整理します。" />
+  
+  <!-- Assets: 記事は docs/posts/<id>/index.html → ../../ 固定 -->
+  <link rel="stylesheet" href="../../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS（図解・補助CSS） -->
+  <style>
+    /* 共通図解コンテナ */
+    .diagram-section {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* FQDN分解図 */
+    .fqdn-structure {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 500px;
+    }
+    .url-text {
+      font-family: monospace;
+      font-size: 1.5rem;
+      font-weight: bold;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+    .url-parts {
+      display: flex;
+      width: 100%;
+      justify-content: center;
+      gap: 2px;
+    }
+    .part-box {
+      border: 2px solid;
+      border-top: none;
+      padding: 0.5rem;
+      text-align: center;
+      position: relative;
+      font-size: 0.9rem;
+      font-weight: bold;
+    }
+    .part-host {
+      border-color: #0056b3;
+      color: #0056b3;
+      flex: 1;
+      border-radius: 0 0 0 8px;
+    }
+    .part-domain {
+      border-color: #e67e22;
+      color: #e67e22;
+      flex: 3;
+      border-radius: 0 0 8px 0;
+    }
+    .part-label {
+      font-size: 0.8rem;
+      display: block;
+      margin-top: 4px;
+    }
+
+    /* 階層ツリー図 */
+    .domain-tree {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 400px;
+    }
+    .tree-node {
+      background: #fff;
+      border: 1px solid #ccc;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      font-weight: bold;
+      text-align: center;
+      min-width: 120px;
+      position: relative;
+    }
+    .node-domain {
+      background: #fffaf0;
+      border-color: #e67e22;
+      color: #e67e22;
+    }
+    .node-host {
+      background: #eef6ff;
+      border-color: #0056b3;
+      color: #0056b3;
+    }
+    
+    .tree-line-v {
+      width: 2px;
+      height: 20px;
+      background: #ccc;
+    }
+    .tree-branch-h {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      position: relative;
+      padding-top: 20px;
+    }
+    .tree-branch-h::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 16%; /* 調整 */
+      right: 16%;
+      height: 2px;
+      background: #ccc;
+    }
+    .branch-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+    }
+    .branch-col::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      height: 20px;
+      width: 2px;
+      background: #ccc;
+    }
+
+    /* 比較テーブル */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      margin: 1rem 0;
+    }
+    .comparison-table th, .comparison-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+    .comparison-table th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+      width: 25%;
+    }
+    .hl-host { color: #0056b3; font-weight: bold; }
+    .hl-domain { color: #e67e22; font-weight: bold; }
+
+    /* ポイント強調 */
+    .key-point {
+      background-color: #f4f4f4;
+      border-left: 4px solid #333;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .key-point strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1em;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 600px) {
+      .url-text { font-size: 1.1rem; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a href="../../index.html" class="site-title">IT passport study map</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-29">
+            2026.01.29 / テクノロジ系
+          </time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">ホスト名とドメイン名の理解</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list">
+            <li class="tag">#DNS</li>
+            <li class="tag">#ホスト名</li>
+            <li class="tag">#ドメイン名</li>
+            <li class="tag">#FQDN</li>
+            <li class="tag">#ITパスポート</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>WebサイトのURLやメールアドレスで必ず目にする文字列。<br>
+        「どこからどこまでがドメイン名で、どれがホスト名？」と迷うことはありませんか？</p>
+        <p>ITパスポート試験では、これらの区切り位置と役割を正しく理解しておく必要があります。</p>
+
+        <div class="key-point">
+          <strong>1行要約</strong><br>
+          ホスト名は「特定のコンピュータの名前（表札）」、ドメイン名は「所属する組織やグループ（住所）」、両方合わせたものがFQDN。
+        </div>
+
+        <h2>1. 全体像：FQDNの構造</h2>
+        <p>まずは全体像（FQDN：Fully Qualified Domain Name）を分解してみましょう。</p>
+
+        <div class="diagram-section">
+          <div class="fqdn-structure">
+            <div class="url-text">
+              <span style="color:#0056b3;">www</span>.<span style="color:#e67e22;">example.co.jp</span>
+            </div>
+            
+            <div class="url-parts">
+              <div class="part-box part-host">
+                ホスト名
+                <span class="part-label">機器の名前</span>
+              </div>
+              <div class="part-box part-domain">
+                ドメイン名
+                <span class="part-label">組織・グループ</span>
+              </div>
+            </div>
+          </div>
+          <p style="font-size:0.9rem; color:#666; margin-top:1rem;">
+            ※メールの場合：<span style="font-weight:bold; color:#0056b3;">mail</span>.<span style="font-weight:bold; color:#e67e22;">google.com</span>
+          </p>
+        </div>
+
+        <h2>2. それぞれの役割</h2>
+
+        <h3>① ホスト名（Host Name）</h3>
+        <p>ネットワーク内にある<strong>「1台の具体的な機器（サーバー）」</strong>を識別する名前です。<br>
+        「Webサーバーだから <code>www</code>」「メールサーバーだから <code>mail</code>」と付けるのが慣習ですが、実は <code>server01</code> でも何でも構いません。</p>
+        <ul>
+          <li><strong>役割：</strong> ドメイン（会社）の中にある、特定のコンピュータを指名する。</li>
+          <li><strong>イメージ：</strong> 家の「表札」や、会社の中の「個人名」。</li>
+        </ul>
+
+        <h3>② ドメイン名（Domain Name）</h3>
+        <p>インターネット上での<strong>「住所の範囲（組織）」</strong>を表します。<br>
+        右側から順に大きな分類（国→種類→組織名）へと絞り込まれていく階層構造になっています。</p>
+        <ul>
+          <li><strong>役割：</strong> インターネット上の管理エリアを区切る。</li>
+          <li><strong>イメージ：</strong> 「東京都 港区 〇〇株式会社」という住所。</li>
+        </ul>
+
+        <h2>3. 階層構造で見る関係性</h2>
+        <p>ドメインツリーとして見ると、ホスト名は一番下の「葉っぱ」にあたります。</p>
+
+        <div class="diagram-section">
+          <div class="domain-tree">
+            <div class="tree-node node-domain">jp (日本)</div>
+            <div class="tree-line-v"></div>
+            <div class="tree-node node-domain">co (企業)</div>
+            <div class="tree-line-v"></div>
+            <div class="tree-node node-domain">example (組織名)</div>
+            
+            <div class="tree-branch-h">
+              <!-- 左 -->
+              <div class="branch-col">
+                <div class="tree-node node-host">www</div>
+                <span style="font-size:0.7rem; color:#666;">Webサーバ</span>
+              </div>
+              <!-- 中 -->
+              <div class="branch-col">
+                <div class="tree-node node-host">mail</div>
+                <span style="font-size:0.7rem; color:#666;">メールサーバ</span>
+              </div>
+              <!-- 右 -->
+              <div class="branch-col">
+                <div class="tree-node node-host">ftp</div>
+                <span style="font-size:0.7rem; color:#666;">FTPサーバ</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p><code>example.co.jp</code> という会社の中に、<code>www</code> くんや <code>mail</code> くんがいるイメージです。</p>
+
+        <h2>4. 比較まとめ</h2>
+        <p>試験対策として、違いを表で整理します。</p>
+
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>項目</th>
+              <th>ホスト名</th>
+              <th>ドメイン名</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>指すもの</strong></td>
+              <td>個別の<strong>機器・サーバ</strong></td>
+              <td><strong>組織・ネットワーク</strong></td>
+            </tr>
+            <tr>
+              <td><strong>範囲</strong></td>
+              <td>狭い（点）</td>
+              <td>広い（面）</td>
+            </tr>
+            <tr>
+              <td><strong>例</strong></td>
+              <td class="hl-host">www, mail</td>
+              <td class="hl-domain">google.com, co.jp</td>
+            </tr>
+            <tr>
+              <td><strong>DNSの役割</strong></td>
+              <td colspan="2">これらを組み合わせてIPアドレスに変換する</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>まとめ</h2>
+        <ul>
+          <li><strong>ホスト名：</strong> 「誰？」（個別のマシン名）</li>
+          <li><strong>ドメイン名：</strong> 「どこ？」（組織やグループの住所）</li>
+        </ul>
+        <p>URLを見るときは、「一番左のドットまでがホスト名、それより右がドメイン名」と区切って読む癖をつけましょう。</p>
+
+        <!-- GEN: REFERENCES -->
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> IT passport study map. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
