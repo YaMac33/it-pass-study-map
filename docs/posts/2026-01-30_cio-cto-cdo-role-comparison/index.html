@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>CIO・CTO・CDOの役割比較 - IT passport study map</title>
+  <meta name="description" content="CIO、CTO、CDOの役割と違いを解説。IT統括、技術統括、DX推進というそれぞれの立ち位置や、重要視するポイントを図解で整理します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="CIO・CTO・CDOの役割比較" />
+  <meta property="og:description" content="CIO、CTO、CDOの役割と違いを解説。IT統括、技術統括、DX推進というそれぞれの立ち位置や、重要視するポイントを図解で整理します。" />
+  
+  <!-- Assets: 記事は docs/posts/<id>/index.html → ../../ 固定 -->
+  <link rel="stylesheet" href="../../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS（図解・補助CSS） -->
+  <style>
+    /* 共通図解コンテナ */
+    .diagram-section {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* 3役職の配置図 */
+    .role-triangle {
+      position: relative;
+      width: 100%;
+      max-width: 500px;
+      height: 300px;
+    }
+    
+    .role-node {
+      position: absolute;
+      width: 140px;
+      padding: 1rem;
+      border-radius: 50%; /* 丸くする */
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      aspect-ratio: 1 / 1;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      z-index: 2;
+    }
+    .rn-title {
+      font-weight: bold;
+      font-size: 1.2rem;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .rn-desc {
+      font-size: 0.75rem;
+      line-height: 1.2;
+    }
+
+    /* CIO: 上 (経営) */
+    .rn-cio {
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #eef6ff;
+      border: 3px solid #0056b3;
+      color: #0056b3;
+    }
+    /* CTO: 左下 (技術) */
+    .rn-cto {
+      bottom: 0;
+      left: 10px;
+      background: #f0fff4;
+      border: 3px solid #27ae60;
+      color: #27ae60;
+    }
+    /* CDO: 右下 (変革) */
+    .rn-cdo {
+      bottom: 0;
+      right: 10px;
+      background: #fffaf0;
+      border: 3px solid #e67e22;
+      color: #e67e22;
+    }
+
+    /* つながり線 */
+    .connect-line {
+      position: absolute;
+      background: #ccc;
+      height: 2px;
+      z-index: 1;
+    }
+    .line-l {
+      top: 45%;
+      left: 25%;
+      width: 150px;
+      transform: rotate(60deg);
+    }
+    .line-r {
+      top: 45%;
+      right: 25%;
+      width: 150px;
+      transform: rotate(-60deg);
+    }
+    .line-b {
+      bottom: 70px;
+      left: 25%;
+      right: 25%;
+    }
+    
+    .center-label {
+      position: absolute;
+      top: 55%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-weight: bold;
+      color: #666;
+      font-size: 0.9rem;
+      background: #f9f9f9;
+      padding: 0.5rem;
+    }
+
+    /* 比較テーブル */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      margin: 1rem 0;
+    }
+    .comparison-table th, .comparison-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+    .comparison-table th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+      width: 25%;
+    }
+    .td-cio { color: #0056b3; font-weight: bold; background: #f0f8ff; }
+    .td-cto { color: #27ae60; font-weight: bold; background: #f0fff4; }
+    .td-cdo { color: #e67e22; font-weight: bold; background: #fffaf0; }
+
+    /* 視点の違い（会話風） */
+    .dialogue-box {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .dialogue-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1rem;
+      border-radius: 8px;
+      background: #fff;
+      border: 1px solid #eee;
+    }
+    .avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 0.9rem;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .av-cio { background: #0056b3; }
+    .av-cto { background: #27ae60; }
+    .av-cdo { background: #e67e22; }
+    
+    .speech {
+      flex: 1;
+    }
+    .speech-role {
+      font-weight: bold;
+      font-size: 0.9rem;
+      display: block;
+      margin-bottom: 0.2rem;
+    }
+    .speech-text {
+      font-size: 0.95rem;
+      color: #333;
+    }
+
+    /* ポイント強調 */
+    .key-point {
+      background-color: #f4f4f4;
+      border-left: 4px solid #333;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .key-point strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1em;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 600px) {
+      .role-triangle {
+        height: 400px;
+      }
+      .role-node {
+        width: 120px;
+      }
+      .rn-cio { top: 0; }
+      .rn-cto { top: 140px; left: 50%; bottom: auto; transform: translateX(-50%); }
+      .rn-cdo { top: 280px; right: auto; left: 50%; bottom: auto; transform: translateX(-50%); }
+      
+      /* 線を消す（スマホでは縦積み） */
+      .connect-line, .center-label { display: none; }
+      
+      .role-node::after {
+        content: "⬇";
+        position: absolute;
+        bottom: -30px;
+        color: #ccc;
+        font-size: 1.5rem;
+      }
+      .rn-cdo::after { content: none; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a href="../../index.html" class="site-title">IT passport study map</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-30">
+            2026.01.30 / マネジメント系
+          </time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">CIO・CTO・CDOの役割比較</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list">
+            <li class="tag">#CIO</li>
+            <li class="tag">#CTO</li>
+            <li class="tag">#CDO</li>
+            <li class="tag">#ITパスポート</li>
+            <li class="tag">#経営</li>
+            <li class="tag">#DX</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>企業のIT化が進むにつれて、「C〇O」と呼ばれる責任者の役職が増えてきました。<br>
+        特に混同しやすい「CIO」「CTO」「CDO」の3つについて、それぞれの役割と視点の違いを整理します。</p>
+
+        <div class="key-point">
+          <strong>1行要約</strong><br>
+          CIOは「社内システムと経営の安定」、CTOは「技術的な実現と品質」、CDOは「デジタルによる事業変革（DX）」の責任者。
+        </div>
+
+        <h2>1. 3つの役職の位置づけ（関係図）</h2>
+        <p>これらは上下関係ではなく、それぞれの「得意領域」が異なります。</p>
+
+        <div class="diagram-section">
+          <div class="role-triangle">
+            
+            <!-- CIO -->
+            <div class="role-node rn-cio">
+              <span class="rn-title">CIO</span>
+              <span class="rn-desc">Information<br><strong>情報統括</strong><br>（守り・安定）</span>
+            </div>
+
+            <!-- 線 -->
+            <div class="connect-line line-l"></div>
+            <div class="connect-line line-r"></div>
+            <div class="connect-line line-b"></div>
+            <div class="center-label">経営課題を解決</div>
+
+            <!-- CTO -->
+            <div class="role-node rn-cto">
+              <span class="rn-title">CTO</span>
+              <span class="rn-desc">Technology<br><strong>技術統括</strong><br>（作る・品質）</span>
+            </div>
+
+            <!-- CDO -->
+            <div class="role-node rn-cdo">
+              <span class="rn-title">CDO</span>
+              <span class="rn-desc">Digital<br><strong>DX統括</strong><br>（攻め・変革）</span>
+            </div>
+
+          </div>
+        </div>
+
+        <h2>2. 各役職の詳細定義</h2>
+
+        <h3>CIO（Chief Information Officer）</h3>
+        <p><strong>最高情報責任者</strong>。社内の情報システム全体を統括し、ITを使って業務効率化やコスト削減、リスク管理を行います。<br>
+        「今の会社をITで支える」のが主なミッションです。</p>
+
+        <h3>CTO（Chief Technology Officer）</h3>
+        <p><strong>最高技術責任者</strong>。技術的な方向性を決定し、製品開発やシステム構築をリードします。<br>
+        「技術的にどう実現するか」「どの技術を採用するか」に責任を持ちます。</p>
+
+        <h3>CDO（Chief Digital Officer）</h3>
+        <p><strong>最高デジタル責任者</strong>。デジタル技術を活用して、ビジネスモデルや組織を変革（DX）します。<br>
+        「デジタルで新しい価値を生む」のが主なミッションです。</p>
+
+        <h2>3. 視点の違い（会話例）</h2>
+        <p>例えば「新しいAI技術を導入するか？」という議題に対して、それぞれの関心事はこうなります。</p>
+
+        <div class="diagram-section" style="padding:1.5rem;">
+          <div class="dialogue-box">
+            
+            <div class="dialogue-item">
+              <div class="avatar av-cio">CIO</div>
+              <div class="speech">
+                <span class="speech-role">視点：コスト・リスク・安定性</span>
+                <div class="speech-text">
+                  「導入コストは？セキュリティリスクはないか？今の業務システムと安全に連携できるか？」
+                </div>
+              </div>
+            </div>
+
+            <div class="dialogue-item">
+              <div class="avatar av-cto">CTO</div>
+              <div class="speech">
+                <span class="speech-role">視点：技術・実装・性能</span>
+                <div class="speech-text">
+                  「どのAIモデルを採用するか？精度は十分か？自社のエンジニアで実装・運用できるか？」
+                </div>
+              </div>
+            </div>
+
+            <div class="dialogue-item">
+              <div class="avatar av-cdo">CDO</div>
+              <div class="speech">
+                <span class="speech-role">視点：売上・顧客・変革</span>
+                <div class="speech-text">
+                  「それでお客様体験はどう変わる？新しい収益源になるか？ビジネスモデルを変えられるか？」
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <h2>4. 比較まとめ</h2>
+        <p>試験対策として、キーワードを表で整理します。</p>
+
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>項目</th>
+              <th>CIO</th>
+              <th>CTO</th>
+              <th>CDO</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>日本語</strong></td>
+              <td>最高<strong>情報</strong>責任者</td>
+              <td>最高<strong>技術</strong>責任者</td>
+              <td>最高<strong>デジタル</strong>責任者</td>
+            </tr>
+            <tr>
+              <td><strong>キーワード</strong></td>
+              <td class="td-cio">社内IT、効率化<br>ガバナンス</td>
+              <td class="td-cto">技術選定、開発<br>イノベーション</td>
+              <td class="td-cdo">DX、新規事業<br>ビジネス変革</td>
+            </tr>
+            <tr>
+              <td><strong>性格</strong></td>
+              <td>守り・支える</td>
+              <td>作る・極める</td>
+              <td>攻める・変える</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>まとめ</h2>
+        <p>それぞれの役割を一言で覚えるなら、以下のようになります。</p>
+        <ul>
+          <li><strong>CIO：</strong> 今の会社を「回す」人。（Information）</li>
+          <li><strong>CTO：</strong> モノを「作る」人。（Technology）</li>
+          <li><strong>CDO：</strong> 未来へ「変える」人。（Digital / DX）</li>
+        </ul>
+
+        <!-- GEN: REFERENCES -->
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> IT passport study map. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
+
