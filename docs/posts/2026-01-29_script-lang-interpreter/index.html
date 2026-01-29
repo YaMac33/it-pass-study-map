@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>スクリプト言語とインタプリタの関係 - IT passport study map</title>
+  <meta name="description" content="スクリプト言語とインタプリタ言語の違いと関係性を解説。「用途」による分類と「実行方式」による分類の違いを図解し、ITパスポート試験での判断基準を整理します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="スクリプト言語とインタプリタの関係" />
+  <meta property="og:description" content="スクリプト言語とインタプリタ言語の違いと関係性を解説。「用途」による分類と「実行方式」による分類の違いを図解し、ITパスポート試験での判断基準を整理します。" />
+  
+  <!-- Assets: 記事は docs/posts/<id>/index.html → ../../ 固定 -->
+  <link rel="stylesheet" href="../../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS（図解・補助CSS） -->
+  <style>
+    /* 共通図解コンテナ */
+    .diagram-section {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* 分類軸の図解 */
+    .axis-diagram {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      width: 100%;
+      flex-wrap: wrap;
+    }
+    .axis-box {
+      flex: 1;
+      min-width: 280px;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 1.5rem;
+      position: relative;
+    }
+    .axis-title {
+      font-weight: bold;
+      font-size: 1.1rem;
+      text-align: center;
+      margin-bottom: 1rem;
+      display: block;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid #eee;
+    }
+    .lang-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: center;
+    }
+    .lang-tag {
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      font-weight: bold;
+    }
+    
+    /* 実行方式 */
+    .ab-run .axis-title { color: #0056b3; border-color: #0056b3; }
+    .tag-int { background: #eef6ff; color: #0056b3; border: 1px solid #0056b3; }
+    .tag-comp { background: #eee; color: #666; border: 1px solid #999; }
+
+    /* 用途 */
+    .ab-use .axis-title { color: #e67e22; border-color: #e67e22; }
+    .tag-script { background: #fffaf0; color: #e67e22; border: 1px solid #e67e22; }
+
+    /* 実行方式の比較図 */
+    .exec-flow {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      width: 100%;
+      max-width: 500px;
+    }
+    .ef-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: #fff;
+      padding: 1rem;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+    }
+    .ef-label {
+      font-weight: bold;
+      width: 100px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .ef-process {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+    }
+    .proc-box {
+      border: 1px solid #666;
+      padding: 4px;
+      border-radius: 4px;
+      text-align: center;
+      background: #f9f9f9;
+    }
+    .proc-arrow {
+      color: #999;
+      font-weight: bold;
+    }
+    
+    /* コンパイラ */
+    .ef-comp .proc-box { background: #eee; }
+    
+    /* インタプリタ */
+    .ef-int .proc-box.highlight {
+      background: #eef6ff;
+      border-color: #0056b3;
+      color: #0056b3;
+      font-weight: bold;
+    }
+    .loop-icon {
+      font-size: 1.2rem;
+      color: #0056b3;
+      margin-left: auto;
+    }
+
+    /* 比較テーブル */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      margin: 1rem 0;
+    }
+    .comparison-table th, .comparison-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+    .comparison-table th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+      width: 25%;
+    }
+    .mark-o { color: #27ae60; font-weight: bold; }
+    .mark-x { color: #ccc; }
+    .mark-t { color: #e67e22; }
+
+    /* ポイント強調 */
+    .key-point {
+      background-color: #f4f4f4;
+      border-left: 4px solid #333;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .key-point strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1em;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 600px) {
+      .axis-diagram {
+        flex-direction: column;
+      }
+      .ef-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .ef-process {
+        width: 100%;
+        justify-content: space-between;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a href="../../index.html" class="site-title">IT passport study map</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-29">
+            2026.01.29 / テクノロジ系
+          </time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">スクリプト言語とインタプリタの関係</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list">
+            <li class="tag">#プログラミング</li>
+            <li class="tag">#スクリプト言語</li>
+            <li class="tag">#インタプリタ</li>
+            <li class="tag">#実行方式</li>
+            <li class="tag">#自動化</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>「Pythonはスクリプト言語であり、インタプリタ言語でもある」。<br>
+        このように、多くの言語が両方に分類されるため、この2つの用語は混同されがちです。<br>
+        しかし、これらは全く別の観点からの分類です。</p>
+
+        <div class="key-point">
+          <strong>1行要約</strong><br>
+          スクリプト言語は「手軽に使える（用途）」という分類、インタプリタ言語は「逐次翻訳して動く（仕組み）」という分類。
+        </div>
+
+        <h2>1. 2つの分類軸（全体像）</h2>
+        <p>同じ言語でも、切り口によって呼び方が変わります。</p>
+
+        <div class="diagram-section">
+          <div class="axis-diagram">
+            
+            <!-- 実行方式 -->
+            <div class="axis-box ab-run">
+              <span class="axis-title">軸1：実行方式</span>
+              <p style="font-size:0.8rem; color:#666; margin-bottom:1rem; text-align:center;">
+                どうやってPCに命令するか？
+              </p>
+              <div class="lang-list">
+                <span class="lang-tag tag-int">Python</span>
+                <span class="lang-tag tag-int">Ruby</span>
+                <span class="lang-tag tag-int">JavaScript</span>
+                <span class="lang-tag tag-comp">C言語</span>
+                <span class="lang-tag tag-comp">C++</span>
+              </div>
+            </div>
+
+            <!-- 用途・性格 -->
+            <div class="axis-box ab-use">
+              <span class="axis-title">軸2：用途・性格</span>
+              <p style="font-size:0.8rem; color:#666; margin-bottom:1rem; text-align:center;">
+                何のために作られたか？
+              </p>
+              <div class="lang-list">
+                <span class="lang-tag tag-script">Python</span>
+                <span class="lang-tag tag-script">Ruby</span>
+                <span class="lang-tag tag-script">JavaScript</span>
+                <span class="lang-tag tag-script">PHP</span>
+              </div>
+            </div>
+
+          </div>
+          <p style="font-size:0.9rem; color:#666; margin-top:1rem;">
+            PythonやRubyは、両方の性質を持っているため、どちらの呼び方も正解です。
+          </p>
+        </div>
+
+        <h2>2. インタプリタ言語（実行方式の話）</h2>
+        <p>人間が書いたプログラム（ソースコード）を、実行する瞬間にコンピュータ語に翻訳しながら動かす方式です。<br>
+        対義語は「コンパイラ言語（事前に一括翻訳する）」です。</p>
+
+        <div class="diagram-section">
+          <div class="exec-flow">
+            
+            <div class="ef-row ef-comp">
+              <span class="ef-label">コンパイラ</span>
+              <div class="ef-process">
+                <div class="proc-box">全コード</div>
+                <div class="proc-arrow">➡</div>
+                <div class="proc-box">一括翻訳</div>
+                <div class="proc-arrow">➡</div>
+                <div class="proc-box" style="background:#333; color:#fff;">実行</div>
+              </div>
+            </div>
+
+            <div class="ef-row ef-int">
+              <span class="ef-label" style="color:#0056b3;">インタプリタ</span>
+              <div class="ef-process">
+                <div class="proc-box">1行読む</div>
+                <div class="proc-arrow">➡</div>
+                <div class="proc-box highlight">即翻訳</div>
+                <div class="proc-arrow">➡</div>
+                <div class="proc-box highlight">即実行</div>
+                <span class="loop-icon">🔄 繰り返し</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <ul>
+          <li><strong>特徴：</strong>すぐに実行結果が見える。修正が簡単。</li>
+          <li><strong>デメリット：</strong>実行速度はコンパイラより遅い。</li>
+        </ul>
+
+        <h2>3. スクリプト言語（用途の話）</h2>
+        <p>「Script（台本）」のように、既存のソフトウェアやシステムを自動操縦したり、簡易なプログラムをサッと書くために設計された言語です。</p>
+        <ul>
+          <li><strong>特徴：</strong>記述がシンプルで、習得しやすい。</li>
+          <li><strong>用途：</strong>Webサイトの動き（JS）、業務の自動化（Python）、サーバ管理（Shell）。</li>
+        </ul>
+
+        <h3>なぜ2つは重なるのか？</h3>
+        <p>「手軽に書きたい（スクリプト）」という目的には、「書いてすぐ動く（インタプリタ）」という仕組みが非常に相性が良いため、多くのスクリプト言語はインタプリタ方式を採用しています。</p>
+
+        <h2>4. 言語別の分類まとめ</h2>
+        <p>試験対策として、主要な言語の立ち位置を整理します。</p>
+
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>言語</th>
+              <th>スクリプト？</th>
+              <th>インタプリタ？</th>
+              <th>備考</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Python</strong></td>
+              <td class="mark-o">⭕</td>
+              <td class="mark-o">⭕</td>
+              <td>AI、自動化で人気</td>
+            </tr>
+            <tr>
+              <td><strong>JavaScript</strong></td>
+              <td class="mark-o">⭕</td>
+              <td class="mark-o">⭕</td>
+              <td>Webブラウザで動く</td>
+            </tr>
+            <tr>
+              <td><strong>Ruby</strong></td>
+              <td class="mark-o">⭕</td>
+              <td class="mark-o">⭕</td>
+              <td>日本発の言語</td>
+            </tr>
+            <tr>
+              <td><strong>C言語</strong></td>
+              <td class="mark-x">❌</td>
+              <td class="mark-x">❌</td>
+              <td>コンパイラ言語の代表</td>
+            </tr>
+            <tr>
+              <td><strong>Java</strong></td>
+              <td class="mark-x">❌</td>
+              <td class="mark-t">△</td>
+              <td>コンパイル＋仮想マシン</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>まとめ</h2>
+        <p>ITパスポート試験で問われたら、文脈で判断しましょう。</p>
+        <ul>
+          <li><strong>「逐次翻訳して実行する」</strong> → インタプリタ言語</li>
+          <li><strong>「簡易な記述で自動化・制御する」</strong> → スクリプト言語</li>
+        </ul>
+        <p>両方の説明が当てはまる言語（Pythonなど）も多いですが、定義の違いを理解しておくことが重要です。</p>
+
+        <!-- GEN: REFERENCES -->
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> IT passport study map. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
