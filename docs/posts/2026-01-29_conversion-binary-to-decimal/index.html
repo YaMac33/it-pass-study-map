@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>2進数を10進数に変換する方法 - IT passport study map</title>
+  <meta name="description" content="ITパスポートのプログラミング問題で頻出する「n進数変換アルゴリズム」を解説。2進数から10進数へ変換する際の「桁の重み」と「ループ処理」の流れを図解します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="2進数を10進数に変換する方法" />
+  <meta property="og:description" content="ITパスポートのプログラミング問題で頻出する「n進数変換アルゴリズム」を解説。2進数から10進数へ変換する際の「桁の重み」と「ループ処理」の流れを図解します。" />
+  
+  <!-- Assets: 記事は docs/posts/<id>/index.html → ../../ 固定 -->
+  <link rel="stylesheet" href="../../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS（図解・補助CSS） -->
+  <style>
+    /* 共通図解コンテナ */
+    .diagram-section {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* ビット構造図 */
+    .bit-structure {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      align-items: flex-end;
+      font-family: monospace;
+    }
+    .bit-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .weight-label {
+      font-size: 0.8rem;
+      color: #666;
+      background: #eee;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .bit-box {
+      width: 50px;
+      height: 50px;
+      background: #fff;
+      border: 2px solid #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      border-radius: 6px;
+      position: relative;
+    }
+    .bit-index {
+      font-size: 0.7rem;
+      color: #999;
+      margin-top: 5px;
+    }
+    .calc-line {
+      border-top: 2px solid #333;
+      width: 100%;
+      margin: 1rem 0;
+      position: relative;
+    }
+    .calc-result {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #0056b3;
+    }
+
+    /* トレース（ループ処理）図 */
+    .trace-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      width: 100%;
+      max-width: 500px;
+    }
+    .trace-step {
+      display: flex;
+      align-items: center;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 1rem;
+      position: relative;
+    }
+    .step-num {
+      background: #333;
+      color: #fff;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      margin-right: 1rem;
+      flex-shrink: 0;
+    }
+    .step-content {
+      flex: 1;
+      font-size: 0.9rem;
+    }
+    .var-box {
+      display: inline-block;
+      background: #eef6ff;
+      border: 1px solid #0056b3;
+      color: #0056b3;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: bold;
+      margin: 0 4px;
+    }
+    .calc-arrow {
+      color: #999;
+      font-weight: bold;
+      margin: 0 5px;
+    }
+
+    /* 変数対応表 */
+    .var-mapping {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 1rem;
+      background: #333;
+      padding: 1.5rem;
+      border-radius: 8px;
+      color: #fff;
+      width: 100%;
+      max-width: 450px;
+    }
+    .vm-name {
+      font-family: monospace;
+      font-weight: bold;
+      color: #ff9f43;
+      text-align: right;
+    }
+    .vm-desc {
+      font-size: 0.9rem;
+    }
+
+    /* 比較テーブル */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      margin: 1rem 0;
+    }
+    .comparison-table th, .comparison-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+    .comparison-table th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+    }
+    .correct-row { background: #f0fff4; }
+    .correct-mark { color: #27ae60; font-weight: bold; }
+    .wrong-mark { color: #d00; font-weight: bold; }
+
+    /* ポイント強調 */
+    .key-point {
+      background-color: #f4f4f4;
+      border-left: 4px solid #333;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .key-point strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1em;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 600px) {
+      .bit-structure {
+        gap: 0.5rem;
+      }
+      .bit-box {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a href="../../index.html" class="site-title">IT passport study map</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-29">
+            2026.01.29 / テクノロジ系
+          </time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">2進数を10進数に変換する方法</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list">
+            <li class="tag">#アルゴリズム</li>
+            <li class="tag">#プログラミング</li>
+            <li class="tag">#2進数</li>
+            <li class="tag">#計算問題</li>
+            <li class="tag">#ITパスポート</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>プログラミングの問題でよく出る「文字列の "100" を数値の 4 に変換する」といった処理。<br>
+        一見難しそうに見えますが、2進数の仕組み（重み）さえ理解していれば、単純な足し算の繰り返しであることが分かります。</p>
+
+        <div class="key-point">
+          <strong>1行要約</strong><br>
+          「その桁の数字（0か1）」に「その桁の重み（1, 2, 4, 8...）」を掛けて、全部足せば10進数になる。
+        </div>
+
+        <h2>1. 2進数の「重み」を図解</h2>
+        <p>2進数は、右端（下位）から順に「1の位、2の位、4の位…」と倍々に増えていきます。<br>
+        例として「101」を考えてみましょう。</p>
+
+        <div class="diagram-section">
+          <div class="bit-structure">
+            
+            <!-- 3桁目 (4) -->
+            <div class="bit-col">
+              <span class="weight-label">× 4</span>
+              <div class="bit-box">1</div>
+              <span class="bit-index">3文字目</span>
+            </div>
+
+            <div style="align-self:center; font-size:1.5rem;">+</div>
+
+            <!-- 2桁目 (2) -->
+            <div class="bit-col">
+              <span class="weight-label">× 2</span>
+              <div class="bit-box">0</div>
+              <span class="bit-index">2文字目</span>
+            </div>
+
+            <div style="align-self:center; font-size:1.5rem;">+</div>
+
+            <!-- 1桁目 (1) -->
+            <div class="bit-col">
+              <span class="weight-label">× 1</span>
+              <div class="bit-box">1</div>
+              <span class="bit-index">1文字目</span>
+            </div>
+
+          </div>
+
+          <div class="calc-line"></div>
+          
+          <div style="text-align:center;">
+            (1×4) + (0×2) + (1×1) = <span class="calc-result">5</span>
+          </div>
+        </div>
+
+        <p>この計算をプログラムで自動化するのが、アルゴリズム問題の定番パターンです。</p>
+
+        <h2>2. プログラムの変数と役割</h2>
+        <p>問題文に出てくる変数が「何をするための箱か」を整理します。</p>
+
+        <div class="diagram-section" style="background:#2d3436; padding:1.5rem;">
+          <div class="var-mapping">
+            <div class="vm-name">binaryStr</div>
+            <div class="vm-desc">入力された2進数の文字列（例："101"）</div>
+            
+            <div class="vm-name">i</div>
+            <div class="vm-desc">今、右から何番目を見ているか（1, 2, 3...）</div>
+            
+            <div class="vm-name">exponent</div>
+            <div class="vm-desc">その桁の「重み」（1, 2, 4, 8...）<br>※ここを求めるのがポイント</div>
+            
+            <div class="vm-name">integerNum</div>
+            <div class="vm-desc">計算結果の合計を入れる箱</div>
+          </div>
+        </div>
+
+        <h2>3. ループ処理のトレース（例："100"）</h2>
+        <p>文字列 "100"（答えは4）を変換する動きを追ってみましょう。<br>
+        プログラムはループを使って、1桁ずつ計算して合計に足し込んでいきます。</p>
+
+        <div class="diagram-section">
+          <div class="trace-container">
+            
+            <!-- i=1 -->
+            <div class="trace-step">
+              <div class="step-num">1</div>
+              <div class="step-content">
+                <strong>右端の「0」を処理</strong><br>
+                重み(exponent) ＝ <span class="var-box">1</span> ($2^0$)<br>
+                合計 ＝ 0 ＋ (0 × 1) ＝ <strong>0</strong>
+              </div>
+            </div>
+            
+            <div style="text-align:center; color:#999;">⬇ 次の桁へ</div>
+
+            <!-- i=2 -->
+            <div class="trace-step">
+              <div class="step-num">2</div>
+              <div class="step-content">
+                <strong>真ん中の「0」を処理</strong><br>
+                重み(exponent) ＝ <span class="var-box">2</span> ($2^1$)<br>
+                合計 ＝ 0 ＋ (0 × 2) ＝ <strong>0</strong>
+              </div>
+            </div>
+
+            <div style="text-align:center; color:#999;">⬇ 次の桁へ</div>
+
+            <!-- i=3 -->
+            <div class="trace-step">
+              <div class="step-num">3</div>
+              <div class="step-content">
+                <strong>左端の「1」を処理</strong><br>
+                重み(exponent) ＝ <span class="var-box">4</span> ($2^2$)<br>
+                合計 ＝ 0 ＋ (1 × 4) ＝ <strong>4</strong>
+              </div>
+            </div>
+
+          </div>
+          <p style="font-size:0.9rem; color:#666; margin-top:1rem;">
+            最終的に合計（integerNum）は 4 になります。
+          </p>
+        </div>
+
+        <h2>4. 正しい式の選び方</h2>
+        <p>このロジックを実現するために、空欄に入る式を考えます。</p>
+
+        <h3>条件①：重み（exponent）の計算</h3>
+        <ul>
+          <li>i=1 のとき、重みは 1 ($2^0$)</li>
+          <li>i=2 のとき、重みは 2 ($2^1$)</li>
+          <li>i=3 のとき、重みは 4 ($2^2$)</li>
+        </ul>
+        <p>つまり、重みは <strong>$2^{(i-1)}$</strong> です。</p>
+
+        <h3>条件②：合計（integerNum）の更新</h3>
+        <p>「今までの合計」に「今回の計算結果」を足し合わせる必要があります。<br>
+        式： <code>integerNum + (数字 × 重み)</code></p>
+
+        <h3>選択肢のチェック</h3>
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>選択肢</th>
+              <th>重みの式 (a)</th>
+              <th>合計の式 (b)</th>
+              <th>判定</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>ア</td>
+              <td>$2^i - 1$</td>
+              <td>足してない</td>
+              <td class="wrong-mark">×</td>
+            </tr>
+            <tr>
+              <td>イ</td>
+              <td>$2^i - 1$</td>
+              <td>足し算はOK</td>
+              <td class="wrong-mark">×</td>
+            </tr>
+            <tr>
+              <td>ウ</td>
+              <td>$2^{(i-1)}$</td>
+              <td>掛け算のみ（累積しない）</td>
+              <td class="wrong-mark">×</td>
+            </tr>
+            <tr class="correct-row">
+              <td><strong>エ</strong></td>
+              <td><strong>$2^{(i-1)}$</strong></td>
+              <td><strong>累積加算している</strong></td>
+              <td class="correct-mark">◎</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>まとめ</h2>
+        <ul>
+          <li><strong>重み：</strong> $2^0, 2^1, 2^2 \dots$ と増える。（$2^{(i-1)}$乗）</li>
+          <li><strong>合計：</strong> <code>合計 = 合計 + (桁の値 × 重み)</code> で積み上げる。</li>
+        </ul>
+        <p>この2つのルールさえ押さえておけば、どんなn進数の変換問題でも解くことができます。</p>
+
+        <!-- GEN: REFERENCES -->
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> IT passport study map. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
