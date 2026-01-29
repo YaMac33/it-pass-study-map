@@ -1,0 +1,16 @@
+{
+  "id": "2026-01-29_ip-address-protocol-basics",
+  "timestamp": "2026-01-29T20:14:53+09:00",
+  "title": "通信の基礎：IPアドレスとプロトコル",
+  "summary": "IPアドレスとプロトコルの役割を解説しました。通信が成立するための要素を整理し、具体例を示します。",
+  "tags": [
+    "通信",
+    "IPアドレス",
+    "プロトコル",
+    "ネットワーク",
+    "基本知識"
+  ],
+  "category_lv1": "テクノロジ系",
+  "category_lv2": "基礎理論",
+  "post_path": "posts/2026-01-29_ip-address-protocol-basics/"
+}
