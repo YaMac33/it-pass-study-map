@@ -1,5 +1,21 @@
 [
   {
+    "id": "2026-01-29_host-name-and-domain-name",
+    "timestamp": "2026-01-29T20:01:56+09:00",
+    "title": "ホスト名とドメイン名の理解",
+    "summary": "ホスト名とドメイン名の違いやFQDNの構造を解説します。ネットワークにおける重要な概念を整理しましょう。",
+    "tags": [
+      "DNS",
+      "ホスト名",
+      "ドメイン名",
+      "FQDN",
+      "ITパスポート"
+    ],
+    "category_lv1": "テクノロジ系",
+    "category_lv2": "ネットワーク",
+    "post_path": "posts/2026-01-29_host-name-and-domain-name/"
+  },
+  {
     "id": "2026-01-29_script-lang-interpreter",
     "timestamp": "2026-01-29T19:49:41+09:00",
     "title": "スクリプト言語とインタプリタの関係",
