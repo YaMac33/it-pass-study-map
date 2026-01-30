@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>CSF・KGI・KPI整理表 - IT passport study map</title>
+  <meta name="description" content="CSF、KGI、KPIの違いと使い方を解説。戦略目標からアクションプランへの落とし込みや、試験での見分け方を図解で整理します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="CSF・KGI・KPI整理表" />
+  <meta property="og:description" content="CSF、KGI、KPIの違いと使い方を解説。戦略目標からアクションプランへの落とし込みや、試験での見分け方を図解で整理します。" />
+  
+  <!-- Assets: 記事は docs/posts/<id>/index.html → ../../ 固定 -->
+  <link rel="stylesheet" href="../../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS（図解・補助CSS） -->
+  <style>
+    /* 共通図解コンテナ */
+    .diagram-section {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* 戦略実行フロー図 */
+    .strategy-flow {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 500px;
+      gap: 0.8rem;
+    }
+    .flow-box {
+      width: 100%;
+      padding: 1rem;
+      border-radius: 6px;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    
+    /* 戦略目標 */
+    .box-goal {
+      background: #333;
+      color: #fff;
+      font-weight: bold;
+    }
+    
+    /* KGI */
+    .box-kgi {
+      background: #eef6ff;
+      border: 2px solid #0056b3;
+      color: #0056b3;
+    }
+    .kgi-badge {
+      position: absolute;
+      top: -10px;
+      left: 10px;
+      background: #0056b3;
+      color: #fff;
+      font-size: 0.8rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    /* CSF */
+    .box-csf {
+      background: #fffaf0;
+      border: 2px solid #e67e22;
+      color: #e67e22;
+    }
+    .csf-badge {
+      position: absolute;
+      top: -10px;
+      left: 10px;
+      background: #e67e22;
+      color: #fff;
+      font-size: 0.8rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    /* KPI */
+    .box-kpi {
+      background: #f0fff4;
+      border: 2px solid #27ae60;
+      color: #27ae60;
+    }
+    .kpi-badge {
+      position: absolute;
+      top: -10px;
+      left: 10px;
+      background: #27ae60;
+      color: #fff;
+      font-size: 0.8rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    /* アクション */
+    .box-action {
+      background: #fff;
+      border: 1px dashed #666;
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    .arrow-down {
+      font-size: 1.5rem;
+      color: #999;
+      font-weight: bold;
+      margin: -0.4rem 0;
+    }
+    .desc-text {
+      font-size: 0.9rem;
+      margin-top: 0.3rem;
+      color: #333;
+      font-weight: normal;
+    }
+
+    /* 比較テーブル */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      margin: 1rem 0;
+    }
+    .comparison-table th, .comparison-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+    .comparison-table th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+      width: 20%;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .hl-csf { color: #e67e22; font-weight: bold; }
+    .hl-kgi { color: #0056b3; font-weight: bold; }
+    .hl-kpi { color: #27ae60; font-weight: bold; }
+
+    /* 見極めチャート */
+    .check-chart {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      width: 100%;
+      max-width: 450px;
+      background: #fff;
+      border: 2px solid #ccc;
+      padding: 1.5rem;
+      border-radius: 8px;
+    }
+    .check-step {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .check-q {
+      background: #eee;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      font-weight: bold;
+      flex: 1;
+      text-align: center;
+    }
+    .check-arrow {
+      font-weight: bold;
+      color: #999;
+    }
+    .check-a {
+      font-weight: bold;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      min-width: 80px;
+      text-align: center;
+      color: #fff;
+    }
+
+    /* ポイント強調 */
+    .key-point {
+      background-color: #f4f4f4;
+      border-left: 4px solid #333;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .key-point strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1em;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 600px) {
+      .check-step {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      .check-arrow {
+        transform: rotate(90deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a href="../../index.html" class="site-title">IT passport study map</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-30">
+            2026.01.30 / マネジメント系
+          </time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">CSF・KGI・KPI整理表</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list">
+            <li class="tag">#CSF</li>
+            <li class="tag">#KGI</li>
+            <li class="tag">#KPI</li>
+            <li class="tag">#ビジネス</li>
+            <li class="tag">#戦略</li>
+            <li class="tag">#指標</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>経営戦略やプロジェクト管理で必ず登場する3つのアルファベット「CSF」「KGI」「KPI」。<br>
+        これらは単独で存在するのではなく、<strong>「ゴール（KGI）→ 要因（CSF）→ 中間目標（KPI）」</strong>という一連の流れでつながっています。</p>
+
+        <div class="key-point">
+          <strong>1行要約</strong><br>
+          KGIは「最終ゴール（数値）」、CSFは「成功のカギ（要因）」、KPIは「途中経過の目安（数値）」。
+        </div>
+
+        <h2>1. 全体構造：戦略実行の流れ</h2>
+        <p>漠然とした「目標」を、具体的な「行動」に落とし込むためのブレークダウン構造です。</p>
+
+        <div class="diagram-section">
+          <div class="strategy-flow">
+            
+            <div class="flow-box box-goal">
+              戦略目標
+              <div class="desc-text">売上を向上させたい</div>
+            </div>
+
+            <div class="arrow-down">⬇ 数値化</div>
+
+            <div class="flow-box box-kgi">
+              <span class="kgi-badge">KGI</span>
+              <strong>最終ゴール</strong>
+              <div class="desc-text">年間売上高：10億円</div>
+            </div>
+
+            <div class="arrow-down">⬇ 何が必要？</div>
+
+            <div class="flow-box box-csf">
+              <span class="csf-badge">CSF</span>
+              <strong>成功のカギ (要因)</strong>
+              <div class="desc-text">
+                ・新規顧客の獲得<br>
+                ・リピート率の向上
+              </div>
+            </div>
+
+            <div class="arrow-down">⬇ 測れるようにする</div>
+
+            <div class="flow-box box-kpi">
+              <span class="kpi-badge">KPI</span>
+              <strong>中間指標 (進捗)</strong>
+              <div class="desc-text">
+                ・月間新規客数：500人<br>
+                ・メルマガ開封率：20%
+              </div>
+            </div>
+
+            <div class="arrow-down">⬇</div>
+
+            <div class="flow-box box-action">
+              具体的なアクションプラン
+              <div class="desc-text">Web広告運用、クーポン配布...</div>
+            </div>
+
+          </div>
+        </div>
+
+        <h2>2. 3つの指標の比較表</h2>
+        <p>試験対策として、それぞれの定義と特徴を整理します。</p>
+
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>項目</th>
+              <th>CSF</th>
+              <th>KGI</th>
+              <th>KPI</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>正式名称</strong></td>
+              <td>Critical Success<br>Factor</td>
+              <td>Key Goal<br>Indicator</td>
+              <td>Key Performance<br>Indicator</td>
+            </tr>
+            <tr>
+              <td><strong>日本語</strong></td>
+              <td>重要成功要因</td>
+              <td>重要目標達成指標</td>
+              <td>重要業績評価指標</td>
+            </tr>
+            <tr>
+              <td><strong>役割</strong></td>
+              <td class="hl-csf">成功のカギ</td>
+              <td class="hl-kgi">最終ゴール</td>
+              <td class="hl-kpi">中間ゴール</td>
+            </tr>
+            <tr>
+              <td><strong>数値</strong></td>
+              <td><strong>なし</strong>（定性的）</td>
+              <td>あり（定量的）</td>
+              <td>あり（定量的）</td>
+            </tr>
+            <tr>
+              <td><strong>例</strong></td>
+              <td>顧客満足度の向上</td>
+              <td>売上高 1億円</td>
+              <td>訪問数 1万件</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>3. 試験での見抜き方（チャート）</h2>
+        <p>問題文に出てきた言葉がどれに当てはまるか、以下のチャートで判断できます。</p>
+
+        <div class="diagram-section">
+          <div class="check-chart">
+            
+            <div class="check-step">
+              <div class="check-q">数値目標があるか？</div>
+              <span class="check-arrow">NO ➡</span>
+              <div class="check-a" style="background:#e67e22;">CSF</div>
+            </div>
+            
+            <div style="text-align:center; color:#999; font-size:1.5rem;">⬇ YES</div>
+
+            <div class="check-step">
+              <div class="check-q">最終的なゴールか？</div>
+              <span class="check-arrow">YES ➡</span>
+              <div class="check-a" style="background:#0056b3;">KGI</div>
+            </div>
+
+            <div style="text-align:center; color:#999; font-size:1.5rem;">⬇ NO</div>
+
+            <div class="check-step">
+              <div class="check-q">途中のプロセスか？</div>
+              <span class="check-arrow">YES ➡</span>
+              <div class="check-a" style="background:#27ae60;">KPI</div>
+            </div>
+
+          </div>
+        </div>
+
+        <h2>まとめ</h2>
+        <ul>
+          <li><strong>CSF：</strong> 成功するための「要因・カギ」（数値ではない）。</li>
+          <li><strong>KGI：</strong> 最終的に目指す「ゴール」（数値）。</li>
+          <li><strong>KPI：</strong> ゴールに向かっているか測る「メーター」（数値）。</li>
+        </ul>
+        <p>「KGIを達成するためにCSFを特定し、その進捗をKPIで測る」という文章を作れるようになれば完璧です。</p>
+
+        <!-- GEN: REFERENCES -->
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> IT passport study map. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
+
