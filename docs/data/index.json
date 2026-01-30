@@ -1,5 +1,21 @@
 [
   {
+    "id": "2026-01-30_credit-limit-and-availability",
+    "timestamp": "2026-01-30T10:45:55+09:00",
+    "title": "与信限度額と余力の関係",
+    "summary": "与信管理における限度額と余力の概念を解説します。図解を交えて、実務での理解を深める内容です。",
+    "tags": [
+      "与信管理",
+      "信用管理",
+      "計算問題",
+      "売掛金",
+      "手形"
+    ],
+    "category_lv1": "ストラテジ系",
+    "category_lv2": "経営戦略",
+    "post_path": "posts/2026-01-30_credit-limit-and-availability/"
+  },
+  {
     "id": "2026-01-30_drive-by-watering-hole",
     "timestamp": "2026-01-30T10:37:22+09:00",
     "title": "ドライブバイと水飲み場攻撃の違い",
