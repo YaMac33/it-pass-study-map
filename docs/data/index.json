@@ -1,5 +1,21 @@
 [
   {
+    "id": "2026-01-30_cpu-memory-hierarchy",
+    "timestamp": "2026-01-30T19:35:18+09:00",
+    "title": "CPUとメモリの階層構造",
+    "summary": "CPUやメモリの速度・容量に基づく階層構造を解説します。データの流れや役割も詳しく整理しています。",
+    "tags": [
+      "CPU",
+      "メモリ",
+      "キャッシュメモリ",
+      "階層構造",
+      "ITパスポート"
+    ],
+    "category_lv1": "テクノロジ系",
+    "category_lv2": "コンピュータシステム",
+    "post_path": "posts/2026-01-30_cpu-memory-hierarchy/"
+  },
+  {
     "id": "2026-01-30_cash-flow-basics",
     "timestamp": "2026-01-30T19:23:25+09:00",
     "title": "キャッシュフロー計算書の基本",
