@@ -1,0 +1,16 @@
+{
+  "id": "2026-01-30_network-protocol-basics",
+  "timestamp": "2026-01-30T17:21:22+09:00",
+  "title": "ネットワークプロトコルの基礎",
+  "summary": "OSI参照モデルに基づくネットワークプロトコルの概要を解説します。主要なプロトコルや階層構造について整理されています。",
+  "tags": [
+    "ネットワーク",
+    "プロトコル",
+    "OSIモデル",
+    "通信",
+    "IT技術"
+  ],
+  "category_lv1": "テクノロジ系",
+  "category_lv2": "ネットワーク",
+  "post_path": "posts/2026-01-30_network-protocol-basics/"
+}
