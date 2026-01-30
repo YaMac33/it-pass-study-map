@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>在庫補充方式の比較 - IT passport study map</title>
+  <meta name="description" content="JIT（かんばん方式）と定量発注方式の違いを解説。「使われたら作る」プル型と、「減ったら頼む」在庫基準型の仕組みを図解で比較整理します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="在庫補充方式の比較" />
+  <meta property="og:description" content="JIT（かんばん方式）と定量発注方式の違いを解説。「使われたら作る」プル型と、「減ったら頼む」在庫基準型の仕組みを図解で比較整理します。" />
+  
+  <!-- Assets: 記事は docs/posts/<id>/index.html → ../../ 固定 -->
+  <link rel="stylesheet" href="../../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS（図解・補助CSS） -->
+  <style>
+    /* 共通図解コンテナ */
+    .diagram-section {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* 対比コンセプト図 */
+    .concept-compare {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      width: 100%;
+      flex-wrap: wrap;
+    }
+    .concept-box {
+      flex: 1;
+      min-width: 260px;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 1.5rem;
+      text-align: center;
+      position: relative;
+    }
+    .cb-jit { border-top: 4px solid #0056b3; }
+    .cb-fix { border-top: 4px solid #e67e22; }
+    
+    .cb-title {
+      font-weight: bold;
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+    .cb-trigger {
+      display: inline-block;
+      background: #eee;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      color: #555;
+    }
+
+    /* JITフロー図 */
+    .jit-flow {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      width: 100%;
+      max-width: 400px;
+    }
+    .jit-step {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #eef6ff;
+      border: 1px solid #0056b3;
+      padding: 0.8rem;
+      border-radius: 6px;
+      position: relative;
+    }
+    .jit-label { font-weight: bold; color: #0056b3; }
+    .jit-action { font-size: 0.9rem; }
+    .jit-arrow {
+      text-align: center;
+      color: #0056b3;
+      font-weight: bold;
+      font-size: 1.2rem;
+      margin: -0.4rem 0;
+    }
+
+    /* 定量発注グラフ（CSS描画） */
+    .stock-graph {
+      position: relative;
+      width: 100%;
+      max-width: 400px;
+      height: 200px;
+      border-left: 2px solid #333;
+      border-bottom: 2px solid #333;
+      background: #fff;
+      margin: 1rem 0;
+    }
+    /* 発注点ライン */
+    .order-point-line {
+      position: absolute;
+      bottom: 60px;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      border-top: 2px dashed #d00;
+    }
+    .op-label {
+      position: absolute;
+      right: 5px;
+      top: -20px;
+      color: #d00;
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+    /* 在庫推移バー */
+    .bar-group {
+      position: absolute;
+      bottom: 0;
+      display: flex;
+      align-items: flex-end;
+      height: 100%;
+      width: 100%;
+      padding-left: 5px;
+    }
+    .s-bar {
+      flex: 1;
+      background: #e67e22;
+      margin-right: 2px;
+      opacity: 0.7;
+    }
+    /* 簡易的な減少アニメーション風（静止画） */
+    .sb-1 { height: 90%; }
+    .sb-2 { height: 70%; }
+    .sb-3 { height: 50%; }
+    .sb-4 { height: 30%; background: #d00; } /* 発注点割れ */
+    .sb-5 { height: 80%; background: #27ae60; } /* 回復 */
+    .sb-6 { height: 60%; }
+
+    /* 比較テーブル */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      margin: 1rem 0;
+    }
+    .comparison-table th, .comparison-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+    .comparison-table th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+      width: 25%;
+    }
+    .td-jit { background: #eef6ff; color: #0056b3; font-weight: bold; }
+    .td-fix { background: #fffaf0; color: #e67e22; font-weight: bold; }
+
+    /* ポイント強調 */
+    .key-point {
+      background-color: #f4f4f4;
+      border-left: 4px solid #333;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .key-point strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1em;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 600px) {
+      .concept-compare {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a href="../../index.html" class="site-title">IT passport study map</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-30">
+            2026.01.30 / マネジメント系
+          </time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">在庫補充方式の比較</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list">
+            <li class="tag">#在庫管理</li>
+            <li class="tag">#JIT</li>
+            <li class="tag">#かんばん</li>
+            <li class="tag">#定量発注</li>
+            <li class="tag">#生産管理</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>在庫管理や生産管理において、欠品を防ぎつつ無駄をなくすための「補充のルール」。<br>
+        代表的な「JIT（かんばん方式）」と「定量発注方式」は、補充のタイミングを決めるロジックが根本的に異なります。</p>
+
+        <div class="key-point">
+          <strong>1行要約</strong><br>
+          JIT・かんばん方式は「使われたら（実需）補充する」、定量発注方式は「在庫が減ったら（予測）補充する」。
+        </div>
+
+        <h2>1. 補充トリガーの違い（全体像）</h2>
+        <p>何を見て発注をかけるのか、その起点が違います。</p>
+
+        <div class="diagram-section">
+          <div class="concept-compare">
+            
+            <!-- JIT -->
+            <div class="concept-box cb-jit">
+              <span class="cb-title">JIT・かんばん方式</span>
+              <span class="cb-trigger">トリガー：消費（実需）</span>
+              <div style="font-size:2.5rem; margin:1rem;">🛠️ ➡ 📦</div>
+              <p style="font-size:0.9rem; color:#666;">
+                後工程が「使った」瞬間、<br>その分だけ補充する。
+              </p>
+            </div>
+
+            <!-- 定量発注 -->
+            <div class="concept-box cb-fix">
+              <span class="cb-title">定量発注方式</span>
+              <span class="cb-trigger">トリガー：在庫量</span>
+              <div style="font-size:2.5rem; margin:1rem;">📉 ➡ 📦</div>
+              <p style="font-size:0.9rem; color:#666;">
+                在庫が「発注点」を切ったら、<br>決まった量を補充する。
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+        <h2>2. 各方式の仕組み詳細</h2>
+
+        <h3>① JIT・かんばん方式（プル型）</h3>
+        <p>「必要なものを、必要なときに、必要なだけ」。在庫を極限まで減らすための手法です。</p>
+        
+        <div class="diagram-section">
+          <div class="jit-flow">
+            <div class="jit-step">
+              <span class="jit-label">後工程</span>
+              <span class="jit-action">部品を1個使う</span>
+            </div>
+            <div class="jit-arrow">⬇ かんばん（空箱）</div>
+            <div class="jit-step">
+              <span class="jit-label">前工程</span>
+              <span class="jit-action">かんばんを見て1個作る</span>
+            </div>
+            <div class="jit-arrow">⬇ 補充</div>
+            <div class="jit-step">
+              <span class="jit-label">在庫置場</span>
+              <span class="jit-action">使った分だけ戻る</span>
+            </div>
+          </div>
+        </div>
+        <p><strong>特徴：</strong> 需要に完全連動するため、作りすぎのムダがない。</p>
+
+        <h3>② 定量発注方式（在庫基準型）</h3>
+        <p>在庫が減ってきたら、あらかじめ決めた量（経済的発注量など）を注文する、一般的な管理手法です。</p>
+
+        <div class="diagram-section">
+          <div class="stock-graph">
+            <div class="order-point-line">
+              <span class="op-label">発注点</span>
+            </div>
+            <div class="bar-group">
+              <div class="s-bar sb-1"></div>
+              <div class="s-bar sb-2"></div>
+              <div class="s-bar sb-3"></div>
+              <div class="s-bar sb-4"></div> <!-- 発注！ -->
+              <div class="s-bar sb-4"></div>
+              <div class="s-bar sb-5"></div> <!-- 納品 -->
+              <div class="s-bar sb-6"></div>
+            </div>
+          </div>
+          <p style="font-size:0.9rem; color:#666; margin-top:0.5rem;">
+            赤のライン（発注点）を下回ったら発注する。<br>
+            在庫はある程度余裕を持つ（バッファ）。
+          </p>
+        </div>
+        <p><strong>特徴：</strong> 管理がシンプルで自動化しやすいが、需要変動が大きいと欠品や過剰在庫のリスクがある。</p>
+
+        <h2>3. 比較まとめ表</h2>
+        <p>試験対策として、それぞれの特徴を整理します。</p>
+
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>項目</th>
+              <th>JIT・かんばん</th>
+              <th>定量発注方式</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>補充の合図</strong></td>
+              <td class="td-jit">使用実績（かんばん）</td>
+              <td class="td-fix">在庫量（発注点）</td>
+            </tr>
+            <tr>
+              <td><strong>発注数量</strong></td>
+              <td>必要最小限</td>
+              <td>毎回一定</td>
+            </tr>
+            <tr>
+              <td><strong>在庫水準</strong></td>
+              <td>極小</td>
+              <td>ある程度必要</td>
+            </tr>
+            <tr>
+              <td><strong>向き不向き</strong></td>
+              <td>製造現場（安定生産）</td>
+              <td>流通・小売（Cランク品）</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>4. 試験でのキーワード</h2>
+        <ul>
+          <li><strong>JIT・かんばん：</strong> 「後工程引き取り」「在庫の最小化」「トヨタ生産方式」</li>
+          <li><strong>定量発注方式：</strong> 「発注点」「在庫量が下回った時」「経済的発注量」</li>
+        </ul>
+
+        <h2>まとめ</h2>
+        <ul>
+          <li><strong>JIT：</strong> 「使ったから作る」（現場主導）。</li>
+          <li><strong>定量発注：</strong> 「減ったから頼む」（在庫主導）。</li>
+        </ul>
+        <p>JITはムダ取りの哲学、定量発注は在庫維持の事務ルール、というイメージで区別しましょう。</p>
+
+        <!-- GEN: REFERENCES -->
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> IT passport study map. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
