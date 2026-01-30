@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>キャッシュフロー計算書の基本 - IT passport study map</title>
+  <meta name="description" content="キャッシュフロー計算書（CF計算書）の3つの区分（営業・投資・財務）を解説。現金の流れから企業の健康状態や成長フェーズを読み解くポイントを図解で整理します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="キャッシュフロー計算書の基本" />
+  <meta property="og:description" content="キャッシュフロー計算書（CF計算書）の3つの区分（営業・投資・財務）を解説。現金の流れから企業の健康状態や成長フェーズを読み解くポイントを図解で整理します。" />
+  
+  <!-- Assets: 記事は docs/posts/<id>/index.html → ../../ 固定 -->
+  <link rel="stylesheet" href="../../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS（図解・補助CSS） -->
+  <style>
+    /* 共通図解コンテナ */
+    .diagram-section {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* CFの全体構造図 */
+    .cf-structure {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      width: 100%;
+      flex-wrap: wrap;
+    }
+    .cf-box {
+      flex: 1;
+      min-width: 220px;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 1.5rem;
+      text-align: center;
+      position: relative;
+    }
+    .cf-title {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
+      border-bottom: 2px solid #eee;
+      padding-bottom: 0.5rem;
+    }
+    .cf-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+    
+    /* 営業CF */
+    .box-ope { border-top: 4px solid #27ae60; }
+    .box-ope .cf-title { color: #27ae60; border-color: #27ae60; }
+    
+    /* 投資CF */
+    .box-inv { border-top: 4px solid #0056b3; }
+    .box-inv .cf-title { color: #0056b3; border-color: #0056b3; }
+    
+    /* 財務CF */
+    .box-fin { border-top: 4px solid #e67e22; }
+    .box-fin .cf-title { color: #e67e22; border-color: #e67e22; }
+
+    /* イン・アウトの矢印 */
+    .money-flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 0.5rem;
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+    .flow-plus { color: #27ae60; }
+    .flow-minus { color: #d00; }
+    .arrow-icon { font-size: 1.2rem; vertical-align: middle; }
+
+    /* 企業パターンの比較 */
+    .pattern-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      width: 100%;
+      max-width: 600px;
+    }
+    .pattern-card {
+      background: #fff;
+      border: 2px solid #333;
+      border-radius: 6px;
+      padding: 1rem;
+      text-align: center;
+    }
+    .pattern-name {
+      background: #333;
+      color: #fff;
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 20px;
+      font-weight: bold;
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+    }
+    .cf-bars {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    .cf-bar-row {
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+    .cf-label {
+      width: 40px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      text-align: right;
+      margin-right: 10px;
+    }
+    .bar-area {
+      flex: 1;
+      display: flex;
+      align-items: center;
+    }
+    .bar {
+      height: 20px;
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: bold;
+    }
+    .b-plus { background: #27ae60; }
+    .b-minus { background: #d00; }
+    .b-plus-l { width: 80%; }
+    .b-plus-s { width: 40%; }
+    .b-minus-l { width: 80%; }
+    .b-minus-s { width: 40%; }
+
+    /* 比較テーブル */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      margin: 1rem 0;
+    }
+    .comparison-table th, .comparison-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+    .comparison-table th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+      width: 25%;
+    }
+    .t-left { text-align: left; }
+
+    /* ポイント強調 */
+    .key-point {
+      background-color: #f4f4f4;
+      border-left: 4px solid #333;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .key-point strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1em;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 600px) {
+      .cf-structure {
+        flex-direction: column;
+      }
+      .pattern-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a href="../../index.html" class="site-title">IT passport study map</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-30">
+            2026.01.30 / ストラテジ系
+          </time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">キャッシュフロー計算書の基本</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list">
+            <li class="tag">#キャッシュフロー</li>
+            <li class="tag">#財務諸表</li>
+            <li class="tag">#企業分析</li>
+            <li class="tag">#現金管理</li>
+            <li class="tag">#投資活動</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>「黒字倒産」という言葉があるように、企業にとって「利益」が出ていることと「現金がある」ことはイコールではありません。<br>
+        会社のお金の流れ（血流）を見るための書類、それが<strong>「キャッシュフロー計算書（C/S）」</strong>です。</p>
+
+        <div class="key-point">
+          <strong>1行要約</strong><br>
+          キャッシュフロー計算書は、一定期間の現金の増減を「本業（営業）」「将来への投資（投資）」「資金繰り（財務）」の3つに分けて表したもの。
+        </div>
+
+        <h2>1. 3つの活動と現金の流れ（図解）</h2>
+        <p>お金が「入ってきた（プラス）」のか「出ていった（マイナス）」のか、その理由を3つの箱で分類します。</p>
+
+        <div class="diagram-section">
+          <div class="cf-structure">
+            
+            <!-- 営業CF -->
+            <div class="cf-box box-ope">
+              <span class="cf-title">営業活動 CF</span>
+              <span class="cf-icon">💼</span>
+              <div>本業で稼いだお金</div>
+              <div class="money-flow flow-plus">
+                <span class="arrow-icon">⬆</span> 入る：売上
+              </div>
+              <div class="money-flow flow-minus">
+                <span class="arrow-icon">⬇</span> 出る：仕入・給与
+              </div>
+              <p style="font-size:0.8rem; margin-top:0.5rem; color:#27ae60; font-weight:bold;">
+                基本はプラスが良い
+              </p>
+            </div>
+
+            <!-- 投資CF -->
+            <div class="cf-box box-inv">
+              <span class="cf-title">投資活動 CF</span>
+              <span class="cf-icon">🏗️</span>
+              <div>将来への投資</div>
+              <div class="money-flow flow-minus">
+                <span class="arrow-icon">⬇</span> 出る：設備購入
+              </div>
+              <div class="money-flow flow-plus">
+                <span class="arrow-icon">⬆</span> 入る：資産売却
+              </div>
+              <p style="font-size:0.8rem; margin-top:0.5rem; color:#0056b3; font-weight:bold;">
+                マイナスは成長の証
+              </p>
+            </div>
+
+            <!-- 財務CF -->
+            <div class="cf-box box-fin">
+              <span class="cf-title">財務活動 CF</span>
+              <span class="cf-icon">🏦</span>
+              <div>資金の調達と返済</div>
+              <div class="money-flow flow-plus">
+                <span class="arrow-icon">⬆</span> 入る：借入・株式
+              </div>
+              <div class="money-flow flow-minus">
+                <span class="arrow-icon">⬇</span> 出る：返済・配当
+              </div>
+              <p style="font-size:0.8rem; margin-top:0.5rem; color:#e67e22; font-weight:bold;">
+                借金事情が見える
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+        <h2>2. 各区分の詳細とチェックポイント</h2>
+
+        <h3>① 営業活動によるキャッシュフロー（本業）</h3>
+        <p>商品の販売やサービスの提供など、本業の活動による現金の増減です。<br>
+        <strong>ここがプラスであること</strong>が、健全な経営の絶対条件です。</p>
+        <ul>
+          <li><strong>プラス要因：</strong> 商品の売上入金</li>
+          <li><strong>マイナス要因：</strong> 仕入代金の支払、人件費、税金</li>
+        </ul>
+
+        <h3>② 投資活動によるキャッシュフロー（未来）</h3>
+        <p>設備投資や有価証券の売買などによる現金の増減です。<br>
+        成長企業は積極的に設備投資を行うため、<strong>マイナスになるのが一般的</strong>です。</p>
+        <ul>
+          <li><strong>マイナス要因：</strong> 工場建設、PC購入、株の購入</li>
+          <li><strong>プラス要因：</strong> 土地や建物の売却（リストラ等の可能性も）</li>
+        </ul>
+
+        <h3>③ 財務活動によるキャッシュフロー（資金繰り）</h3>
+        <p>銀行からの借入や株主への配当など、資金調達と返済による現金の増減です。<br>
+        <strong>プラスなら借金が増え、マイナスなら借金を返している</strong>状態です。</p>
+        <ul>
+          <li><strong>プラス要因：</strong> 銀行借入、株式発行</li>
+          <li><strong>マイナス要因：</strong> 借金の返済、配当金の支払</li>
+        </ul>
+
+        <h2>3. 企業のタイプ別パターン</h2>
+        <p>3つのプラス・マイナスの組み合わせで、その会社の状態が見えてきます。</p>
+
+        <div class="diagram-section">
+          <div class="pattern-grid">
+            
+            <!-- 成長企業 -->
+            <div class="pattern-card">
+              <span class="pattern-name">成長企業タイプ</span>
+              <div class="cf-bars">
+                <div class="cf-bar-row">
+                  <span class="cf-label">営業</span>
+                  <div class="bar-area"><div class="bar b-plus b-plus-l">＋ 大</div></div>
+                </div>
+                <div class="cf-bar-row">
+                  <span class="cf-label">投資</span>
+                  <div class="bar-area"><div class="bar b-minus b-minus-l">－ 大</div></div>
+                </div>
+                <div class="cf-bar-row">
+                  <span class="cf-label">財務</span>
+                  <div class="bar-area"><div class="bar b-plus b-plus-s">＋ 小</div></div>
+                </div>
+              </div>
+              <p style="font-size:0.85rem; margin-top:0.5rem; text-align:left;">
+                本業で稼ぎ、さらに借入もして、ガンガン設備投資している状態。
+              </p>
+            </div>
+
+            <!-- 成熟・優良企業 -->
+            <div class="pattern-card">
+              <span class="pattern-name">成熟・優良タイプ</span>
+              <div class="cf-bars">
+                <div class="cf-bar-row">
+                  <span class="cf-label">営業</span>
+                  <div class="bar-area"><div class="bar b-plus b-plus-l">＋ 大</div></div>
+                </div>
+                <div class="cf-bar-row">
+                  <span class="cf-label">投資</span>
+                  <div class="bar-area"><div class="bar b-minus b-minus-s">－ 小</div></div>
+                </div>
+                <div class="cf-bar-row">
+                  <span class="cf-label">財務</span>
+                  <div class="bar-area"><div class="bar b-minus b-minus-l">－ 大</div></div>
+                </div>
+              </div>
+              <p style="font-size:0.85rem; margin-top:0.5rem; text-align:left;">
+                本業で稼いだお金で、借金を返済したり配当を出したりしている状態。
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+        <h2>4. 試験対策：瞬殺キーワード</h2>
+        <p>ITパスポート試験では、「どの取引がどの活動に分類されるか」が問われます。</p>
+
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>取引内容</th>
+              <th>区分</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>商品・サービスの売上</td>
+              <td><strong>営業活動</strong></td>
+            </tr>
+            <tr>
+              <td>利息・配当金の<strong>受取</strong></td>
+              <td>営業活動（※投資ではない）</td>
+            </tr>
+            <tr>
+              <td>固定資産（PC・土地）の購入</td>
+              <td><strong>投資活動</strong></td>
+            </tr>
+            <tr>
+              <td>有価証券の売却</td>
+              <td>投資活動</td>
+            </tr>
+            <tr>
+              <td>株式の発行・借入</td>
+              <td><strong>財務活動</strong></td>
+            </tr>
+            <tr>
+              <td>配当金の<strong>支払</strong></td>
+              <td>財務活動</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>※「利息の受取」は投資っぽいですが、日本の会計基準では「営業活動」に入れることが一般的です。</p>
+
+        <h2>まとめ</h2>
+        <ul>
+          <li><strong>営業CF：</strong> 稼ぐ力（プラスが良い）。</li>
+          <li><strong>投資CF：</strong> 将来への布石（マイナスは攻めの証）。</li>
+          <li><strong>財務CF：</strong> 資金の調整（プラスは借金、マイナスは返済）。</li>
+        </ul>
+        <p>「利益（P/L）」は意見だが、「現金（C/F）」は事実。会社の生存能力を見るにはキャッシュフローが一番確実です。</p>
+
+        <!-- GEN: REFERENCES -->
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> IT passport study map. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
