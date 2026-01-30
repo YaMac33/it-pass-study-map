@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>Cookie使用の真実 - IT passport study map</title>
+  <meta name="description" content="「Cookieを使用しています」という表示がないサイトはCookieを使っていないのか？Webにおけるプライバシーの現状と、ブラウザで実態を確認する方法を図解で解説します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Cookie使用の真実" />
+  <meta property="og:description" content="「Cookieを使用しています」という表示がないサイトはCookieを使っていないのか？Webにおけるプライバシーの現状と、ブラウザで実態を確認する方法を図解で解説します。" />
+  
+  <!-- Assets: 記事は docs/posts/<id>/index.html → ../../ 固定 -->
+  <link rel="stylesheet" href="../../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS（図解・補助CSS） -->
+  <style>
+    /* 共通図解コンテナ */
+    .diagram-section {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* 氷山モデル図 */
+    .iceberg-container {
+      position: relative;
+      width: 100%;
+      max-width: 400px;
+      height: 250px;
+      overflow: hidden;
+      border-radius: 8px;
+      background: linear-gradient(to bottom, #87ceeb 40%, #0056b3 40%);
+    }
+    .iceberg-top {
+      position: absolute;
+      top: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 60px solid transparent;
+      border-right: 60px solid transparent;
+      border-bottom: 70px solid #fff;
+      z-index: 2;
+    }
+    .iceberg-bottom {
+      position: absolute;
+      top: 110px; /* 水面下 */
+      left: 50%;
+      transform: translateX(-50%);
+      width: 200px;
+      height: 120px;
+      background: #eef6ff;
+      border-radius: 0 0 50% 50%;
+      opacity: 0.8;
+      z-index: 1;
+    }
+    .water-surface {
+      position: absolute;
+      top: 100px; /* 40%位置 */
+      width: 100%;
+      height: 2px;
+      background: #fff;
+      opacity: 0.5;
+      z-index: 3;
+    }
+    
+    /* ラベル */
+    .label-visible {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #fff;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      color: #333;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    .label-hidden {
+      position: absolute;
+      bottom: 20px;
+      left: 10px;
+      background: #004085;
+      color: #fff;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+
+    /* 開発者ツール風UI */
+    .devtools-ui {
+      width: 100%;
+      max-width: 550px;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 0.8rem;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .dt-header {
+      background: #f3f3f3;
+      padding: 5px 10px;
+      border-bottom: 1px solid #ccc;
+      display: flex;
+      gap: 10px;
+      color: #666;
+    }
+    .dt-tab.active {
+      color: #0056b3;
+      font-weight: bold;
+      border-bottom: 2px solid #0056b3;
+    }
+    .dt-body {
+      display: flex;
+      height: 150px;
+    }
+    .dt-sidebar {
+      width: 120px;
+      background: #f9f9f9;
+      border-right: 1px solid #eee;
+      padding: 10px;
+    }
+    .dt-content {
+      flex: 1;
+      padding: 10px;
+      overflow-x: auto;
+    }
+    
+    .cookie-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .cookie-table th {
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+      color: #666;
+    }
+    .cookie-table td {
+      padding: 4px 0;
+      color: #333;
+    }
+    .cookie-val {
+      color: #d00;
+    }
+
+    /* 比較テーブル */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      margin: 1rem 0;
+    }
+    .comparison-table th, .comparison-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+    .comparison-table th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+      width: 30%;
+    }
+
+    /* ポイント強調 */
+    .key-point {
+      background-color: #f4f4f4;
+      border-left: 4px solid #333;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .key-point strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1em;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 600px) {
+      .iceberg-container {
+        height: 200px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a href="../../index.html" class="site-title">IT passport study map</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-30">
+            2026.01.30 / テクノロジ系
+          </time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">Cookie使用の真実</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list">
+            <li class="tag">#Cookie</li>
+            <li class="tag">#プライバシー</li>
+            <li class="tag">#GDPR</li>
+            <li class="tag">#Web技術</li>
+            <li class="tag">#セキュリティ</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>Webサイトを見ていると「このサイトはCookieを使用しています」というバナーがよく出ます。<br>
+        では、この表示が出ないサイトはCookieを使っていないのでしょうか？</p>
+        <p>答えは<strong>「No」</strong>です。表示の有無に関わらず、現代のWebサイトのほとんどが裏側でCookieを利用しています。</p>
+
+        <div class="key-point">
+          <strong>1行要約</strong><br>
+          「Cookie同意バナー」が出るのは法律（GDPR等）の都合であり、表示がないサイトでもログインや解析のために裏でCookieが使われていることがほとんどである。
+        </div>
+
+        <h2>1. Cookie利用の実態（氷山モデル）</h2>
+        <p>私たちが目にしている「同意バナー」は、Web全体の一部に過ぎません。</p>
+
+        <div class="diagram-section">
+          <div class="iceberg-container">
+            <div class="water-surface"></div>
+            
+            <!-- 氷山の上 -->
+            <div class="iceberg-top"></div>
+            <div class="label-visible">
+              バナーが出るサイト<br>
+              <span style="font-weight:normal; font-size:0.7rem;">(EU圏向けなど)</span>
+            </div>
+
+            <!-- 氷山の下 -->
+            <div class="iceberg-bottom"></div>
+            <div class="label-hidden">
+              表示はないが<br>使っているサイト<br>
+              <span style="font-weight:normal; font-size:0.7rem;">(国内小規模サイト等)</span>
+            </div>
+          </div>
+          <p style="font-size:0.9rem; color:#666; margin-top:1rem;">
+            表示がないからといって、「追跡されていない」わけではありません。
+          </p>
+        </div>
+
+        <h2>2. なぜCookieを使うのか？</h2>
+        <p>Cookieは「悪者」ではなく、Webを便利にするための技術です。主に以下の用途で使われます。</p>
+
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>用途</th>
+              <th>具体例</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>状態の維持</strong></td>
+              <td>ログイン状態の保持、カートの中身保存</td>
+            </tr>
+            <tr>
+              <td><strong>設定の保存</strong></td>
+              <td>ダークモード設定、言語設定の記憶</td>
+            </tr>
+            <tr>
+              <td><strong>分析・計測</strong></td>
+              <td>Google Analytics（訪問者数のカウント）</td>
+            </tr>
+            <tr>
+              <td><strong>広告配信</strong></td>
+              <td>ターゲティング広告（興味のある広告を出す）</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>3. 自分で確認する方法（Chrome編）</h2>
+        <p>「このサイト、何を使ってるんだろう？」と思ったら、ブラウザの機能で中身を覗くことができます。</p>
+
+        <div class="diagram-section">
+          <div class="devtools-ui">
+            <div class="dt-header">
+              <span class="dt-tab">Elements</span>
+              <span class="dt-tab">Console</span>
+              <span class="dt-tab active">Application</span>
+            </div>
+            <div class="dt-body">
+              <div class="dt-sidebar">
+                <div style="font-weight:bold; margin-bottom:5px;">Storage</div>
+                <div style="color:#0056b3; padding-left:10px;">🍪 Cookies</div>
+                <div style="padding-left:20px;">example.com</div>
+              </div>
+              <div class="dt-content">
+                <table class="cookie-table">
+                  <thead>
+                    <tr><th>Name</th><th>Value</th><th>Domain</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>session_id</td><td class="cookie-val">xyz123...</td><td>.example.com</td></tr>
+                    <tr><td>_ga</td><td class="cookie-val">GA1.2...</td><td>.example.com</td></tr>
+                    <tr><td>theme</td><td class="cookie-val">dark</td><td>.example.com</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h3>確認手順</h3>
+        <ol>
+          <li>サイトを開き、<strong>F12キー</strong>（Macは Cmd+Option+I）を押す。</li>
+          <li>「Application」タブをクリックする。</li>
+          <li>左メニューの「Cookies」を選択し、ドメインをクリックする。</li>
+        </ol>
+        <p>これだけで、そのサイトが保存しているCookieの一覧（ログインIDや追跡IDなど）が丸見えになります。</p>
+
+        <h2>まとめ</h2>
+        <ul>
+          <li><strong>表示の有無：</strong>法律や運営方針の違いであり、利用の有無とは直結しない。</li>
+          <li><strong>実態：</strong>ほとんどのサイトが利便性や分析のためにCookieを使用している。</li>
+          <li><strong>自衛手段：</strong>ブラウザの「シークレットモード（プライベートモード）」を使えば、Cookieは一時的な利用に留まり、ブラウザを閉じれば消える。</li>
+        </ul>
+
+        <!-- GEN: REFERENCES -->
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> IT passport study map. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
+
