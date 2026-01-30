@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>STPと競争戦略の関係 - IT passport study map</title>
+  <meta name="description" content="マーケティングにおけるSTP分析とコトラーの競争戦略の関係性を解説。「場所（STP）」を決めてから「戦い方（競争戦略）」を決める流れや、4つの戦略タイプを図解で整理します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="STPと競争戦略の関係" />
+  <meta property="og:description" content="マーケティングにおけるSTP分析とコトラーの競争戦略の関係性を解説。「場所（STP）」を決めてから「戦い方（競争戦略）」を決める流れや、4つの戦略タイプを図解で整理します。" />
+  
+  <!-- Assets: 記事は docs/posts/<id>/index.html → ../../ 固定 -->
+  <link rel="stylesheet" href="../../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS（図解・補助CSS） -->
+  <style>
+    /* 共通図解コンテナ */
+    .diagram-section {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* STP→戦略の流れ図 */
+    .flow-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      width: 100%;
+      max-width: 450px;
+    }
+    .flow-box {
+      background: #fff;
+      border: 2px solid #ccc;
+      padding: 1rem;
+      width: 100%;
+      border-radius: 8px;
+      text-align: center;
+      position: relative;
+    }
+    .box-stp {
+      border-color: #0056b3;
+      background: #eef6ff;
+    }
+    .box-strategy {
+      border-color: #e67e22;
+      background: #fffaf0;
+    }
+    
+    .box-title {
+      font-weight: bold;
+      font-size: 1.1rem;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    .stp-items {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .stp-tag {
+      background: #fff;
+      color: #0056b3;
+      border: 1px solid #0056b3;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+    
+    .arrow-down {
+      font-size: 1.5rem;
+      color: #999;
+      font-weight: bold;
+    }
+    .arrow-label {
+      font-size: 0.8rem;
+      color: #666;
+      background: #f9f9f9;
+      padding: 0 10px;
+    }
+
+    /* 市場シェアのイメージ図 */
+    .market-visual {
+      position: relative;
+      width: 280px;
+      height: 280px;
+      background: #fff;
+      border: 2px solid #333;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+    }
+    /* リーダー（大シェア） */
+    .area-leader {
+      grid-column: 1 / 3;
+      grid-row: 1 / 2;
+      background: #d4e6f1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: #0056b3;
+      border-bottom: 1px dashed #999;
+    }
+    /* チャレンジャー */
+    .area-challenger {
+      grid-column: 1 / 2;
+      grid-row: 2 / 3;
+      background: #fadbd8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: #c0392b;
+      border-right: 1px dashed #999;
+    }
+    /* フォロワー */
+    .area-follower {
+      grid-column: 2 / 3;
+      grid-row: 2 / 3;
+      background: #f9e79f;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: #f39c12;
+      position: relative;
+    }
+    /* ニッチャー（隙間） */
+    .area-niche {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      width: 60px;
+      height: 60px;
+      background: #27ae60;
+      color: #fff;
+      font-size: 0.8rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      border: 2px solid #fff;
+      z-index: 2;
+    }
+
+    /* 戦略カードグリッド */
+    .strategy-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      width: 100%;
+    }
+    .strat-card {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .strat-header {
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .strat-badge {
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #fff;
+    }
+    /* 色設定 */
+    .st-leader { border-top: 4px solid #0056b3; }
+    .bg-leader { background: #0056b3; }
+    .st-challenger { border-top: 4px solid #c0392b; }
+    .bg-challenger { background: #c0392b; }
+    .st-follower { border-top: 4px solid #f39c12; }
+    .bg-follower { background: #f39c12; }
+    .st-nicher { border-top: 4px solid #27ae60; }
+    .bg-nicher { background: #27ae60; }
+
+    /* 比較テーブル */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      margin: 1rem 0;
+    }
+    .comparison-table th, .comparison-table td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    .comparison-table th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+      width: 25%;
+    }
+
+    /* ポイント強調 */
+    .key-point {
+      background-color: #f4f4f4;
+      border-left: 4px solid #333;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .key-point strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1em;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 600px) {
+      .market-visual {
+        width: 100%;
+        height: 250px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a href="../../index.html" class="site-title">IT passport study map</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-30">
+            2026.01.30 / ストラテジ系
+          </time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">STPと競争戦略の関係</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list">
+            <li class="tag">#マーケティング</li>
+            <li class="tag">#競争戦略</li>
+            <li class="tag">#STP</li>
+            <li class="tag">#分析</li>
+            <li class="tag">#戦略</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>マーケティング戦略において、「STP分析」と「コトラーの競争戦略」は密接に関係しています。<br>
+        この2つは別々の理論ではなく、<strong>「場所を決める（STP）」→「戦い方を決める（競争戦略）」</strong>という一連の流れで理解することが重要です。</p>
+
+        <div class="key-point">
+          <strong>1行要約</strong><br>
+          STPで「どの市場のどんなポジションを取るか」を決め、そのポジションに応じて「リーダー・チャレンジャー・フォロワー・ニッチャー」という戦い方を選ぶ。
+        </div>
+
+        <h2>1. 全体像：場所選びから戦い方へ</h2>
+        <p>まずSTPで地図を描き、自分の立ち位置を確定させます。戦い方はその後に決まります。</p>
+
+        <div class="diagram-section">
+          <div class="flow-container">
+            
+            <!-- STP -->
+            <div class="flow-box box-stp">
+              <span class="box-title">STP分析</span>
+              <div>市場を細分化し、狙う立ち位置を決める</div>
+              <div class="stp-items" style="margin-top:0.5rem;">
+                <span class="stp-tag">Segmentation</span>
+                <span class="stp-tag">Targeting</span>
+                <span class="stp-tag">Positioning</span>
+              </div>
+            </div>
+
+            <div class="arrow-down">⬇</div>
+            <span class="arrow-label">ポジション確定</span>
+            <div class="arrow-down">⬇</div>
+
+            <!-- 競争戦略 -->
+            <div class="flow-box box-strategy">
+              <span class="box-title">競争戦略 (コトラー)</span>
+              <div>そのポジションでの最適な戦い方を選ぶ</div>
+              <div style="font-weight:bold; color:#e67e22; margin-top:0.5rem;">
+                リーダー / チャレンジャー / フォロワー / ニッチャー
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <h2>2. 4つの競争ポジションとSTP</h2>
+        <p>市場シェアやSTPの結果によって、企業は以下の4つのポジションに分類されます。</p>
+
+        <div class="diagram-section">
+          <div class="market-visual">
+            <div class="area-leader">リーダー<br>(No.1)</div>
+            <div class="area-challenger">チャレンジャー<br>(No.2 攻撃)</div>
+            <div class="area-follower">フォロワー<br>(模倣・追随)</div>
+            <div class="area-niche">ニッチャー</div>
+          </div>
+          <p style="font-size:0.9rem; color:#666; margin-top:1rem;">
+            STPで「どこを狙うか」によって、取るべき戦略が変わります。
+          </p>
+        </div>
+
+        <div class="strategy-grid">
+          
+          <!-- リーダー -->
+          <div class="strat-card st-leader">
+            <div class="strat-header">
+              リーダー
+              <span class="strat-badge bg-leader">最大シェア</span>
+            </div>
+            <div>
+              <strong>全方位型・市場拡大</strong><br>
+              STP：最も広い市場を狙う。<br>
+              戦略：利潤最大化、周辺需要の取り込み（フルラインナップ）。
+            </div>
+          </div>
+
+          <!-- チャレンジャー -->
+          <div class="strat-card st-challenger">
+            <div class="strat-header">
+              チャレンジャー
+              <span class="strat-badge bg-challenger">No.2・3</span>
+            </div>
+            <div>
+              <strong>差別化・攻撃型</strong><br>
+              STP：リーダーと同じ市場で、違う強みを打ち出す。<br>
+              戦略：リーダーの弱点を突く、価格競争。
+            </div>
+          </div>
+
+          <!-- フォロワー -->
+          <div class="strat-card st-follower">
+            <div class="strat-header">
+              フォロワー
+              <span class="strat-badge bg-follower">中堅・下位</span>
+            </div>
+            <div>
+              <strong>模倣・効率化</strong><br>
+              STP：既存市場でリスクを避ける。<br>
+              戦略：リーダーの成功を真似て、低コストで提供する。
+            </div>
+          </div>
+
+          <!-- ニッチャー -->
+          <div class="strat-card st-nicher">
+            <div class="strat-header">
+              ニッチャー
+              <span class="strat-badge bg-nicher">隙間</span>
+            </div>
+            <div>
+              <strong>特定集中・専門化</strong><br>
+              STP：大手が狙わない狭い市場に絞る。<br>
+              戦略：高付加価値、専門性でオンリーワンになる。
+            </div>
+          </div>
+
+        </div>
+
+        <h2>3. 比較まとめ表</h2>
+        <p>試験対策として、STPの結果と採用すべき戦略を整理します。</p>
+
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>戦略タイプ</th>
+              <th>STPの特徴（狙う場所）</th>
+              <th>定石となる戦い方</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>リーダー</strong></td>
+              <td>市場全体、最大多数</td>
+              <td>全方位、市場規模の拡大</td>
+            </tr>
+            <tr>
+              <td><strong>チャレンジャー</strong></td>
+              <td>リーダーと同じ市場</td>
+              <td>差別化、リーダーへの攻撃</td>
+            </tr>
+            <tr>
+              <td><strong>フォロワー</strong></td>
+              <td>既存の安定市場</td>
+              <td>模倣、コストダウン</td>
+            </tr>
+            <tr>
+              <td><strong>ニッチャー</strong></td>
+              <td><strong>特定の狭い市場</strong></td>
+              <td><strong>集中化、専門化</strong></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>まとめ</h2>
+        <p>ITパスポートなどの試験でよく出るのは以下の組み合わせです。</p>
+        <ul>
+          <li><strong>「市場シェアNo.1、全方位」</strong> → リーダー</li>
+          <li><strong>「特定の小さな市場、専門化」</strong> → ニッチャー</li>
+          <li><strong>「上位企業を差別化で追う」</strong> → チャレンジャー</li>
+        </ul>
+        <p>STP分析なしに「とりあえずリーダー戦略！」とは言えません。自分の立ち位置（STP）を知るからこそ、正しい戦い方（競争戦略）が選べるのです。</p>
+
+        <!-- GEN: REFERENCES -->
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> IT passport study map. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
