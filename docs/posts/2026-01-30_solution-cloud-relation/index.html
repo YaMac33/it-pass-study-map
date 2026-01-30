@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>ソリューションビジネスとクラウドサービスの関係性 - IT passport study map</title>
+  <meta name="description" content="ソリューションビジネスとクラウドサービスの関係性を解説。ITパスポート試験対策として、「目的・手段・形態」の入れ子構造を図解で整理します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="ITソリューションビジネスとクラウドサービスの関係性" />
+  <meta property="og:description" content="ソリューションビジネスとクラウドサービスの関係性を解説。ITパスポート試験対策として、「目的・手段・形態」の入れ子構造を図解で整理します。" />
+  
+  <!-- Assets: 記事は docs/posts/<id>/index.html → ../../ 固定 -->
+  <link rel="stylesheet" href="../../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS（図解・補助CSS） -->
+  <style>
+    /* 共通図解コンテナ */
+    .diagram-section {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* 入れ子構造図 */
+    .nested-diagram {
+      width: 100%;
+      max-width: 500px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    /* 外枠：ソリューション */
+    .box-solution {
+      width: 100%;
+      background: #fffaf0;
+      border: 2px solid #e67e22;
+      border-radius: 12px;
+      padding: 2.5rem 1.5rem 1.5rem;
+      position: relative;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+    .label-solution {
+      position: absolute;
+      top: -14px;
+      left: 20px;
+      background: #e67e22;
+      color: #fff;
+      font-weight: bold;
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+    .desc-solution {
+      text-align: center;
+      font-weight: bold;
+      color: #e67e22;
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+    }
+
+    /* 中枠：クラウド */
+    .box-cloud {
+      background: #eef6ff;
+      border: 2px solid #0056b3;
+      border-radius: 8px;
+      padding: 2rem 1rem 1rem;
+      position: relative;
+    }
+    .label-cloud {
+      position: absolute;
+      top: -12px;
+      left: 20px;
+      background: #0056b3;
+      color: #fff;
+      font-weight: bold;
+      padding: 2px 10px;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+    .desc-cloud {
+      text-align: center;
+      font-weight: bold;
+      color: #0056b3;
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+    }
+
+    /* 内枠：aaS */
+    .box-aas {
+      background: #fff;
+      border: 2px dashed #666;
+      border-radius: 6px;
+      padding: 1rem;
+      text-align: center;
+      color: #666;
+      font-weight: bold;
+    }
+
+    /* 正確な関係図（ツリー） */
+    .strict-tree {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 450px;
+    }
+    .tree-node {
+      background: #fff;
+      border: 2px solid #333;
+      padding: 0.8rem 1.5rem;
+      border-radius: 6px;
+      text-align: center;
+      font-weight: bold;
+      position: relative;
+      width: 100%;
+    }
+    .node-sol { border-color: #e67e22; color: #e67e22; background: #fffaf0; }
+    
+    .tree-branch {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      position: relative;
+      padding-top: 20px;
+    }
+    .tree-branch::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 50%;
+      height: 20px;
+      border-left: 2px solid #ccc;
+    }
+    .tree-branch::after {
+      content: "";
+      position: absolute;
+      top: 20px;
+      left: 25%;
+      right: 25%;
+      border-top: 2px solid #ccc;
+    }
+
+    .branch-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+    .branch-item::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      height: 15px;
+      border-left: 2px solid #ccc;
+      top: -20px;
+    }
+    
+    .sub-box {
+      background: #fff;
+      border: 1px solid #ccc;
+      padding: 0.8rem;
+      border-radius: 4px;
+      width: 90%;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+    .hl-cloud { border-color: #0056b3; background: #eef6ff; color: #0056b3; font-weight: bold; }
+
+    /* 比較テーブル */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      margin: 1rem 0;
+    }
+    .comparison-table th, .comparison-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+    .comparison-table th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+      width: 30%;
+    }
+    .t-left { text-align: left; }
+
+    /* ポイント強調 */
+    .key-point {
+      background-color: #f4f4f4;
+      border-left: 4px solid #333;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .key-point strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1em;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 600px) {
+      .nested-diagram {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a href="../../index.html" class="site-title">IT passport study map</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-30">
+            2026.01.30 / ストラテジ系
+          </time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">ソリューションビジネスとクラウドサービスの関係性</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list">
+            <li class="tag">#ソリューション</li>
+            <li class="tag">#クラウド</li>
+            <li class="tag">#SaaS</li>
+            <li class="tag">#ITパスポート</li>
+            <li class="tag">#ビジネス</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>ITパスポート試験では、「ソリューションビジネス」や「クラウドサービス」といった言葉が頻出します。<br>
+        これらは別々の用語に見えますが、**「入れ子構造」**として捉えると関係性がスッキリ理解できます。</p>
+
+        <div class="key-point">
+          <strong>1行要約</strong><br>
+          「ソリューション（課題解決）」を実現する手段として「クラウド」があり、その具体的な提供形態として「SaaS等」がある。
+        </div>
+
+        <h2>1. イメージ重視の「入れ子構造」</h2>
+        <p>試験対策としては、以下の包含関係をイメージするのが最も効果的です。</p>
+
+        <div class="diagram-section">
+          <div class="nested-diagram">
+            
+            <!-- ソリューション（大枠） -->
+            <div class="box-solution">
+              <span class="label-solution">ソリューションビジネス</span>
+              <div class="desc-solution">
+                「顧客の課題を解決する」<br>ビジネスの考え方
+              </div>
+
+              <!-- クラウド（中枠） -->
+              <div class="box-cloud">
+                <span class="label-cloud">クラウドサービス</span>
+                <div class="desc-cloud">
+                  ネット経由で提供する<br>「実現手段」
+                </div>
+
+                <!-- aaS（小枠） -->
+                <div class="box-aas">
+                  ◯aaS (SaaS / PaaS / IaaS)<br>
+                  具体的な提供形態
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+          <p style="font-size:0.9rem; color:#666; margin-top:1rem;">
+            上位概念（思想）→ 実現手段（仕組み）→ 提供形態（形）の順です。
+          </p>
+        </div>
+
+        <h2>2. 各用語の役割定義</h2>
+
+        <h3>① ソリューションビジネス</h3>
+        <p><strong>「顧客の課題をまとめて解決する」という発想。</strong><br>
+        単にソフトを売るだけでなく、導入コンサルティングや保守運用も含めて、顧客の困りごとを解消することをビジネスの目的とします。</p>
+
+        <h3>② クラウドサービス</h3>
+        <p><strong>「その解決策を、ネット経由で提供する仕組み。」</strong><br>
+        自社でサーバーを持たなくても、インターネット越しに機能を利用できる仕組みです。ソリューションを実現する現代の主流な手段です。</p>
+
+        <h3>③ ◯aaS（SaaS, PaaS, IaaS）</h3>
+        <p><strong>「どこまでをサービスとして提供するかを切り分けた形。」</strong><br>
+        アプリケーションまで提供するのか（SaaS）、インフラだけ貸すのか（IaaS）といった、サービスの提供範囲による分類です。</p>
+
+        <h2>3. 厳密な関係（補足）</h2>
+        <p>ただし、現実には「クラウドを使わないソリューション」も存在します。</p>
+
+        <div class="diagram-section">
+          <div class="strict-tree">
+            <div class="tree-node node-sol">ソリューションビジネス</div>
+            
+            <div class="tree-branch">
+              <div class="branch-item">
+                <div class="sub-box hl-cloud">
+                  <strong>クラウド利用</strong><br>
+                  (SaaS / PaaS / IaaS)
+                </div>
+              </div>
+              
+              <div class="branch-item">
+                <div class="sub-box">
+                  <strong>オンプレミス利用</strong><br>
+                  (自社構築・個別SI)
+                </div>
+              </div>
+            </div>
+          </div>
+          <p style="font-size:0.9rem; margin-top:1rem;">
+            昔ながらの「システム開発（SI）」もソリューションの一種ですが、近年の試験ではクラウドとの組み合わせが頻出です。
+          </p>
+        </div>
+
+        <h2>4. 試験対策：整理まとめ</h2>
+        <p>問題文を読んだとき、どのレベルの話をしているかを判別しましょう。</p>
+
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>用語</th>
+              <th>レベル・位置づけ</th>
+              <th>着眼点</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>ソリューション</strong></td>
+              <td>上位概念（目的）</td>
+              <td>課題解決、ビジネス価値</td>
+            </tr>
+            <tr>
+              <td><strong>クラウド</strong></td>
+              <td>実現手段（方法）</td>
+              <td>ネットワーク経由、所有から利用へ</td>
+            </tr>
+            <tr>
+              <td><strong>◯aaS</strong></td>
+              <td>提供形態（詳細）</td>
+              <td>提供範囲（アプリか基盤か）</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>まとめ</h2>
+        <ul>
+          <li><strong>思想：</strong> ソリューション（解決したい）</li>
+          <li><strong>基盤：</strong> クラウド（ネットで提供）</li>
+          <li><strong>形式：</strong> ◯aaS（範囲を決める）</li>
+        </ul>
+        <p>試験ではこれらが混ざって出題されますが、「これは目的の話？手段の話？」と切り分けることで正解が見えてきます。</p>
+
+        <!-- GEN: REFERENCES -->
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> IT passport study map. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
