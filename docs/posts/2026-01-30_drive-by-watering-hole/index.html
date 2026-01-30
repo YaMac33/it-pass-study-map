@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>ドライブバイと水飲み場攻撃の違い - IT passport study map</title>
+  <meta name="description" content="ドライブバイダウンロードと水飲み場攻撃の違いを解説。Webサイト閲覧をきっかけとする2つのサイバー攻撃の手口、ターゲット、対策の違いを図解で整理します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="ドライブバイと水飲み場攻撃の違い" />
+  <meta property="og:description" content="ドライブバイダウンロードと水飲み場攻撃の違いを解説。Webサイト閲覧をきっかけとする2つのサイバー攻撃の手口、ターゲット、対策の違いを図解で整理します。" />
+  
+  <!-- Assets: 記事は docs/posts/<id>/index.html → ../../ 固定 -->
+  <link rel="stylesheet" href="../../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS（図解・補助CSS） -->
+  <style>
+    /* 共通図解コンテナ */
+    .diagram-section {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* 攻撃タイプの対比図 */
+    .attack-compare {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      width: 100%;
+      flex-wrap: wrap;
+    }
+    .attack-box {
+      flex: 1;
+      min-width: 260px;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 1.5rem;
+      text-align: center;
+      position: relative;
+    }
+    
+    /* ドライブバイ */
+    .ab-drive { border-top: 4px solid #e67e22; }
+    .ab-title { font-weight: bold; font-size: 1.1rem; margin-bottom: 1rem; display: block; }
+    .drive-visual {
+      position: relative;
+      height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .web-page {
+      width: 80px;
+      height: 60px;
+      border: 2px solid #666;
+      border-radius: 4px;
+      background: #fff;
+      position: relative;
+    }
+    .web-page::after { content: "Web"; position: absolute; bottom: 2px; right: 2px; font-size: 0.7rem; color: #999; }
+    .trap-mark {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      font-size: 1.5rem;
+    }
+    .user-walk {
+      font-size: 1.5rem;
+      position: absolute;
+      left: 0;
+      animation: walk 3s infinite linear;
+    }
+    @keyframes walk {
+      0% { left: 0; }
+      50% { left: 50%; opacity: 1; }
+      51% { opacity: 0; } /* 感染して消えるイメージ */
+      100% { left: 50%; opacity: 0; }
+    }
+
+    /* 水飲み場 */
+    .ab-water { border-top: 4px solid #0056b3; }
+    .water-visual {
+      position: relative;
+      height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .pond {
+      width: 120px;
+      height: 40px;
+      background: #eef6ff;
+      border: 2px solid #0056b3;
+      border-radius: 50%;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 0.8rem;
+      color: #0056b3;
+      margin-top: 20px;
+    }
+    .predator {
+      position: absolute;
+      top: 0;
+      right: 20px;
+      font-size: 1.2rem;
+    }
+    .target-group {
+      display: flex;
+      gap: 5px;
+      position: absolute;
+      bottom: 0;
+      left: 10px;
+      font-size: 1.2rem;
+    }
+
+    /* 比較テーブル */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      margin: 1rem 0;
+    }
+    .comparison-table th, .comparison-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+    .comparison-table th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+      width: 30%;
+    }
+    .comparison-table td:nth-child(2) { background: #fffaf0; } /* Drive-by */
+    .comparison-table td:nth-child(3) { background: #f0f8ff; } /* Water */
+
+    /* ポイント強調 */
+    .key-point {
+      background-color: #f4f4f4;
+      border-left: 4px solid #333;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .key-point strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1em;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 600px) {
+      .attack-compare {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a href="../../index.html" class="site-title">IT passport study map</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-30">
+            2026.01.30 / テクノロジ系
+          </time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">ドライブバイと水飲み場攻撃の違い</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list">
+            <li class="tag">#サイバー攻撃</li>
+            <li class="tag">#セキュリティ</li>
+            <li class="tag">#ドライブバイ</li>
+            <li class="tag">#水飲み場</li>
+            <li class="tag">#攻撃手法</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>「Webサイトを見ただけでウイルスに感染した」。<br>
+        このような攻撃には、無差別に狙うタイプと、特定のターゲットを狙うタイプの2種類があります。</p>
+        <p>それぞれの名称である「ドライブバイダウンロード」と「水飲み場攻撃」の違いを、攻撃者の視点から解説します。</p>
+
+        <div class="key-point">
+          <strong>1行要約</strong><br>
+          ドライブバイは「通りすがりの誰でもいいから感染させる（ばらまき）」、水飲み場は「特定の標的が来る場所で待ち伏せする（狙い撃ち）」。
+        </div>
+
+        <h2>1. 攻撃スタイルの違い（図解）</h2>
+        <p>どちらも「改ざんされたWebサイト」を利用しますが、狙い方が異なります。</p>
+
+        <div class="diagram-section">
+          <div class="attack-compare">
+            
+            <!-- ドライブバイ -->
+            <div class="attack-box ab-drive">
+              <span class="ab-title">ドライブバイダウンロード</span>
+              <div class="drive-visual">
+                <div class="web-page">
+                  <span class="trap-mark">💣</span>
+                </div>
+                <div class="user-walk">🚶</div>
+              </div>
+              <p style="font-size:0.9rem; color:#666; margin-top:0.5rem;">
+                <strong>通り魔型（ばらまき）</strong><br>
+                たまたま通りかかった（閲覧した）<br>
+                不特定多数を感染させる。
+              </p>
+            </div>
+
+            <!-- 水飲み場 -->
+            <div class="attack-box ab-water">
+              <span class="ab-title">水飲み場攻撃</span>
+              <div class="water-visual">
+                <span class="predator">😈</span>
+                <div class="pond">
+                  よく見るサイト<br>(水飲み場)
+                </div>
+                <div class="target-group">
+                  👮👨‍⚕️👷
+                </div>
+              </div>
+              <p style="font-size:0.9rem; color:#666; margin-top:0.5rem;">
+                <strong>待ち伏せ型（標的型）</strong><br>
+                ターゲット（組織・業界）が<br>
+                よく利用するサイトに罠を張る。
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+        <h2>2. 各攻撃の詳細</h2>
+
+        <h3>① ドライブバイダウンロード（Drive-by Download）</h3>
+        <p>利用者がWebサイトを<strong>閲覧しただけ</strong>で、本人の同意なしにマルウェアをダウンロード・実行させる攻撃です。</p>
+        <ul>
+          <li><strong>手口：</strong> OSやブラウザの脆弱性（セキュリティホール）を悪用します。</li>
+          <li><strong>由来：</strong> 車で通りすがりに銃撃する「ドライブバイ・シューティング」から。</li>
+          <li><strong>ターゲット：</strong> 不特定多数。誰でもいいから感染させたい。</li>
+        </ul>
+
+        <h3>② 水飲み場攻撃（Watering Hole Attack）</h3>
+        <p>特定の組織や業界をターゲットにし、彼らが業務などで<strong>「普段よく利用するサイト」</strong>を改ざんして待ち伏せる攻撃です。</p>
+        <ul>
+          <li><strong>手口：</strong> 事前にターゲットの行動を調査し、関連する情報サイトやコミュニティサイトをハッキングして罠を仕掛けます。</li>
+          <li><strong>由来：</strong> 肉食獣が、獲物が集まる「水飲み場」で待ち伏せすることから。</li>
+          <li><strong>ターゲット：</strong> 特定の組織、特定の業種の人。</li>
+        </ul>
+
+        <h2>3. 比較まとめ表</h2>
+        <p>試験対策として、違いを整理します。</p>
+
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>項目</th>
+              <th>ドライブバイ</th>
+              <th>水飲み場</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>ターゲット</strong></td>
+              <td><strong>不特定多数</strong></td>
+              <td><strong>特定の組織・人物</strong></td>
+            </tr>
+            <tr>
+              <td><strong>攻撃分類</strong></td>
+              <td>ばらまき型</td>
+              <td>標的型攻撃の一種</td>
+            </tr>
+            <tr>
+              <td><strong>共通点</strong></td>
+              <td colspan="2">Webサイト閲覧をきっかけに感染する</td>
+            </tr>
+            <tr>
+              <td><strong>成功要因</strong></td>
+              <td>PCの脆弱性放置</td>
+              <td>ターゲットの行動分析</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>4. 試験での見分け方</h2>
+        <p>問題文に以下のキーワードがあったら、即座に反応しましょう。</p>
+        <ul>
+          <li>「閲覧しただけで意図せず感染」 → <strong>ドライブバイダウンロード</strong></li>
+          <li>「特定の組織が頻繁に利用するサイト」 → <strong>水飲み場攻撃</strong></li>
+          <li>「標的型攻撃の手口の一つ」 → <strong>水飲み場攻撃</strong></li>
+        </ul>
+
+        <h2>まとめ</h2>
+        <ul>
+          <li><strong>ドライブバイ：</strong> 通り魔。「閲覧＝即感染」の技術的仕組みそのものを指すことも多い。</li>
+          <li><strong>水飲み場：</strong> 待ち伏せ。「誰を狙うか」という戦略的な意味合いが強い。</li>
+        </ul>
+        <p>どちらも「怪しいサイトに行かなければ大丈夫」とは言えない（正規サイトが改ざんされる）ため、OSやブラウザを常に最新に保つことが最大の防御策です。</p>
+
+        <!-- GEN: REFERENCES -->
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> IT passport study map. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
+
