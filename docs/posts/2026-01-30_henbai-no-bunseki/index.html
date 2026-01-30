@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>偏りの分析方法と戦略 - IT passport study map</title>
+  <meta name="description" content="パレートの法則、ABC分析、ロングテール理論の違いと関係性を解説。売上の偏りを分析する手法と、それぞれの戦略的意味を図解で整理します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="偏りの分析方法と戦略" />
+  <meta property="og:description" content="パレートの法則、ABC分析、ロングテール理論の違いと関係性を解説。売上の偏りを分析する手法と、それぞれの戦略的意味を図解で整理します。" />
+  
+  <!-- Assets: 記事は docs/posts/<id>/index.html → ../../ 固定 -->
+  <link rel="stylesheet" href="../../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS（図解・補助CSS） -->
+  <style>
+    /* 共通図解コンテナ */
+    .diagram-section {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* 全体マップ */
+    .concept-map {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 500px;
+    }
+    .map-row {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      width: 100%;
+    }
+    .map-box {
+      background: #fff;
+      border: 2px solid #ccc;
+      padding: 1rem;
+      border-radius: 8px;
+      text-align: center;
+      flex: 1;
+      position: relative;
+    }
+    .box-pareto { border-color: #0056b3; color: #0056b3; font-weight: bold; }
+    .box-long { border-color: #e67e22; color: #e67e22; font-weight: bold; }
+    
+    .arrow-connect {
+      font-size: 1.5rem;
+      color: #999;
+      font-weight: bold;
+      margin: 0.5rem 0;
+    }
+    .sub-group {
+      background: #eef6ff;
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px dashed #0056b3;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      width: 48%;
+      align-items: center;
+    }
+
+    /* パレート図（簡易グラフ） */
+    .pareto-chart {
+      position: relative;
+      width: 280px;
+      height: 200px;
+      border-left: 2px solid #333;
+      border-bottom: 2px solid #333;
+      background: #fff;
+      display: flex;
+      align-items: flex-end;
+      padding-left: 5px;
+      margin-top: 1rem;
+    }
+    .bar {
+      width: 40px;
+      margin-right: 5px;
+      background: #0056b3;
+      position: relative;
+    }
+    .bar-a { height: 80%; background: #004494; }
+    .bar-b { height: 50%; }
+    .bar-c { height: 30%; }
+    .bar-d { height: 15%; opacity: 0.7; }
+    .bar-e { height: 10%; opacity: 0.5; }
+    
+    /* 累積線（疑似的） */
+    .line-point {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: #d00;
+      border-radius: 50%;
+      z-index: 2;
+    }
+    .lp-1 { bottom: 80%; left: 25px; }
+    .lp-2 { bottom: 92%; left: 70px; }
+    .lp-3 { bottom: 98%; left: 115px; }
+    
+    .chart-label {
+      position: absolute;
+      bottom: -25px;
+      width: 100%;
+      text-align: center;
+      font-size: 0.8rem;
+    }
+
+    /* ABC分析バー */
+    .abc-bar {
+      width: 100%;
+      max-width: 400px;
+      height: 40px;
+      display: flex;
+      border-radius: 6px;
+      overflow: hidden;
+      margin-top: 1rem;
+    }
+    .seg-a { width: 70%; background: #0056b3; color: #fff; display:flex; align-items:center; justify-content:center; }
+    .seg-b { width: 20%; background: #5dade2; color: #fff; display:flex; align-items:center; justify-content:center; }
+    .seg-c { width: 10%; background: #aed6f1; color: #333; display:flex; align-items:center; justify-content:center; font-size:0.8rem; }
+
+    /* ロングテール図 */
+    .longtail-chart {
+      position: relative;
+      width: 100%;
+      max-width: 400px;
+      height: 150px;
+      border-bottom: 2px solid #333;
+      display: flex;
+      align-items: flex-end;
+    }
+    .head-area {
+      width: 20%;
+      height: 80%;
+      background: #d00;
+      opacity: 0.8;
+      border-radius: 4px 4px 0 0;
+      margin-right: 2px;
+      position: relative;
+    }
+    .head-area::after {
+      content: "Head";
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.8rem;
+      color: #d00;
+      font-weight: bold;
+    }
+    
+    .tail-container {
+      flex: 1;
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+      position: relative;
+    }
+    .tail-bar {
+      flex: 1;
+      background: #e67e22;
+    }
+    .tail-container::after {
+      content: "Tail (しっぽ)";
+      position: absolute;
+      top: 20px;
+      right: 10px;
+      font-size: 0.8rem;
+      color: #e67e22;
+      font-weight: bold;
+    }
+
+    /* 比較テーブル */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      margin: 1rem 0;
+    }
+    .comparison-table th, .comparison-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+    .comparison-table th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+      width: 30%;
+      text-align: center;
+    }
+    .hl-focus { background: #eef6ff; font-weight: bold; color: #0056b3; }
+    .hl-spread { background: #fffaf0; font-weight: bold; color: #e67e22; }
+
+    /* ポイント強調 */
+    .key-point {
+      background-color: #f4f4f4;
+      border-left: 4px solid #333;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .key-point strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1em;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 600px) {
+      .map-row {
+        flex-direction: column;
+        align-items: center;
+      }
+      .sub-group {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a href="../../index.html" class="site-title">IT passport study map</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-30">
+            2026.01.30 / ストラテジ系
+          </time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">偏りの分析方法と戦略</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list">
+            <li class="tag">#パレートの法則</li>
+            <li class="tag">#ABC分析</li>
+            <li class="tag">#ロングテール</li>
+            <li class="tag">#視点</li>
+            <li class="tag">#マーケティング</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>売上の8割は、どの商品が生み出しているのか？<br>
+        この「偏り」を分析する手法には、少数の売れ筋に注目する「パレートの法則」と、多数のニッチ商品に注目する「ロングテール」という2つの視点があります。</p>
+
+        <div class="key-point">
+          <strong>1行要約</strong><br>
+          「重要な少数」に集中するのがパレート（ABC分析）、「些細な多数」を拾うのがロングテール。
+        </div>
+
+        <h2>1. 全体像：偏りをどう見るか？</h2>
+        <p>同じ売上分布でも、どこを見るかによって戦略が変わります。</p>
+
+        <div class="diagram-section">
+          <div class="concept-map">
+            
+            <div class="map-row">
+              <!-- パレート系 -->
+              <div class="sub-group">
+                <div class="map-box box-pareto">パレートの法則</div>
+                <div class="arrow-connect">↓</div>
+                <div class="map-box">パレート図<br><span style="font-size:0.7rem; color:#666;">(グラフ化)</span></div>
+                <div class="arrow-connect">↓</div>
+                <div class="map-box">ABC分析<br><span style="font-size:0.7rem; color:#666;">(ランク分け)</span></div>
+              </div>
+              
+              <!-- ロングテール -->
+              <div class="sub-group" style="border-color:#e67e22; background:#fffaf0;">
+                <div class="map-box box-long">ロングテール</div>
+                <div style="font-size:0.8rem; margin-top:1rem; color:#e67e22;">
+                  ネット販売などで有効な<br>「逆転の発想」
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <h2>2. パレートの法則とABC分析</h2>
+        <p><strong>「結果の80%は、20%の原因から生じる」</strong>という経験則です。<br>
+        これをグラフにしたものが「パレート図」、それを使ってランク分けするのが「ABC分析」です。</p>
+
+        <div class="diagram-section">
+          <p style="font-weight:bold;">パレート図（棒グラフ＋折れ線）</p>
+          <div class="pareto-chart">
+            <div class="bar bar-a"></div>
+            <div class="bar bar-b"></div>
+            <div class="bar bar-c"></div>
+            <div class="bar bar-d"></div>
+            <div class="bar bar-e"></div>
+            
+            <!-- 累積線 -->
+            <div class="line-point lp-1"></div>
+            <div class="line-point lp-2"></div>
+            <div class="line-point lp-3"></div>
+
+            <div class="chart-label">商品 A B C D E ...</div>
+          </div>
+
+          <p style="margin-top:2rem; font-weight:bold;">ABC分析（ランク分け）</p>
+          <div class="abc-bar">
+            <div class="seg-a">A (〜70%)</div>
+            <div class="seg-b">B</div>
+            <div class="seg-c">C</div>
+          </div>
+          <p style="font-size:0.8rem; color:#666; margin-top:0.5rem;">
+            Aランク（最重要）に資源を集中し、Cランクは管理を簡素化する。
+          </p>
+        </div>
+
+        <h2>3. ロングテール（逆の発想）</h2>
+        <p>ネットショップのように売り場の制限がない場合、売れ筋（ヘッド）だけでなく、あまり売れない商品（テール）を大量に揃えることで大きな売上を作る戦略です。</p>
+
+        <div class="diagram-section">
+          <div class="longtail-chart">
+            <div class="head-area"></div>
+            <div class="tail-container">
+              <div class="tail-bar" style="height:30%"></div>
+              <div class="tail-bar" style="height:25%"></div>
+              <div class="tail-bar" style="height:20%"></div>
+              <div class="tail-bar" style="height:18%"></div>
+              <div class="tail-bar" style="height:15%"></div>
+              <div class="tail-bar" style="height:12%"></div>
+              <div class="tail-bar" style="height:10%"></div>
+              <div class="tail-bar" style="height:8%"></div>
+              <div class="tail-bar" style="height:5%"></div>
+              <div class="tail-bar" style="height:3%"></div>
+            </div>
+          </div>
+          <p style="font-size:0.8rem; color:#666; margin-top:0.5rem;">
+            恐竜の長い尻尾のように、ニッチな需要が積み重なって利益を生む。
+          </p>
+        </div>
+
+        <h2>4. 比較まとめ表</h2>
+        <p>試験対策として、それぞれの戦略の違いを整理します。</p>
+
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>項目</th>
+              <th>パレート・ABC</th>
+              <th>ロングテール</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>注目点</strong></td>
+              <td class="hl-focus">上位20%（重要少数）</td>
+              <td class="hl-spread">下位80%（些細な多数）</td>
+            </tr>
+            <tr>
+              <td><strong>戦略</strong></td>
+              <td>選択と集中</td>
+              <td>網羅と多様性</td>
+            </tr>
+            <tr>
+              <td><strong>主な適用</strong></td>
+              <td>在庫管理、品質管理<br>（物理的制約がある場合）</td>
+              <td>ECサイト、配信<br>（在庫コストが低い場合）</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>まとめ</h2>
+        <ul>
+          <li><strong>パレートの法則：</strong>「80:20の法則」。少数が全体を左右する。</li>
+          <li><strong>ABC分析：</strong>優先順位をつけるためのランク分け。</li>
+          <li><strong>ロングテール：</strong>「ちりも積もれば山となる」。ニッチ商品の集積。</li>
+        </ul>
+        <p>「在庫スペースに限りがあるならABC分析、無限ならロングテール」という使い分けのイメージを持っておきましょう。</p>
+
+        <!-- GEN: REFERENCES -->
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> IT passport study map. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
