@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>バランスシートとBSCの違い - IT passport study map</title>
+  <meta name="description" content="名前が似ていて混同しやすい「バランスシート（BS）」と「バランススコアカード（BSC）」の違いを解説。会計と戦略という目的の違いを図解で整理します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="バランスシートとBSCの違い" />
+  <meta property="og:description" content="名前が似ていて混同しやすい「バランスシート（BS）」と「バランススコアカード（BSC）」の違いを解説。会計と戦略という目的の違いを図解で整理します。" />
+  
+  <!-- Assets: 記事は docs/posts/<id>/index.html → ../../ 固定 -->
+  <link rel="stylesheet" href="../../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS（図解・補助CSS） -->
+  <style>
+    /* 共通図解コンテナ */
+    .diagram-section {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* 対比カード */
+    .vs-cards {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      width: 100%;
+      flex-wrap: wrap;
+    }
+    .concept-card {
+      flex: 1;
+      min-width: 260px;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 1.5rem;
+      text-align: center;
+      position: relative;
+    }
+    
+    /* BS */
+    .card-bs { border-top: 4px solid #0056b3; }
+    .icon-bs { font-size: 2.5rem; display: block; margin-bottom: 0.5rem; }
+    .title-bs { color: #0056b3; font-weight: bold; font-size: 1.2rem; display: block; }
+    
+    /* BSC */
+    .card-bsc { border-top: 4px solid #e67e22; }
+    .icon-bsc { font-size: 2.5rem; display: block; margin-bottom: 0.5rem; }
+    .title-bsc { color: #e67e22; font-weight: bold; font-size: 1.2rem; display: block; }
+
+    /* バランスシート図 */
+    .bs-diagram {
+      display: flex;
+      width: 200px;
+      height: 150px;
+      margin: 1rem auto;
+      border: 2px solid #333;
+    }
+    .bs-left {
+      flex: 1;
+      background: #eef6ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-right: 2px solid #333;
+      font-weight: bold;
+      color: #0056b3;
+    }
+    .bs-right {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .bs-debt {
+      flex: 1;
+      background: #f9f9f9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 2px solid #333;
+      font-size: 0.8rem;
+    }
+    .bs-equity {
+      flex: 1;
+      background: #eef6ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+    }
+
+    /* BSC図 */
+    .bsc-diagram {
+      display: flex;
+      flex-direction: column-reverse; /* 下から積む */
+      gap: 4px;
+      width: 200px;
+      margin: 1rem auto;
+    }
+    .bsc-layer {
+      background: #fffaf0;
+      border: 1px solid #e67e22;
+      padding: 6px;
+      text-align: center;
+      font-size: 0.8rem;
+      position: relative;
+    }
+    .bsc-layer::after {
+      content: "↑";
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #e67e22;
+      font-weight: bold;
+      font-size: 0.8rem;
+    }
+    .bsc-layer:last-child::after { content: none; } /* 一番上（HTML上の最後）の矢印消す */
+
+    /* 比較テーブル */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      margin: 1rem 0;
+    }
+    .comparison-table th, .comparison-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+    .comparison-table th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+      width: 20%;
+      text-align: center;
+    }
+    .hl-bs { background: #f0f8ff; font-weight: bold; color: #0056b3; }
+    .hl-bsc { background: #fffaf0; font-weight: bold; color: #e67e22; }
+
+    /* 覚え方メモ */
+    .memo-box {
+      background: #333;
+      color: #fff;
+      padding: 1.5rem;
+      border-radius: 8px;
+      text-align: center;
+      width: 100%;
+      max-width: 400px;
+    }
+    .memo-line {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border-bottom: 1px dashed #666;
+      padding-bottom: 0.2rem;
+    }
+    .memo-line:last-child { border-bottom: none; }
+
+    /* ポイント強調 */
+    .key-point {
+      background-color: #f4f4f4;
+      border-left: 4px solid #333;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .key-point strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1em;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 600px) {
+      .vs-cards {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a href="../../index.html" class="site-title">IT passport study map</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-30">
+            2026.01.30 / ストラテジ系
+          </time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">バランスシートとBSCの違い</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list">
+            <li class="tag">#BSC</li>
+            <li class="tag">#財務</li>
+            <li class="tag">#戦略</li>
+            <li class="tag">#試験対策</li>
+            <li class="tag">#比較</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>「バランスシート（BS）」と「バランススコアカード（BSC）」。<br>
+        名前は似ていますが、片方は「会計の表」、もう片方は「戦略の管理手法」であり、全く別物です。</p>
+        <p>ITパスポート試験のひっかけ問題として定番の2つを、図解で明確に区別します。</p>
+
+        <div class="key-point">
+          <strong>1行要約</strong><br>
+          バランスシートは「会社の財産状況（過去の結果）」を表すもの、バランススコアカードは「会社の戦略（未来の行動）」を管理するもの。
+        </div>
+
+        <h2>1. 見た目と役割の違い</h2>
+        <p>それぞれの「形」をイメージで覚えると混同しません。</p>
+
+        <div class="diagram-section">
+          <div class="vs-cards">
+            
+            <!-- バランスシート -->
+            <div class="concept-card card-bs">
+              <span class="title-bs">バランスシート (BS)</span>
+              <span style="font-size:0.8rem; color:#666;">貸借対照表</span>
+              
+              <div class="bs-diagram">
+                <div class="bs-left">資産</div>
+                <div class="bs-right">
+                  <div class="bs-debt">負債</div>
+                  <div class="bs-equity">純資産</div>
+                </div>
+              </div>
+              
+              <p style="font-size:0.9rem;">
+                <strong>「左右のバランス」</strong><br>
+                お金の調達と使い道を見る。<br>
+                （財務・会計）
+              </p>
+            </div>
+
+            <!-- BSC -->
+            <div class="concept-card card-bsc">
+              <span class="title-bsc">バランススコアカード (BSC)</span>
+              <span style="font-size:0.8rem; color:#666;">経営管理手法</span>
+              
+              <div class="bsc-diagram">
+                <div class="bsc-layer" style="background:#fff3cd;">財務の視点</div>
+                <div class="bsc-layer">顧客の視点</div>
+                <div class="bsc-layer">業務プロセスの視点</div>
+                <div class="bsc-layer">学習と成長の視点</div>
+              </div>
+
+              <p style="font-size:0.9rem;">
+                <strong>「4つの視点」</strong><br>
+                戦略を多角的に管理する。<br>
+                （経営戦略）
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+        <h2>2. 各用語の詳細解説</h2>
+
+        <h3>① バランスシート（Balance Sheet）</h3>
+        <p>日本語では<strong>「貸借対照表」</strong>。企業の「ある時点での財政状態」を表す財務諸表です。<br>
+        「どこからお金を集めて（右側：負債・純資産）、何に使っているか（左側：資産）」を示します。</p>
+        <ul>
+          <li><strong>目的：</strong> 会社の健康診断（支払い能力はあるか？）。</li>
+          <li><strong>時間軸：</strong> 過去の結果（決算日時点）。</li>
+        </ul>
+
+        <h3>② バランススコアカード（Balanced Scorecard）</h3>
+        <p>財務数値だけでなく、非財務の視点も入れて「バランスよく」戦略を評価・管理する手法です。<br>
+        以下の4つの視点でKPIを設定し、戦略を実行に移します。</p>
+        <ol>
+          <li><strong>財務の視点：</strong> 儲かっているか？（結果）</li>
+          <li><strong>顧客の視点：</strong> 顧客はどう見ているか？</li>
+          <li><strong>業務プロセスの視点：</strong> 業務は優れているか？</li>
+          <li><strong>学習と成長の視点：</strong> 人材や組織は育っているか？（土台）</li>
+        </ol>
+
+        <h2>3. 比較まとめ表</h2>
+        <p>試験対策として、違いを整理します。</p>
+
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>項目</th>
+              <th>バランスシート (BS)</th>
+              <th>バランススコアカード (BSC)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>分野</strong></td>
+              <td class="hl-bs">財務・会計</td>
+              <td class="hl-bsc">経営戦略・マネジメント</td>
+            </tr>
+            <tr>
+              <td><strong>正体</strong></td>
+              <td>財務諸表（表）</td>
+              <td>評価・管理手法（ツール）</td>
+            </tr>
+            <tr>
+              <td><strong>構成要素</strong></td>
+              <td>資産・負債・純資産</td>
+              <td>財務・顧客・業務・学習</td>
+            </tr>
+            <tr>
+              <td><strong>時間軸</strong></td>
+              <td>過去の一時点</td>
+              <td>現在から未来</td>
+            </tr>
+            <tr>
+              <td><strong>英語</strong></td>
+              <td>Balance <strong>Sheet</strong></td>
+              <td>Balanced <strong>Scorecard</strong></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>4. 覚え方（試験直前用）</h2>
+        <p>英語の意味で区別するのが一番確実です。</p>
+
+        <div class="diagram-section" style="background:transparent; border:none; padding:0;">
+          <div class="memo-box">
+            <span class="memo-line">Sheet ＝ 「表」 (お金の表)</span>
+            <span class="memo-line">Scorecard ＝ 「成績表」 (戦略の通信簿)</span>
+          </div>
+        </div>
+
+        <h2>まとめ</h2>
+        <ul>
+          <li><strong>BS：</strong> お金の表。会計の話。</li>
+          <li><strong>BSC：</strong> 4つの視点。戦略の話。</li>
+        </ul>
+        <p>問題文に「資産と負債」「財政状態」とあればBS、「非財務指標」「4つの視点」とあればBSCです。</p>
+
+        <!-- GEN: REFERENCES -->
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> IT passport study map. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
+
