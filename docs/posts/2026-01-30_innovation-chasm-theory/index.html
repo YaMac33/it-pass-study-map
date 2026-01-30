@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>イノベーター理論とキャズム - IT passport study map</title>
+  <meta name="description" content="新技術の普及プロセスを示すイノベーター理論と、普及の壁となるキャズムについて解説。5つの採用者層の特徴と、市場シェアを獲得するためのポイントを図解で整理します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="イノベーター理論とキャズム" />
+  <meta property="og:description" content="新技術の普及プロセスを示すイノベーター理論と、普及の壁となるキャズムについて解説。5つの採用者層の特徴と、市場シェアを獲得するためのポイントを図解で整理します。" />
+  
+  <!-- Assets: 記事は docs/posts/<id>/index.html → ../../ 固定 -->
+  <link rel="stylesheet" href="../../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS（図解・補助CSS） -->
+  <style>
+    /* 共通図解コンテナ */
+    .diagram-section {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* イノベーター理論の分布図（ベルカーブ風） */
+    .diffusion-chart {
+      display: flex;
+      align-items: flex-end;
+      width: 100%;
+      max-width: 600px;
+      height: 200px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #666;
+      position: relative;
+      gap: 2px;
+    }
+    
+    /* 各層のバー */
+    .d-bar {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      text-align: center;
+      color: #fff;
+      font-weight: bold;
+      font-size: 0.8rem;
+      border-radius: 4px 4px 0 0;
+      transition: all 0.3s;
+    }
+    .d-bar:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+    }
+    
+    .innovator {
+      width: 10%;
+      height: 30%;
+      background: #3498db;
+    }
+    .early-adopter {
+      width: 18%;
+      height: 60%;
+      background: #2980b9;
+    }
+    .early-majority {
+      width: 30%;
+      height: 90%;
+      background: #f1c40f;
+      color: #333;
+    }
+    .late-majority {
+      width: 30%;
+      height: 90%;
+      background: #e67e22;
+    }
+    .laggard {
+      width: 12%;
+      height: 50%;
+      background: #95a5a6;
+    }
+
+    /* キャズムの溝 */
+    .chasm-gap {
+      width: 20px;
+      height: 100%;
+      background: linear-gradient(to bottom, transparent, #333 90%);
+      position: relative;
+      margin: 0 5px;
+    }
+    .chasm-gap::after {
+      content: "キャズム";
+      position: absolute;
+      top: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #d00;
+      font-weight: bold;
+      font-size: 0.8rem;
+      white-space: nowrap;
+    }
+    .chasm-arrow {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #fff;
+      font-size: 1.2rem;
+    }
+
+    /* ラベル */
+    .chart-label {
+      position: absolute;
+      bottom: -25px;
+      font-size: 0.7rem;
+      color: #333;
+      width: 100%;
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    /* グループ分け */
+    .market-group {
+      position: absolute;
+      top: -30px;
+      height: 4px;
+      background: #666;
+    }
+    .mg-early {
+      left: 0;
+      width: 28%; /* Inn + EA */
+      background: #0056b3;
+    }
+    .mg-early::after {
+      content: "初期市場 (新しさ重視)";
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #0056b3;
+      font-size: 0.75rem;
+      white-space: nowrap;
+      font-weight: bold;
+    }
+    
+    .mg-main {
+      left: 32%; /* Gap + EM + LM + Lag */
+      width: 68%;
+      background: #e67e22;
+    }
+    .mg-main::after {
+      content: "メインストリーム市場 (安心重視)";
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #e67e22;
+      font-size: 0.75rem;
+      white-space: nowrap;
+      font-weight: bold;
+    }
+
+    /* 各層の特徴カード */
+    .layer-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      width: 100%;
+    }
+    .l-card {
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 1rem;
+      position: relative;
+    }
+    .lc-header {
+      font-weight: bold;
+      border-bottom: 2px solid #eee;
+      margin-bottom: 0.5rem;
+      padding-bottom: 0.3rem;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+    }
+    .lc-percent {
+      background: #eee;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+    }
+    .lc-desc {
+      font-size: 0.85rem;
+      color: #555;
+      line-height: 1.5;
+    }
+    
+    /* 色分け */
+    .lc-inn { border-top: 4px solid #3498db; }
+    .lc-ea  { border-top: 4px solid #2980b9; }
+    .lc-em  { border-top: 4px solid #f1c40f; }
+    .lc-lm  { border-top: 4px solid #e67e22; }
+    .lc-lag { border-top: 4px solid #95a5a6; }
+
+    /* ポイント強調 */
+    .key-point {
+      background-color: #f4f4f4;
+      border-left: 4px solid #333;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .key-point strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1em;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 600px) {
+      .d-bar { font-size: 0.6rem; }
+      .market-group { display: none; }
+      .chart-label { display: none; } /* スマホでは省略 */
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a href="../../index.html" class="site-title">IT passport study map</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-30">
+            2026.01.30 / ストラテジ系
+          </time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">イノベーター理論とキャズム</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list">
+            <li class="tag">#イノベーション</li>
+            <li class="tag">#キャズム</li>
+            <li class="tag">#普及理論</li>
+            <li class="tag">#マーケティング</li>
+            <li class="tag">#技術</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>新しいiPhoneが出たとき、すぐに並んで買う人と、みんなが持ち始めてから買う人がいます。<br>
+        新技術や新製品が市場に普及していく過程を、消費者のタイプ別に分類したのが「イノベーター理論」です。</p>
+
+        <div class="key-point">
+          <strong>1行要約</strong><br>
+          新技術は「新しいもの好き（初期層）」から「安心重視（多数派）」へと広がるが、その間には「キャズム」と呼ばれる深く大きな溝がある。
+        </div>
+
+        <h2>1. 普及の5段階とキャズム（図解）</h2>
+        <p>市場は以下の5つの層で構成されています。左から右へ、時間の経過とともに普及していきます。</p>
+
+        <div class="diagram-section">
+          <div class="diffusion-chart">
+            
+            <div class="market-group mg-early"></div>
+            <div class="market-group mg-main"></div>
+
+            <!-- イノベーター -->
+            <div class="d-bar innovator">
+              Inn
+              <span class="chart-label">革新者</span>
+            </div>
+            
+            <!-- アーリーアダプター -->
+            <div class="d-bar early-adopter">
+              EA
+              <span class="chart-label">初期採用</span>
+            </div>
+
+            <!-- キャズム -->
+            <div class="chasm-gap">
+              <span class="chasm-arrow">⚡</span>
+            </div>
+
+            <!-- アーリーマジョリティ -->
+            <div class="d-bar early-majority">
+              EM
+              <span class="chart-label">前期追随</span>
+            </div>
+
+            <!-- レイトマジョリティ -->
+            <div class="d-bar late-majority">
+              LM
+              <span class="chart-label">後期追随</span>
+            </div>
+
+            <!-- ラガード -->
+            <div class="d-bar laggard">
+              Lag
+              <span class="chart-label">遅滞者</span>
+            </div>
+            
+          </div>
+          <p style="font-size:0.9rem; color:#666; margin-top:2rem;">
+            普及率16%（EAとEMの間）にある「キャズム」を越えられるかが勝負。
+          </p>
+        </div>
+
+        <h2>2. 5つの受容層の特徴</h2>
+        <p>それぞれの層が「何を重視して買うか」を知ることが重要です。</p>
+
+        <div class="diagram-section" style="background:transparent; border:none; padding:0;">
+          <div class="layer-cards">
+            
+            <div class="l-card lc-inn">
+              <div class="lc-header">1. イノベーター <span class="lc-percent">2.5%</span></div>
+              <div class="lc-desc">
+                <strong>「新しさ」命。</strong><br>
+                技術そのものに興味があり、不完全でも試すオタク層。
+              </div>
+            </div>
+
+            <div class="l-card lc-ea">
+              <div class="lc-header">2. アーリーアダプター <span class="lc-percent">13.5%</span></div>
+              <div class="lc-desc">
+                <strong>「メリット」重視。</strong><br>
+                流行に敏感で、自ら価値を判断できる。インフルエンサー的な存在。
+              </div>
+            </div>
+
+            <div class="l-card lc-em">
+              <div class="lc-header">3. アーリーマジョリティ <span class="lc-percent">34%</span></div>
+              <div class="lc-desc">
+                <strong>「実用性」重視。</strong><br>
+                新しいものには慎重。評判や実績を確認してから買う一般層。
+              </div>
+            </div>
+
+            <div class="l-card lc-lm">
+              <div class="lc-header">4. レイトマジョリティ <span class="lc-percent">34%</span></div>
+              <div class="lc-desc">
+                <strong>「周囲」に合わせる。</strong><br>
+                みんなが使っているから、仕方なく使い始める保守的な層。
+              </div>
+            </div>
+
+            <div class="l-card lc-lag">
+              <div class="lc-header">5. ラガード <span class="lc-percent">16%</span></div>
+              <div class="lc-desc">
+                <strong>「伝統」固守。</strong><br>
+                変化を嫌う。最後まで導入しないこともある。
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <h2>3. キャズム（Chasm）の正体</h2>
+        <p>アーリーアダプター（初期市場）とアーリーマジョリティ（メインストリーム市場）の間にある深い溝のことです。</p>
+        
+        <div class="key-point">
+          <strong>なぜ溝ができるのか？</strong>
+          <ul>
+            <li><strong>初期市場の人：</strong>「新しいから買う」「他と違うから買う」</li>
+            <li><strong>メイン市場の人：</strong>「みんな使ってるから買う」「安心だから買う」</li>
+          </ul>
+        </div>
+        <p>この「買う理由（価値観）」が真逆なため、ただ技術が優れているだけでは、メイン市場には普及しません。<br>
+        キャズムを越えるには、新しさではなく<strong>「使いやすさ・安心感・実績」</strong>をアピールする必要があります。</p>
+
+        <h2>まとめ</h2>
+        <p>ITパスポート試験では、以下のキーワードで判別しましょう。</p>
+        <ul>
+          <li><strong>普及の順番・5分類：</strong> イノベーター理論</li>
+          <li><strong>普及を阻む溝・16%の壁：</strong> キャズム</li>
+          <li><strong>流行の火付け役：</strong> アーリーアダプター（オピニオンリーダー）</li>
+        </ul>
+
+        <!-- GEN: REFERENCES -->
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> IT passport study map. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
