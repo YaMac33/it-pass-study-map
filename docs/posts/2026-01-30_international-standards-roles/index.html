@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>国際標準化機関の概要 - IT passport study map</title>
+  <meta name="description" content="国際標準化機関（ISO、IEC、ITU）の役割と違いを解説。なぜ国際標準が必要なのか、それぞれの担当分野とITパスポート試験での識別ポイントを図解で整理します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="国際標準化機関の概要" />
+  <meta property="og:description" content="国際標準化機関（ISO、IEC、ITU）の役割と違いを解説。なぜ国際標準が必要なのか、それぞれの担当分野とITパスポート試験での識別ポイントを図解で整理します。" />
+  
+  <!-- Assets: 記事は docs/posts/<id>/index.html → ../../ 固定 -->
+  <link rel="stylesheet" href="../../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS（図解・補助CSS） -->
+  <style>
+    /* 共通図解コンテナ */
+    .diagram-section {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* 標準化のイメージ図 */
+    .standard-concept {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      width: 100%;
+      flex-wrap: wrap;
+    }
+    .sc-box {
+      flex: 1;
+      min-width: 240px;
+      padding: 1.5rem;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .sc-title {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
+    }
+    
+    /* バラバラな状態 */
+    .chaos-parts {
+      display: flex;
+      justify-content: center;
+      gap: 5px;
+      margin-bottom: 1rem;
+    }
+    .part {
+      width: 30px;
+      height: 30px;
+      border: 2px solid #666;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+    }
+    .p-circle { border-radius: 50%; }
+    .p-tri { clip-path: polygon(50% 0%, 0% 100%, 100% 100%); border:none; background:#999; }
+    .p-sq { border-radius: 0; }
+    
+    /* 統一された状態 */
+    .unified-parts {
+      display: flex;
+      justify-content: center;
+      gap: 5px;
+      margin-bottom: 1rem;
+    }
+    .u-part {
+      width: 30px;
+      height: 30px;
+      background: #0056b3;
+      border-radius: 4px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 0.8rem;
+    }
+    .connect-line {
+      height: 4px;
+      background: #0056b3;
+      width: 100px;
+      margin: 0 auto;
+      margin-top: -18px; /* 重ねる */
+      z-index: 0;
+    }
+
+    /* 3大機関カード */
+    .org-cards {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      width: 100%;
+      flex-wrap: wrap;
+    }
+    .org-card {
+      flex: 1;
+      min-width: 220px;
+      background: #fff;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      padding: 1.5rem;
+      text-align: center;
+      position: relative;
+    }
+    .org-logo {
+      font-size: 2rem;
+      font-weight: 900;
+      margin-bottom: 0.5rem;
+      display: block;
+      font-family: sans-serif;
+    }
+    .org-name {
+      font-size: 0.85rem;
+      color: #666;
+      margin-bottom: 1rem;
+      display: block;
+      line-height: 1.2;
+    }
+    .org-field {
+      font-weight: bold;
+      padding: 4px 10px;
+      border-radius: 4px;
+      display: inline-block;
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+    }
+
+    /* ISO */
+    .c-iso { border-top: 6px solid #0056b3; }
+    .c-iso .org-logo { color: #0056b3; }
+    .c-iso .org-field { background: #eef6ff; color: #0056b3; }
+
+    /* IEC */
+    .c-iec { border-top: 6px solid #f39c12; }
+    .c-iec .org-logo { color: #f39c12; }
+    .c-iec .org-field { background: #fffaf0; color: #e67e22; }
+
+    /* ITU */
+    .c-itu { border-top: 6px solid #27ae60; }
+    .c-itu .org-logo { color: #27ae60; }
+    .c-itu .org-field { background: #f0fff4; color: #27ae60; }
+
+    /* 比較テーブル */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      margin: 1rem 0;
+    }
+    .comparison-table th, .comparison-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+    .comparison-table th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+      width: 20%;
+      text-align: center;
+    }
+    
+    /* ポイント強調 */
+    .key-point {
+      background-color: #f4f4f4;
+      border-left: 4px solid #333;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .key-point strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1em;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 600px) {
+      .standard-concept {
+        flex-direction: column;
+      }
+      .org-cards {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a href="../../index.html" class="site-title">IT passport study map</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-30">
+            2026.01.30 / ストラテジ系
+          </time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">国際標準化機関の概要</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list">
+            <li class="tag">#国際標準</li>
+            <li class="tag">#ISO</li>
+            <li class="tag">#IEC</li>
+            <li class="tag">#ITU</li>
+            <li class="tag">#規格</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>私たちが普段使っている製品やサービスが、国境を越えて問題なく使えるのはなぜでしょうか？<br>
+        それは、世界中で共通のルール（規格）を決めている組織があるからです。ITパスポートで頻出の3大国際標準化機関を解説します。</p>
+
+        <div class="key-point">
+          <strong>1行要約</strong><br>
+          国際標準化機関とは、世界中で同じモノや仕組みが使えるように「共通ルール（国際規格）」を策定する組織のこと。
+        </div>
+
+        <h2>1. なぜ「標準化」が必要なのか？</h2>
+        <p>もし国やメーカーごとに規格がバラバラだったら、互換性がなくなり、非常に不便になります。</p>
+
+        <div class="diagram-section">
+          <div class="standard-concept">
+            
+            <div class="sc-box">
+              <span class="sc-title">標準化がない世界</span>
+              <div class="chaos-parts">
+                <div class="part p-circle">○</div>
+                <div class="part p-tri"></div>
+                <div class="part p-sq">□</div>
+              </div>
+              <p style="font-size:0.85rem; color:#666;">
+                形が合わなくて繋がらない。<br>
+                海外製品が使えない。
+              </p>
+            </div>
+
+            <div class="sc-box">
+              <span class="sc-title" style="color:#0056b3;">標準化された世界</span>
+              <div class="unified-parts">
+                <div class="u-part">ISO</div>
+                <div class="u-part">ISO</div>
+                <div class="u-part">ISO</div>
+              </div>
+              <div class="connect-line"></div>
+              <p style="font-size:0.85rem; color:#0056b3; margin-top:0.5rem;">
+                世界中どこでも繋がる。<br>
+                品質や安全性が保証される。
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+        <h2>2. 3大国際標準化機関の役割</h2>
+        <p>ITパスポート試験で必ず覚えるべき3つの機関があります。それぞれ得意分野が異なります。</p>
+
+        <div class="diagram-section" style="background:transparent; border:none; padding:0;">
+          <div class="org-cards">
+            
+            <!-- ISO -->
+            <div class="org-card c-iso">
+              <span class="org-logo">ISO</span>
+              <span class="org-name">International Organization<br>for Standardization</span>
+              <span class="org-field">一般・管理</span>
+              <div style="text-align:left; font-size:0.9rem;">
+                電気・通信<strong>以外</strong>のあらゆる分野。<br>
+                ネジの規格から、品質管理(9001)、セキュリティ(27001)まで。
+              </div>
+            </div>
+
+            <!-- IEC -->
+            <div class="org-card c-iec">
+              <span class="org-logo">IEC</span>
+              <span class="org-name">International Electrotechnical<br>Commission</span>
+              <span class="org-field">電気・電子</span>
+              <div style="text-align:left; font-size:0.9rem;">
+                電気、電子技術に関する規格。<br>
+                電池、家電、IT機器のハードウェア面など。
+              </div>
+            </div>
+
+            <!-- ITU -->
+            <div class="org-card c-itu">
+              <span class="org-logo">ITU</span>
+              <span class="org-name">International Telecommunication<br>Union</span>
+              <span class="org-field">通信・電波</span>
+              <div style="text-align:left; font-size:0.9rem;">
+                電気通信の規格。<br>
+                電話、無線、インターネット回線、周波数の割り当てなど。
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <h3>補足：ISOとIECの連携</h3>
+        <p>情報技術（IT）の分野は、ISO（管理・ソフト）とIEC（電気・ハード）の両方に関わるため、合同で規格を作ることがあります。<br>
+        例：<strong>ISO/IEC 27001</strong>（情報セキュリティマネジメントシステム）</p>
+
+        <h2>3. 比較まとめ</h2>
+        <p>試験で正解を選ぶためのキーワード対応表です。</p>
+
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>機関</th>
+              <th>正式名称</th>
+              <th>担当分野</th>
+              <th>代表的な規格例</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>ISO</strong></td>
+              <td>国際標準化機構</td>
+              <td><strong>電気・通信以外</strong><br>（経営管理など）</td>
+              <td>ISO 9001 (品質)<br>ISO 14001 (環境)</td>
+            </tr>
+            <tr>
+              <td><strong>IEC</strong></td>
+              <td>国際電気標準会議</td>
+              <td><strong>電気・電子技術</strong></td>
+              <td>乾電池、端子、<br>ISO/IEC 27000</td>
+            </tr>
+            <tr>
+              <td><strong>ITU</strong></td>
+              <td>国際電気通信連合</td>
+              <td><strong>電気通信・無線</strong></td>
+              <td>国際電話番号<br>無線周波数</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>まとめ</h2>
+        <p>ITパスポート試験での見分け方は以下の通りです。</p>
+        <ul>
+          <li><strong>ISO：</strong> マネジメントシステムや工業製品全般。</li>
+          <li><strong>IEC：</strong> 電気や電子機器、ハードウェア。</li>
+          <li><strong>ITU：</strong> 通信ネットワーク、電波。</li>
+        </ul>
+        <p>「ISO/IEC 〇〇」のように連名で書かれている場合は、IT（情報技術）の規格であることが多いです。</p>
+
+        <!-- GEN: REFERENCES -->
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> IT passport study map. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
+
