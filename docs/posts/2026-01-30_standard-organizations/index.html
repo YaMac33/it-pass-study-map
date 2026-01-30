@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>JIS / ISMS / ISO / IEC / ITU / IEEE / ICANN - IT passport study map</title>
+  <meta name="description" content="ITパスポート試験に必要な標準規格や関連組織を一挙に解説。JIS、ISMS、ISO、IEC、ITU、IEEE、ICANNの違いと役割を図解で整理します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="JIS / ISMS / ISO / IEC / ITU / IEEE / ICANN" />
+  <meta property="og:description" content="ITパスポート試験に必要な標準規格や関連組織を一挙に解説。JIS、ISMS、ISO、IEC、ITU、IEEE、ICANNの違いと役割を図解で整理します。" />
+  
+  <!-- Assets: 記事は docs/posts/<id>/index.html → ../../ 固定 -->
+  <link rel="stylesheet" href="../../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS（図解・補助CSS） -->
+  <style>
+    /* 共通図解コンテナ */
+    .diagram-section {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* 組織・規格カードグリッド */
+    .std-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      width: 100%;
+    }
+    .std-card {
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      position: relative;
+    }
+    .std-header {
+      padding: 0.8rem 1rem;
+      font-weight: bold;
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .std-body {
+      padding: 1.2rem;
+    }
+    .std-role {
+      font-size: 0.85rem;
+      color: #666;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+    }
+    .std-desc {
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    /* カテゴリ色分け */
+    .c-jp { background: #d00; } /* JIS */
+    .c-sec { background: #27ae60; } /* ISMS */
+    .c-intl { background: #0056b3; } /* ISO, IEC, ITU */
+    .c-tech { background: #8e44ad; } /* IEEE */
+    .c-net { background: #e67e22; } /* ICANN */
+
+    /* 比較テーブル */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      margin: 1rem 0;
+    }
+    .comparison-table th, .comparison-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+    .comparison-table th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+      width: 20%;
+      text-align: center;
+    }
+    .hl-kw {
+      background: #fffaf0;
+      font-weight: bold;
+      color: #e67e22;
+    }
+
+    /* 瞬殺フレーズボックス */
+    .phrase-box {
+      background: #fff;
+      border: 2px dashed #666;
+      padding: 1.5rem;
+      border-radius: 8px;
+      width: 100%;
+      max-width: 500px;
+    }
+    .phrase-item {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid #eee;
+      padding: 0.5rem 0;
+      font-weight: bold;
+    }
+    .phrase-item:last-child { border-bottom: none; }
+    .p-key { color: #333; }
+    .p-val { color: #0056b3; }
+
+    /* ポイント強調 */
+    .key-point {
+      background-color: #f4f4f4;
+      border-left: 4px solid #333;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .key-point strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1em;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 600px) {
+      .std-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a href="../../index.html" class="site-title">IT passport study map</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-30">
+            2026.01.30 / テクノロジ系
+          </time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">JIS / ISMS / ISO / IEC / ITU / IEEE / ICANN</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list">
+            <li class="tag">#標準化</li>
+            <li class="tag">#セキュリティ</li>
+            <li class="tag">#インターネット</li>
+            <li class="tag">#ITパスポート</li>
+            <li class="tag">#組織</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>ITパスポート試験には、アルファベット3〜5文字の標準化団体や規格名が頻出します。<br>
+        「誰が」「何を決めているか」を整理しておかないと、選択肢で迷ってしまいます。試験対策用に一挙にまとめました。</p>
+
+        <div class="key-point">
+          <strong>学習のコツ</strong><br>
+          詳細な歴史を覚える必要はありません。「〇〇と言えばこの組織」というキーワードの対応付け（タグ付け）ができれば正解できます。
+        </div>
+
+        <h2>1. 用語別解説カード</h2>
+
+        <div class="diagram-section" style="background:transparent; border:none; padding:0;">
+          <div class="std-grid">
+            
+            <!-- JIS -->
+            <div class="std-card">
+              <div class="std-header c-jp">JIS</div>
+              <div class="std-body">
+                <div class="std-role">日本産業規格</div>
+                <div class="std-desc">
+                  日本の国家規格。工業製品やデータ・サービスの国内標準。<br>
+                  <strong>ポイント：</strong>「日本」「国内」
+                </div>
+              </div>
+            </div>
+
+            <!-- ISMS -->
+            <div class="std-card">
+              <div class="std-header c-sec">ISMS</div>
+              <div class="std-body">
+                <div class="std-role">情報セキュリティ管理</div>
+                <div class="std-desc">
+                  組織として情報をどう守るかの「仕組み（マネジメントシステム）」。<br>
+                  <strong>ポイント：</strong>「運用ルール」「JIS Q 27001」
+                </div>
+              </div>
+            </div>
+
+            <!-- ISO -->
+            <div class="std-card">
+              <div class="std-header c-intl">ISO</div>
+              <div class="std-body">
+                <div class="std-role">国際標準化機構</div>
+                <div class="std-desc">
+                  電気・通信以外のあらゆる分野の国際ルール。<br>
+                  <strong>ポイント：</strong>「品質(9001)」「環境(14001)」「マネジメント」
+                </div>
+              </div>
+            </div>
+
+            <!-- IEC -->
+            <div class="std-card">
+              <div class="std-header c-intl">IEC</div>
+              <div class="std-body">
+                <div class="std-role">国際電気標準会議</div>
+                <div class="std-desc">
+                  電気・電子技術分野の国際ルール。<br>
+                  <strong>ポイント：</strong>「電気」「電子機器」「ハードウェア」
+                </div>
+              </div>
+            </div>
+
+            <!-- ITU -->
+            <div class="std-card">
+              <div class="std-header c-intl">ITU</div>
+              <div class="std-body">
+                <div class="std-role">国際電気通信連合</div>
+                <div class="std-desc">
+                  通信・ネットワーク・電波の国際ルール。<br>
+                  <strong>ポイント：</strong>「通信方式」「周波数」「電話」
+                </div>
+              </div>
+            </div>
+
+            <!-- IEEE -->
+            <div class="std-card">
+              <div class="std-header c-tech">IEEE</div>
+              <div class="std-body">
+                <div class="std-role">電気電子学会</div>
+                <div class="std-desc">
+                  実装寄りの技術規格。LANの規格など。<br>
+                  <strong>ポイント：</strong>「Wi-Fi (802.11)」「Ethernet (802.3)」
+                </div>
+              </div>
+            </div>
+
+            <!-- ICANN -->
+            <div class="std-card">
+              <div class="std-header c-net">ICANN</div>
+              <div class="std-body">
+                <div class="std-role">インターネット資源管理</div>
+                <div class="std-desc">
+                  ネットの「住所」と「名前」を管理する民間組織。<br>
+                  <strong>ポイント：</strong>「IPアドレス」「ドメイン名」
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <h2>2. 比較まとめ表</h2>
+        <p>試験で迷ったときの判断基準です。</p>
+
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>用語</th>
+              <th>分類</th>
+              <th>試験での見分け方（キーワード）</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>JIS</strong></td>
+              <td>国内規格</td>
+              <td>日本の規格、産業標準</td>
+            </tr>
+            <tr>
+              <td><strong>ISMS</strong></td>
+              <td>管理制度</td>
+              <td>情報セキュリティ、管理体制、運用</td>
+            </tr>
+            <tr>
+              <td><strong>ISO</strong></td>
+              <td>国際機関</td>
+              <td class="hl-kw">品質管理、環境管理、マネジメント</td>
+            </tr>
+            <tr>
+              <td><strong>IEC</strong></td>
+              <td>国際機関</td>
+              <td class="hl-kw">電気、電子機器、ハードウェア</td>
+            </tr>
+            <tr>
+              <td><strong>ITU</strong></td>
+              <td>国連機関</td>
+              <td class="hl-kw">通信、電波、電話</td>
+            </tr>
+            <tr>
+              <td><strong>IEEE</strong></td>
+              <td>学会</td>
+              <td>LAN、Wi-Fi、Ethernet</td>
+            </tr>
+            <tr>
+              <td><strong>ICANN</strong></td>
+              <td>非営利組織</td>
+              <td>IPアドレス、ドメイン名の割り当て</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>3. 瞬殺フレーズ（暗記用）</h2>
+        <p>これだけ覚えておけば、ほとんどの問題に対応できます。</p>
+
+        <div class="diagram-section">
+          <div class="phrase-box">
+            <div class="phrase-item">
+              <span class="p-key">JIS</span>
+              <span class="p-val">日本の規格</span>
+            </div>
+            <div class="phrase-item">
+              <span class="p-key">ISMS</span>
+              <span class="p-val">セキュリティ管理の仕組み</span>
+            </div>
+            <div class="phrase-item">
+              <span class="p-key">ISO</span>
+              <span class="p-val">管理の国際ルール</span>
+            </div>
+            <div class="phrase-item">
+              <span class="p-key">IEC</span>
+              <span class="p-val">電気・電子</span>
+            </div>
+            <div class="phrase-item">
+              <span class="p-key">ITU</span>
+              <span class="p-val">通信・電波</span>
+            </div>
+            <div class="phrase-item">
+              <span class="p-key">IEEE</span>
+              <span class="p-val">Wi-Fi・LAN技術</span>
+            </div>
+            <div class="phrase-item">
+              <span class="p-key">ICANN</span>
+              <span class="p-val">ドメインとIPの管理</span>
+            </div>
+          </div>
+        </div>
+
+        <h2>まとめ</h2>
+        <p>ITパスポート試験は「誰が・何を決めているか」を分類できるかを問う試験です。<br>
+        細かい設立年や組織構造を覚える必要はありません。上記の「役割（箱）」で仕分けられるようにしておきましょう。</p>
+
+        <!-- GEN: REFERENCES -->
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> IT passport study map. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
