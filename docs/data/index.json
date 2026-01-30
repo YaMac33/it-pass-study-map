@@ -1,5 +1,21 @@
 [
   {
+    "id": "2026-01-30_balance-sheet-bsc",
+    "timestamp": "2026-01-30T17:03:00+09:00",
+    "title": "バランスシートとBSCの違い",
+    "summary": "バランスシート（BS）とバランススコアカード（BSC）の違いを解説します。会計と経営戦略の視点から比較し、理解を深める内容です。",
+    "tags": [
+      "BSC",
+      "財務",
+      "戦略",
+      "試験対策",
+      "比較"
+    ],
+    "category_lv1": "ストラテジ系",
+    "category_lv2": "経営戦略",
+    "post_path": "posts/2026-01-30_balance-sheet-bsc/"
+  },
+  {
     "id": "2026-01-30_csf-kgi-kpi-seiri",
     "timestamp": "2026-01-30T15:00:58+09:00",
     "title": "CSF・KGI・KPIの整理と活用法",
