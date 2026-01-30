@@ -1,5 +1,21 @@
 [
   {
+    "id": "2026-01-30_solution-cloud-relation",
+    "timestamp": "2026-01-30T20:47:00+09:00",
+    "title": "ソリューションビジネスとクラウドの関係",
+    "summary": "ソリューションビジネスとクラウドサービスの関係性について解説します。ITパスポート試験対策に役立つ内容です。",
+    "tags": [
+      "ソリューション",
+      "クラウド",
+      "SaaS",
+      "ITパスポート",
+      "ビジネス"
+    ],
+    "category_lv1": "ストラテジ系",
+    "category_lv2": "経営戦略",
+    "post_path": "posts/2026-01-30_solution-cloud-relation/"
+  },
+  {
     "id": "2026-01-30_henbai-no-bunseki",
     "timestamp": "2026-01-30T20:33:25+09:00",
     "title": "偏りの分析方法と戦略",
