@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>ポートフォリオ分析の基礎 - IT passport study map</title>
+  <meta name="description" content="IT、事業、資産、特許ポートフォリオの概要と戦略的活用法を解説。PPM（プロダクトポートフォリオマネジメント）などの分析手法を図解で整理します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="ポートフォリオ分析の基礎" />
+  <meta property="og:description" content="IT、事業、資産、特許ポートフォリオの概要と戦略的活用法を解説。PPM（プロダクトポートフォリオマネジメント）などの分析手法を図解で整理します。" />
+  
+  <!-- Assets: 記事は docs/posts/<id>/index.html → ../../ 固定 -->
+  <link rel="stylesheet" href="../../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS（図解・補助CSS） -->
+  <style>
+    /* 共通図解コンテナ */
+    .diagram-section {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* マトリクス図（共通） */
+    .matrix-chart {
+      display: grid;
+      grid-template-columns: auto 1fr 1fr;
+      grid-template-rows: auto 1fr 1fr auto;
+      gap: 0.5rem;
+      width: 100%;
+      max-width: 500px;
+      position: relative;
+    }
+    
+    /* 軸ラベル */
+    .axis-y-label {
+      grid-row: 2 / 4;
+      grid-column: 1;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      text-align: center;
+      font-weight: bold;
+      color: #666;
+      border-right: 2px solid #ccc;
+      padding-right: 0.5rem;
+    }
+    .axis-x-label {
+      grid-row: 4;
+      grid-column: 2 / 4;
+      text-align: center;
+      font-weight: bold;
+      color: #666;
+      border-top: 2px solid #ccc;
+      padding-top: 0.5rem;
+    }
+
+    /* 象限ボックス */
+    .quadrant {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 1rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100px;
+      position: relative;
+    }
+    .q-title {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+    .q-desc {
+      font-size: 0.8rem;
+      color: #555;
+    }
+    .q-icon {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    /* ITポートフォリオ用 */
+    .q-strategic { background: #eef6ff; border-color: #0056b3; color: #0056b3; }
+    .q-informational { background: #f0f8ff; }
+    .q-transactional { background: #fffaf0; }
+    .q-infrastructure { background: #f4f4f4; }
+
+    /* PPM用 */
+    .q-star { background: #fffde7; border-color: #f39c12; }
+    .q-cow { background: #e8f5e9; border-color: #27ae60; }
+    .q-question { background: #e3f2fd; border-color: #0056b3; }
+    .q-dog { background: #f9f9f9; border-color: #999; color: #999; }
+
+    /* 比較テーブル */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      margin: 1rem 0;
+    }
+    .comparison-table th, .comparison-table td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    .comparison-table th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+    .comparison-table td:first-child {
+      font-weight: bold;
+      color: #0056b3;
+      white-space: nowrap;
+    }
+
+    /* ポイント強調 */
+    .key-point {
+      background-color: #f4f4f4;
+      border-left: 4px solid #333;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .key-point strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1em;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 600px) {
+      .matrix-chart {
+        gap: 0.2rem;
+      }
+      .quadrant {
+        padding: 0.5rem;
+        min-height: 80px;
+        font-size: 0.8rem;
+      }
+      .q-icon { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a href="../../index.html" class="site-title">IT passport study map</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-30">
+            2026.01.30 / ストラテジ系
+          </time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">ポートフォリオ分析の基礎</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list">
+            <li class="tag">#ポートフォリオ</li>
+            <li class="tag">#IT戦略</li>
+            <li class="tag">#PPM</li>
+            <li class="tag">#資産管理</li>
+            <li class="tag">#事業分析</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>「ポートフォリオ」とは、元々は「紙挟み（書類入れ）」を意味する言葉ですが、ビジネスでは「資産や事業の組み合わせ一覧」を指します。<br>
+        ITパスポート試験では、主に4種類のポートフォリオが登場します。それぞれの目的と分析手法を整理しましょう。</p>
+
+        <div class="key-point">
+          <strong>1行要約</strong><br>
+          ポートフォリオ分析とは、全体を一覧化し、リスクとリターン（またはコストと効果）のバランスを見て、資源を最適配分する手法のこと。
+        </div>
+
+        <h2>1. 4つのポートフォリオ比較</h2>
+        <p>「何を」管理するかによって呼び方が変わります。</p>
+
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>種類</th>
+              <th>管理対象</th>
+              <th>目的・評価軸</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>ITポートフォリオ</td>
+              <td>情報システム</td>
+              <td>リスク vs 効果<br>（投資の最適化）</td>
+            </tr>
+            <tr>
+              <td>事業ポートフォリオ</td>
+              <td>事業・製品</td>
+              <td>成長率 vs シェア<br>（PPM分析）</td>
+            </tr>
+            <tr>
+              <td>資産ポートフォリオ</td>
+              <td>金融資産</td>
+              <td>リスク vs リターン<br>（分散投資）</td>
+            </tr>
+            <tr>
+              <td>特許ポートフォリオ</td>
+              <td>知的財産</td>
+              <td>技術優位 vs コスト<br>（知財戦略）</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>2. ITポートフォリオ（IT投資管理）</h2>
+        <p>企業が保有するシステムやITプロジェクトを「戦略的」「情報的」「業務的」「基盤的」などに分類し、投資バランスを管理します。</p>
+
+        <div class="diagram-section">
+          <div class="matrix-chart">
+            <!-- 縦軸ラベル -->
+            <div class="axis-y-label">
+              <span>← リスク・戦略性 (高)</span>
+            </div>
+            
+            <!-- 上段 -->
+            <div class="quadrant q-strategic">
+              <span class="q-title">戦略的</span>
+              <span class="q-desc">競争優位の獲得<br>(DX, 新規事業)</span>
+            </div>
+            <div class="quadrant q-informational">
+              <span class="q-title">情報的</span>
+              <span class="q-desc">意思決定支援<br>(BI, DWH)</span>
+            </div>
+
+            <!-- 下段 -->
+            <div class="quadrant q-transactional">
+              <span class="q-title">業務的</span>
+              <span class="q-desc">業務効率化<br>(ERP, 給与)</span>
+            </div>
+            <div class="quadrant q-infrastructure">
+              <span class="q-title">基盤的</span>
+              <span class="q-desc">インフラ維持<br>(PC, OS, NW)</span>
+            </div>
+
+            <!-- 横軸ラベル -->
+            <div class="axis-x-label">
+              <span>(低) ← 投資効果・リターン → (高)</span>
+            </div>
+          </div>
+          <p style="font-size:0.9rem; color:#666; margin-top:1rem;">
+            「攻めのIT（戦略）」と「守りのIT（基盤）」のバランスを取ることが重要です。
+          </p>
+        </div>
+
+        <h2>3. 事業ポートフォリオ（PPM分析）</h2>
+        <p>複数の事業を持つ企業が、どの事業に資金を投入し、どの事業から撤退するかを判断するために使います。<br>
+        代表的な手法が<strong>「プロダクトポートフォリオマネジメント（PPM）」</strong>です。</p>
+
+        <div class="diagram-section">
+          <div class="matrix-chart">
+            <div class="axis-y-label">
+              <span>市場成長率 (高) ↑</span>
+            </div>
+            
+            <!-- 花形 -->
+            <div class="quadrant q-star">
+              <span class="q-icon">⭐</span>
+              <span class="q-title">花形 (Star)</span>
+              <span class="q-desc">成長・シェア共に高い<br>投資継続が必要</span>
+            </div>
+
+            <!-- 問題児 -->
+            <div class="quadrant q-question">
+              <span class="q-icon">❓</span>
+              <span class="q-title">問題児</span>
+              <span class="q-desc">成長高いがシェア低い<br>投資して花形へ？</span>
+            </div>
+
+            <!-- 金のなる木 -->
+            <div class="quadrant q-cow">
+              <span class="q-icon">🐮</span>
+              <span class="q-title">金のなる木</span>
+              <span class="q-desc">成長低いがシェア高い<br>資金源（Cash Cow）</span>
+            </div>
+
+            <!-- 負け犬 -->
+            <div class="quadrant q-dog">
+              <span class="q-icon">🐕</span>
+              <span class="q-title">負け犬</span>
+              <span class="q-desc">成長もシェアも低い<br>撤退を検討</span>
+            </div>
+
+            <div class="axis-x-label">
+              <span>(高) ← 相対的市場シェア → (低)</span>
+            </div>
+          </div>
+          <p style="font-size:0.9rem; color:#666; margin-top:1rem;">
+            理想的な資金の流れ：<br>
+            「金のなる木」で稼いだお金を「問題児」や「花形」に投資する。
+          </p>
+        </div>
+
+        <h2>4. 特許・資産ポートフォリオ</h2>
+        <ul>
+          <li><strong>資産ポートフォリオ：</strong> 「卵を一つのカゴに盛るな」という格言通り、株式・債券・不動産などに資産を分散させ、リスクを抑えつつリターンを狙います。</li>
+          <li><strong>特許ポートフォリオ：</strong> 自社の特許網を整理し、競合の参入を防いだり（防衛）、ライセンス収入を得たりするための戦略マップです。</li>
+        </ul>
+
+        <h2>まとめ</h2>
+        <p>試験では特に「PPM（事業ポートフォリオ）」と「ITポートフォリオ」が頻出です。</p>
+        <ul>
+          <li><strong>PPM：</strong> 花形・金のなる木・問題児・負け犬の4象限。</li>
+          <li><strong>ITポートフォリオ：</strong> 戦略・情報・業務・基盤などの分類による投資管理。</li>
+        </ul>
+        <p>「全体を見渡して、資源（ヒト・モノ・カネ）を最適に配分するツール」として覚えておきましょう。</p>
+
+        <!-- GEN: REFERENCES -->
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> IT passport study map. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
+
