@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>ネットワークプロトコルの基礎 - IT passport study map</title>
+  <meta name="description" content="OSI参照モデルに基づくネットワークプロトコルの基礎を解説。7つの階層構造と、HTTP、TCP、IPなどの主要プロトコルの役割を図解で整理します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="ネットワークプロトコルの基礎" />
+  <meta property="og:description" content="OSI参照モデルに基づくネットワークプロトコルの基礎を解説。7つの階層構造と、HTTP、TCP、IPなどの主要プロトコルの役割を図解で整理します。" />
+  
+  <!-- Assets: 記事は docs/posts/<id>/index.html → ../../ 固定 -->
+  <link rel="stylesheet" href="../../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS（図解・補助CSS） -->
+  <style>
+    /* 共通図解コンテナ */
+    .diagram-section {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* OSI 7階層スタック図 */
+    .osi-stack-container {
+      width: 100%;
+      max-width: 500px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .osi-layer-row {
+      display: flex;
+      width: 100%;
+      border-radius: 4px;
+      overflow: hidden;
+      color: #fff;
+      font-size: 0.9rem;
+      box-shadow: 0 2px 2px rgba(0,0,0,0.1);
+    }
+    .layer-num {
+      width: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      background: rgba(0,0,0,0.2);
+    }
+    .layer-name {
+      width: 140px;
+      padding: 0.6rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+    }
+    .layer-protos {
+      flex: 1;
+      padding: 0.6rem;
+      background: rgba(255,255,255,0.9);
+      color: #333;
+      font-size: 0.85rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      align-items: center;
+    }
+    .proto-tag {
+      background: #eee;
+      padding: 1px 6px;
+      border-radius: 3px;
+      border: 1px solid #ccc;
+    }
+
+    /* 層ごとの色 */
+    .l7 { background: #e67e22; } /* アプリケーション */
+    .l6 { background: #f39c12; } /* プレゼンテーション */
+    .l5 { background: #f1c40f; color: #333; } /* セッション */
+    .l4 { background: #27ae60; } /* トランスポート */
+    .l3 { background: #2980b9; } /* ネットワーク */
+    .l2 { background: #8e44ad; } /* データリンク */
+    .l1 { background: #34495e; } /* 物理 */
+
+    /* プロトコル組み合わせ図（カプセル化イメージ） */
+    .stack-build {
+      display: flex;
+      flex-direction: column-reverse; /* 下から積む */
+      align-items: center;
+      gap: 2px;
+      width: 200px;
+    }
+    .build-block {
+      width: 100%;
+      text-align: center;
+      padding: 0.5rem;
+      color: #fff;
+      font-weight: bold;
+      font-size: 0.9rem;
+      border-radius: 4px;
+      position: relative;
+    }
+    .build-arrow {
+      font-size: 1.5rem;
+      color: #999;
+      font-weight: bold;
+    }
+    .result-https {
+      border: 2px solid #0056b3;
+      background: #eef6ff;
+      color: #0056b3;
+      padding: 1rem;
+      font-weight: bold;
+      border-radius: 8px;
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    /* プロトコル詳細グリッド */
+    .proto-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      width: 100%;
+    }
+    .proto-box {
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 1rem;
+    }
+    .box-head {
+      font-weight: bold;
+      border-bottom: 2px solid #eee;
+      margin-bottom: 0.5rem;
+      padding-bottom: 0.2rem;
+      color: #333;
+    }
+    .box-list {
+      list-style: none;
+      padding: 0;
+      font-size: 0.9rem;
+    }
+    .box-list li {
+      margin-bottom: 0.4rem;
+    }
+    .p-name {
+      font-weight: bold;
+      color: #0056b3;
+      margin-right: 5px;
+    }
+
+    /* ポイント強調 */
+    .key-point {
+      background-color: #f4f4f4;
+      border-left: 4px solid #333;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .key-point strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1em;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 600px) {
+      .osi-layer-row {
+        flex-direction: column;
+      }
+      .layer-num, .layer-name {
+        width: 100%;
+        padding: 0.4rem;
+      }
+      .layer-content {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a href="../../index.html" class="site-title">IT passport study map</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-30">
+            2026.01.30 / テクノロジ系
+          </time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">ネットワークプロトコルの基礎</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list">
+            <li class="tag">#ネットワーク</li>
+            <li class="tag">#プロトコル</li>
+            <li class="tag">#OSIモデル</li>
+            <li class="tag">#通信</li>
+            <li class="tag">#IT技術</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>コンピュータ同士が通信を行うためには、共通のルール（プロトコル）が必要です。<br>
+        このルールは、役割ごとに7つの階層に分かれています。これを<strong>OSI参照モデル</strong>と呼びます。</p>
+
+        <div class="key-point">
+          <strong>1行要約</strong><br>
+          プロトコルとは「通信の約束事」であり、OSI参照モデルはそれを「物理的な信号」から「アプリの操作」まで7段階に整理したもの。
+        </div>
+
+        <h2>1. OSI参照モデルと主要プロトコル</h2>
+        <p>下層（ハードウェア寄り）から上層（ソフトウェア寄り）へと積み上がっています。</p>
+
+        <div class="diagram-section">
+          <div class="osi-stack-container">
+            
+            <div class="osi-layer-row l7">
+              <div class="layer-num">7</div>
+              <div class="layer-name">アプリケーション</div>
+              <div class="layer-protos">
+                <span class="proto-tag">HTTP</span>
+                <span class="proto-tag">SMTP</span>
+                <span class="proto-tag">FTP</span>
+                <span class="proto-tag">DNS</span>
+              </div>
+            </div>
+
+            <div class="osi-layer-row l6">
+              <div class="layer-num">6</div>
+              <div class="layer-name">プレゼンテーション</div>
+              <div class="layer-protos">
+                <span class="proto-tag">SSL/TLS</span>
+                <span class="proto-tag">JPEG</span>
+                <span class="proto-tag">ASCII</span>
+              </div>
+            </div>
+
+            <div class="osi-layer-row l5">
+              <div class="layer-num">5</div>
+              <div class="layer-name">セッション</div>
+              <div class="layer-protos">
+                <span class="proto-tag">RPC</span>
+                <span class="proto-tag">NetBIOS</span>
+              </div>
+            </div>
+
+            <div class="osi-layer-row l4">
+              <div class="layer-num">4</div>
+              <div class="layer-name">トランスポート</div>
+              <div class="layer-protos">
+                <span class="proto-tag">TCP</span>
+                <span class="proto-tag">UDP</span>
+              </div>
+            </div>
+
+            <div class="osi-layer-row l3">
+              <div class="layer-num">3</div>
+              <div class="layer-name">ネットワーク</div>
+              <div class="layer-protos">
+                <span class="proto-tag">IP</span>
+                <span class="proto-tag">ICMP</span>
+                <span class="proto-tag">ARP</span>
+              </div>
+            </div>
+
+            <div class="osi-layer-row l2">
+              <div class="layer-num">2</div>
+              <div class="layer-name">データリンク</div>
+              <div class="layer-protos">
+                <span class="proto-tag">Ethernet</span>
+                <span class="proto-tag">Wi-Fi</span>
+                <span class="proto-tag">PPP</span>
+              </div>
+            </div>
+
+            <div class="osi-layer-row l1">
+              <div class="layer-num">1</div>
+              <div class="layer-name">物理</div>
+              <div class="layer-protos">
+                <span class="proto-tag">ケーブル</span>
+                <span class="proto-tag">電波</span>
+                <span class="proto-tag">光信号</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <h2>2. 各層の代表的なプロトコル</h2>
+        <p>試験によく出るプロトコルを、役割ごとに整理しました。</p>
+
+        <div class="diagram-section" style="background:transparent; border:none; padding:0;">
+          <div class="proto-grid">
+            
+            <div class="proto-box">
+              <div class="box-head" style="color:#e67e22;">アプリケーション層</div>
+              <ul class="box-list">
+                <li><span class="p-name">HTTP / HTTPS</span>Webサイトの閲覧</li>
+                <li><span class="p-name">SMTP / POP3</span>メールの送信・受信</li>
+                <li><span class="p-name">FTP</span>ファイルの転送</li>
+                <li><span class="p-name">DNS</span>ドメイン名とIPの変換</li>
+              </ul>
+            </div>
+
+            <div class="proto-box">
+              <div class="box-head" style="color:#27ae60;">トランスポート層</div>
+              <ul class="box-list">
+                <li><span class="p-name">TCP</span>信頼性重視（Web, メール等）</li>
+                <li><span class="p-name">UDP</span>速度重視（動画, 音声）</li>
+              </ul>
+            </div>
+
+            <div class="proto-box">
+              <div class="box-head" style="color:#2980b9;">ネットワーク層</div>
+              <ul class="box-list">
+                <li><span class="p-name">IP</span>宛先（住所）への配送</li>
+                <li><span class="p-name">ICMP</span>通信確認（Pingなど）</li>
+                <li><span class="p-name">ARP</span>IPからMACアドレスを調べる</li>
+              </ul>
+            </div>
+
+            <div class="proto-box">
+              <div class="box-head" style="color:#8e44ad;">下位層（物理・リンク）</div>
+              <ul class="box-list">
+                <li><span class="p-name">Ethernet</span>有線LANの規格</li>
+                <li><span class="p-name">IEEE 802.11</span>無線LAN（Wi-Fi）</li>
+                <li><span class="p-name">Bluetooth</span>近距離無線</li>
+              </ul>
+            </div>
+
+          </div>
+        </div>
+
+        <h2>3. プロトコルの組み合わせ（カプセル化）</h2>
+        <p>これらは単独で動くのではなく、積み木のように組み合わせて使われます。<br>
+        例えば、安全なWeb閲覧（HTTPS）は以下のように構成されています。</p>
+
+        <div class="diagram-section">
+          <div style="display:flex; align-items:center; gap:2rem;">
+            
+            <div class="stack-build">
+              <div class="build-block l7">HTTP (Web)</div>
+              <div class="build-block l6">TLS (暗号化)</div>
+              <div class="build-block l4">TCP (確実性)</div>
+              <div class="build-block l3">IP (宛先)</div>
+              <div class="build-block l2">Ethernet (伝送)</div>
+            </div>
+
+            <div class="build-arrow">➡</div>
+
+            <div class="result-https">
+              <strong>HTTPS通信</strong><br>
+              安全なWeb閲覧
+            </div>
+
+          </div>
+          <p style="font-size:0.9rem; color:#666; margin-top:1rem;">
+            アプリがデータを渡し、下の層が封筒に入れ、さらに下の層が宛名を書き…というバケツリレーが行われています。
+          </p>
+        </div>
+
+        <h2>まとめ</h2>
+        <ul>
+          <li><strong>階層化のメリット：</strong> 上の層（アプリ）は、下の層（回線の種類など）を気にせずに開発できる。</li>
+          <li><strong>重要プロトコル：</strong> WebならHTTP、住所ならIP、信頼性ならTCP。</li>
+        </ul>
+        <p>試験では「メールを受信するプロトコルはどれか？」といった用途を問う問題が多いので、セットで覚えておきましょう。</p>
+
+        <!-- GEN: REFERENCES -->
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> IT passport study map. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
+
