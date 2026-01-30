@@ -1,5 +1,21 @@
 [
   {
+    "id": "2026-01-30_portfolio-analysis-basics",
+    "timestamp": "2026-01-30T11:19:35+09:00",
+    "title": "ポートフォリオ分析の基礎",
+    "summary": "ITや資産のポートフォリオを分析し、リスクとリターンのバランスを最適化する手法を解説します。PPM分析などの具体例を挙げて説明します。",
+    "tags": [
+      "ポートフォリオ",
+      "IT戦略",
+      "PPM",
+      "資産管理",
+      "事業分析"
+    ],
+    "category_lv1": "ストラテジ系",
+    "category_lv2": "経営戦略",
+    "post_path": "posts/2026-01-30_portfolio-analysis-basics/"
+  },
+  {
     "id": "2026-01-30_it-governance-common-frame",
     "timestamp": "2026-01-30T11:02:01+09:00",
     "title": "共通フレームとITガバナンスの違い",
