@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>IoTデバイスのセンサーとアクチュエーター - IT passport study map</title>
+  <meta name="description" content="IoTシステムを構成する「センサー（入力）」と「アクチュエーター（出力）」の役割と違いを解説。スマートホームを例に、情報収集から物理動作までの流れを図解で整理します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="IoTデバイスのセンサーとアクチュエーター" />
+  <meta property="og:description" content="IoTシステムを構成する「センサー（入力）」と「アクチュエーター（出力）」の役割と違いを解説。スマートホームを例に、情報収集から物理動作までの流れを図解で整理します。" />
+  
+  <!-- Assets: 記事は docs/posts/<id>/index.html → ../../ 固定 -->
+  <link rel="stylesheet" href="../../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS（図解・補助CSS） -->
+  <style>
+    /* 共通図解コンテナ */
+    .diagram-section {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* 入出力フロー図 */
+    .io-flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      width: 100%;
+      max-width: 600px;
+      flex-wrap: wrap;
+    }
+    
+    .env-box {
+      border: 2px dashed #999;
+      padding: 1rem;
+      border-radius: 50%;
+      width: 100px;
+      height: 100px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-weight: bold;
+      color: #666;
+      background: #fff;
+    }
+    
+    .device-unit {
+      flex: 1;
+      min-width: 200px;
+      background: #333;
+      color: #fff;
+      padding: 1.5rem;
+      border-radius: 8px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      align-items: center;
+    }
+    .device-unit::before {
+      content: "IoTデバイス / システム";
+      position: absolute;
+      top: -10px;
+      background: #333;
+      padding: 2px 10px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+    }
+
+    .func-row {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      background: #444;
+      padding: 0.5rem;
+      border-radius: 4px;
+    }
+    .func-sensor { border-left: 4px solid #0056b3; }
+    .func-actuator { border-left: 4px solid #e67e22; }
+    
+    .func-label {
+      font-weight: bold;
+      margin-right: auto;
+    }
+    .func-role {
+      font-size: 0.8rem;
+      background: #fff;
+      color: #333;
+      padding: 2px 6px;
+      border-radius: 2px;
+    }
+
+    /* 矢印 */
+    .arrow-in {
+      color: #0056b3;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+    .arrow-out {
+      color: #e67e22;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
+    /* スマートホーム図解 */
+    .smarthome-map {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 1rem;
+      width: 100%;
+      max-width: 500px;
+      align-items: center;
+    }
+    
+    /* センサー群 */
+    .sensors-col {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .s-item {
+      background: #eef6ff;
+      border: 1px solid #0056b3;
+      color: #0056b3;
+      padding: 0.5rem;
+      border-radius: 4px;
+      text-align: center;
+      font-size: 0.85rem;
+      font-weight: bold;
+    }
+
+    /* 制御部 */
+    .control-center {
+      background: #333;
+      color: #fff;
+      padding: 2rem 1rem;
+      border-radius: 50%;
+      text-align: center;
+      font-size: 0.9rem;
+      font-weight: bold;
+      z-index: 2;
+    }
+
+    /* アクチュエーター群 */
+    .actuators-col {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .a-item {
+      background: #fffaf0;
+      border: 1px solid #e67e22;
+      color: #e67e22;
+      padding: 0.5rem;
+      border-radius: 4px;
+      text-align: center;
+      font-size: 0.85rem;
+      font-weight: bold;
+    }
+
+    /* データ・命令の流れ線 */
+    .flow-lines-l {
+      border-top: 2px dashed #0056b3;
+      border-bottom: 2px dashed #0056b3;
+      height: 20px;
+      margin-right: -10px;
+    }
+    .flow-lines-r {
+      border-top: 2px solid #e67e22;
+      border-bottom: 2px solid #e67e22;
+      height: 20px;
+      margin-left: -10px;
+    }
+
+    /* 比較テーブル */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      margin: 1rem 0;
+    }
+    .comparison-table th, .comparison-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+    .comparison-table th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+      width: 25%;
+      text-align: center;
+    }
+    .hl-sensor { background: #eef6ff; font-weight: bold; color: #0056b3; }
+    .hl-actuator { background: #fffaf0; font-weight: bold; color: #e67e22; }
+
+    /* ポイント強調 */
+    .key-point {
+      background-color: #f4f4f4;
+      border-left: 4px solid #333;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .key-point strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1em;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 600px) {
+      .io-flow {
+        flex-direction: column;
+      }
+      .arrow-in, .arrow-out {
+        transform: rotate(90deg);
+      }
+      .smarthome-map {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+      .flow-lines-l, .flow-lines-r {
+        display: none; /* スマホでは線を消して縦積みに */
+      }
+      .control-center::before {
+        content: "⬇";
+        display: block;
+        margin-bottom: 5px;
+      }
+      .control-center::after {
+        content: "⬇";
+        display: block;
+        margin-top: 5px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a href="../../index.html" class="site-title">IT passport study map</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-30">
+            2026.01.30 / テクノロジ系
+          </time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">IoTデバイスのセンサーとアクチュエーター</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list">
+            <li class="tag">#IoT</li>
+            <li class="tag">#センサー</li>
+            <li class="tag">#アクチュエーター</li>
+            <li class="tag">#スマートホーム</li>
+            <li class="tag">#デバイス</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>IoT（モノのインターネット）デバイスは、単にインターネットにつながっているだけではありません。<br>
+        現実世界の情報を取り込み、それに基づいて物理的に何かを動かす役割を持っています。そのための重要な部品が<strong>「センサー」と「アクチュエーター」</strong>です。</p>
+
+        <div class="key-point">
+          <strong>1行要約</strong><br>
+          センサーは「情報を集める目や耳（入力）」、アクチュエーターは「動作を実行する手足（出力）」である。
+        </div>
+
+        <h2>1. 入力と出力の関係（基本構造）</h2>
+        <p>IoTデバイスと環境（現実世界）とのやり取りを図にすると、逆向きの矢印になります。</p>
+
+        <div class="diagram-section">
+          <div class="io-flow">
+            
+            <div class="env-box">
+              環境<br>
+              <span style="font-size:0.7rem;">(光・熱・音)</span>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:2rem; justify-content:center;">
+              <div class="arrow-in">➡ 計測</div>
+              <div class="arrow-out">⬅ 作用</div>
+            </div>
+
+            <div class="device-unit">
+              <div class="func-row func-sensor">
+                <span class="func-label">センサー</span>
+                <span class="func-role">入力 (Input)</span>
+              </div>
+              <div class="func-row func-actuator">
+                <span class="func-label">アクチュエーター</span>
+                <span class="func-role">出力 (Output)</span>
+              </div>
+            </div>
+
+          </div>
+          <p style="font-size:0.9rem; color:#666; margin-top:1rem;">
+            環境の情報を吸い上げるのがセンサー、環境を変えるのがアクチュエーター。
+          </p>
+        </div>
+
+        <h2>2. 具体例：スマートホームの場合</h2>
+        <p>「部屋が暑くなったらエアコンをつける」というIoTシステムを例に、両者の役割を見てみましょう。</p>
+
+        <div class="diagram-section">
+          <div class="smarthome-map">
+            
+            <div class="sensors-col">
+              <div class="s-item">🌡️ 温度センサー</div>
+              <div class="s-item">💧 湿度センサー</div>
+              <div class="s-item">☀ 照度センサー</div>
+            </div>
+
+            <div class="control-center">
+              IoT<br>Controller<br>
+              <span style="font-size:0.7rem; font-weight:normal;">(判断・指令)</span>
+            </div>
+
+            <div class="actuators-col">
+              <div class="a-item">💨 エアコン</div>
+              <div class="a-item">🌫️ 加湿器</div>
+              <div class="a-item">💡 照明</div>
+            </div>
+
+          </div>
+          <p style="font-size:0.9rem; margin-top:1rem;">
+            <span style="color:#0056b3; font-weight:bold;">左：情報を取得</span> → 判断 → <span style="color:#e67e22; font-weight:bold;">右：動作を実行</span>
+          </p>
+        </div>
+
+        <h3>① センサー（Sensor）</h3>
+        <p><strong>役割：</strong> 物理的な現象（温度、光、音など）を電気信号やデータに変換する。<br>
+        <strong>例：</strong>
+        <ul>
+          <li>温度センサー（室温を測る）</li>
+          <li>加速度センサー（動きや衝撃を検知する）</li>
+          <li>GPSセンサー（位置情報を取得する）</li>
+        </ul>
+        </p>
+
+        <h3>② アクチュエーター（Actuator）</h3>
+        <p><strong>役割：</strong> 電気信号（命令）を受け取り、物理的な動作（動き、光、音など）に変換する。<br>
+        <strong>例：</strong>
+        <ul>
+          <li>モーター（回転させる、移動させる）</li>
+          <li>バルブ・スイッチ（開閉する）</li>
+          <li>LED・スピーカー（光る、鳴る）</li>
+        </ul>
+        </p>
+
+        <h2>3. 比較まとめ</h2>
+        <p>試験対策として、対比表で整理します。</p>
+
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>項目</th>
+              <th>センサー</th>
+              <th>アクチュエーター</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>役割</strong></td>
+              <td>情報を<strong>取得</strong>する</td>
+              <td>動作を<strong>実行</strong>する</td>
+            </tr>
+            <tr>
+              <td><strong>データの向き</strong></td>
+              <td class="hl-sensor">入力 (Input)</td>
+              <td class="hl-actuator">出力 (Output)</td>
+            </tr>
+            <tr>
+              <td><strong>変換</strong></td>
+              <td>物理現象 → データ</td>
+              <td>データ → 物理動作</td>
+            </tr>
+            <tr>
+              <td><strong>代表例</strong></td>
+              <td>温度計、カメラ、マイク</td>
+              <td>モーター、ロボットアーム</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>まとめ</h2>
+        <ul>
+          <li><strong>センサー：</strong> 「目・耳・鼻」。状況を知るための部品。</li>
+          <li><strong>アクチュエーター：</strong> 「手・足・声」。何かを行うための部品。</li>
+        </ul>
+        <p>「センサーで感じて、アクチュエーターで動く」。人間と同じ構造だと考えると覚えやすいですね。</p>
+
+        <!-- GEN: REFERENCES -->
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> IT passport study map. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
+
