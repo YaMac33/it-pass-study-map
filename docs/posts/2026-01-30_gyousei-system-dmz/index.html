@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>自治体システムのDMZ理解 - IT passport study map</title>
+  <meta name="description" content="一般的なDMZと、自治体情報システム特有の「三層分離」におけるDMZの違いを解説。セキュリティ要件の厳しさや、無害化通信の仕組みを図解で整理します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="自治体システムのDMZ理解" />
+  <meta property="og:description" content="一般的なDMZと、自治体情報システム特有の「三層分離」におけるDMZの違いを解説。セキュリティ要件の厳しさや、無害化通信の仕組みを図解で整理します。" />
+  
+  <!-- Assets: 記事は docs/posts/<id>/index.html → ../../ 固定 -->
+  <link rel="stylesheet" href="../../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS（図解・補助CSS） -->
+  <style>
+    /* 共通図解コンテナ */
+    .diagram-section {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* 構造比較のレイアウト */
+    .structure-compare {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      width: 100%;
+      flex-wrap: wrap;
+    }
+    .model-col {
+      flex: 1;
+      min-width: 280px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .model-title {
+      font-weight: bold;
+      margin-bottom: 1rem;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      color: #fff;
+      background: #666;
+    }
+    
+    /* 一般DMZ（サンドイッチ） */
+    .dmz-sandwich {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 200px;
+    }
+    .net-cloud {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    .box-fw {
+      background: #333;
+      color: #fff;
+      padding: 0.3rem 1rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      margin: 0.2rem 0;
+    }
+    .box-dmz {
+      border: 2px dashed #e67e22;
+      background: #fffaf0;
+      width: 100%;
+      padding: 1rem;
+      text-align: center;
+      border-radius: 6px;
+      margin: 0.2rem 0;
+      color: #e67e22;
+      font-weight: bold;
+    }
+    .box-internal {
+      border: 2px solid #0056b3;
+      background: #eef6ff;
+      width: 100%;
+      padding: 1rem;
+      text-align: center;
+      border-radius: 6px;
+      color: #0056b3;
+      font-weight: bold;
+    }
+    .arrow-v {
+      color: #999;
+      font-weight: bold;
+    }
+
+    /* 自治体三層分離 */
+    .layer-structure {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      width: 100%;
+      position: relative;
+    }
+    .layer-box {
+      padding: 1rem;
+      border-radius: 6px;
+      position: relative;
+      font-size: 0.9rem;
+      font-weight: bold;
+    }
+    /* ① インターネット接続系 */
+    .l-net {
+      background: #fff;
+      border: 2px solid #999;
+      color: #666;
+    }
+    .l-net::before {
+      content: "① インターネット接続系";
+      display: block;
+      font-size: 0.75rem;
+      margin-bottom: 0.5rem;
+      color: #333;
+    }
+    /* ② LGWAN接続系 */
+    .l-lgwan {
+      background: #eef6ff;
+      border: 2px solid #0056b3;
+      color: #0056b3;
+    }
+    .l-lgwan::before {
+      content: "② LGWAN接続系 (業務)";
+      display: block;
+      font-size: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+    /* ③ マイナンバー系 */
+    .l-mynum {
+      background: #fff0f0;
+      border: 2px solid #d00;
+      color: #d00;
+    }
+    .l-mynum::before {
+      content: "③ マイナンバー利用事務系";
+      display: block;
+      font-size: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    /* 分離・無害化の壁 */
+    .sanitization-barrier {
+      height: 10px;
+      background: repeating-linear-gradient(45deg, #ccc, #ccc 10px, #eee 10px, #eee 20px);
+      position: relative;
+    }
+    .sanitization-label {
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #fff;
+      border: 1px solid #ccc;
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 10px;
+      color: #333;
+    }
+
+    /* 比較テーブル */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      margin: 1rem 0;
+    }
+    .comparison-table th, .comparison-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+    .comparison-table th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+      width: 30%;
+    }
+    .td-gov { background: #f0f8ff; font-weight: bold; }
+
+    /* ポイント強調 */
+    .key-point {
+      background-color: #f4f4f4;
+      border-left: 4px solid #333;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .key-point strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1em;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 600px) {
+      .structure-compare {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a href="../../index.html" class="site-title">IT passport study map</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-30">
+            2026.01.30 / テクノロジ系
+          </time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">自治体システムのDMZ理解</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list">
+            <li class="tag">#DMZ</li>
+            <li class="tag">#自治体</li>
+            <li class="tag">#セキュリティ</li>
+            <li class="tag">#三層分離</li>
+            <li class="tag">#無害化</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>「DMZ」と言えば、外部と内部の間に置く緩衝地帯のことですが、自治体の情報セキュリティにおいては、もう少し複雑な事情があります。<br>
+        それが<strong>「三層の対策（三層分離）」</strong>と呼ばれる特殊なネットワーク構成です。</p>
+
+        <div class="key-point">
+          <strong>1行要約</strong><br>
+          一般企業のDMZは「内部を守る盾」だが、自治体のDMZ（中継点）は「三層に分かれたネットワークを安全につなぐ検疫所」のような役割を果たす。
+        </div>
+
+        <h2>1. 一般企業と自治体の構造比較</h2>
+        <p>普通の会社と、マイナンバーなどを扱う自治体では、守るべきデータのレベルが違うため、構造も異なります。</p>
+
+        <div class="diagram-section">
+          <div class="structure-compare">
+            
+            <!-- 一般企業 -->
+            <div class="model-col">
+              <span class="model-title">一般企業（通常）</span>
+              <div class="dmz-sandwich">
+                <div class="net-cloud">☁️</div>
+                <div class="arrow-v">↓</div>
+                <div class="box-fw">FW</div>
+                <div class="arrow-v">↓</div>
+                <div class="box-dmz">
+                  DMZ<br>
+                  <span style="font-size:0.7rem; font-weight:normal;">Web/Mailサーバ</span>
+                </div>
+                <div class="arrow-v">↓</div>
+                <div class="box-fw">FW</div>
+                <div class="arrow-v">↓</div>
+                <div class="box-internal">
+                  社内LAN<br>
+                  <span style="font-size:0.7rem; font-weight:normal;">(信頼ゾーン)</span>
+                </div>
+              </div>
+              <p style="font-size:0.85rem; color:#666; margin-top:1rem;">
+                外と内の間にDMZを置く<br>（サンドイッチ型）
+              </p>
+            </div>
+
+            <!-- 自治体 -->
+            <div class="model-col">
+              <span class="model-title" style="background:#0056b3;">自治体（三層分離）</span>
+              <div class="layer-structure">
+                <div class="net-cloud" style="text-align:center;">☁️</div>
+                
+                <div class="layer-box l-net">
+                  <strong>Web閲覧・メール</strong><br>
+                  <span style="font-size:0.75rem;">（ウイルス感染リスクあり）</span>
+                </div>
+
+                <div class="sanitization-barrier">
+                  <span class="sanitization-label">無害化通信・分離</span>
+                </div>
+
+                <div class="layer-box l-lgwan">
+                  <strong>人事・給与・文書管理</strong><br>
+                  <span style="font-size:0.75rem;">（LGWAN: 総合行政NW）</span>
+                </div>
+
+                <div class="sanitization-barrier">
+                  <span class="sanitization-label">完全遮断に近い制御</span>
+                </div>
+
+                <div class="layer-box l-mynum">
+                  <strong>住基・税・福祉</strong><br>
+                  <span style="font-size:0.75rem;">（一番守るべきデータ）</span>
+                </div>
+              </div>
+              <p style="font-size:0.85rem; color:#666; margin-top:1rem;">
+                内部が3つに分断されている。<br>DMZは一番上の外側に近い位置。
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+        <h2>2. なぜ「三層分離」なのか？</h2>
+        <p>自治体が扱うデータには、流出すると致命的な「マイナンバー」や「住民基本台帳」が含まれます。<br>
+        これらを守るために、インターネットにつながる部分と、重要なデータを扱う部分を物理的・論理的に切り離しています。</p>
+
+        <h3>自治体におけるDMZ（中継点）の役割</h3>
+        <p>三層が完全に分断されていると、業務が回りません（例：Webで申請されたデータを基幹システムに取り込むなど）。<br>
+        そこで、層と層の間をつなぐために<strong>「無害化」や「中継」を行う特殊なゾーン</strong>が必要になります。</p>
+        <ul>
+          <li><strong>ファイル無害化：</strong> Wordのマクロを除去したり、画像化して渡す。</li>
+          <li><strong>片方向通信：</strong> 重要な層から外へは出さず、外から中へデータを入れるだけにする。</li>
+        </ul>
+        <p>自治体の文脈では、これを「DMZ」と呼ぶこともあれば、「データ連携基盤」「受渡領域」と呼ぶこともあります。</p>
+
+        <h2>3. 比較まとめ</h2>
+        <p>試験や実務での理解ポイントを整理します。</p>
+
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>項目</th>
+              <th>通常のDMZ</th>
+              <th>自治体のDMZ (三層)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>位置</strong></td>
+              <td>外部と内部の間</td>
+              <td>接続系とLGWANの間など</td>
+            </tr>
+            <tr>
+              <td><strong>内部の扱い</strong></td>
+              <td>一つの信頼ゾーン</td>
+              <td><strong>信用せず3つに分離</strong></td>
+            </tr>
+            <tr>
+              <td><strong>主な機能</strong></td>
+              <td>公開サーバの設置</td>
+              <td><strong>無害化・データ受渡</strong></td>
+            </tr>
+            <tr>
+              <td><strong>思想</strong></td>
+              <td>境界防御</td>
+              <td>多層防御・分離</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>まとめ</h2>
+        <ul>
+          <li><strong>通常DMZ：</strong> 外の攻撃を食い止める「盾」。</li>
+          <li><strong>自治体DMZ：</strong> 分離された世界をつなぐ「検疫所」。</li>
+        </ul>
+        <p>「自治体システムは、内部ネットワークさえも信用せずにバラバラに切り離している」という前提を知っておくことが重要です。</p>
+
+        <!-- GEN: REFERENCES -->
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> IT passport study map. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
+
