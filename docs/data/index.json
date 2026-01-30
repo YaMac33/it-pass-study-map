@@ -1,5 +1,21 @@
 [
   {
+    "id": "2026-01-30_provider-and-infringement",
+    "timestamp": "2026-01-30T18:33:48+09:00",
+    "title": "プロバイダと権利侵害の関係",
+    "summary": "インターネット上の権利侵害において、プロバイダの重要な役割を解説します。プロバイダ責任制限法の仕組みも紹介します。",
+    "tags": [
+      "プロバイダ",
+      "権利侵害",
+      "法律",
+      "ITパスポート",
+      "ネットセキュリティ"
+    ],
+    "category_lv1": "テクノロジ系",
+    "category_lv2": "新技術・先端技術",
+    "post_path": "posts/2026-01-30_provider-and-infringement/"
+  },
+  {
     "id": "2026-01-30_network-protocol-basics",
     "timestamp": "2026-01-30T17:21:22+09:00",
     "title": "ネットワークプロトコルの基礎",
