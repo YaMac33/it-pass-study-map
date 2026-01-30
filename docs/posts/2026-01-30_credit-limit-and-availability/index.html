@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>与信限度額と与信余力の解説 - IT passport study map</title>
+  <meta name="description" content="与信管理の基本である限度額と余力の関係を解説。売上計上や代金回収のタイミングで余力がどう変動するか、手形と売掛金の違いを含めて図解で整理します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="与信限度額と与信余力の解説" />
+  <meta property="og:description" content="与信管理の基本である限度額と余力の関係を解説。売上計上や代金回収のタイミングで余力がどう変動するか、手形と売掛金の違いを含めて図解で整理します。" />
+  
+  <!-- Assets: 記事は docs/posts/<id>/index.html → ../../ 固定 -->
+  <link rel="stylesheet" href="../../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS（図解・補助CSS） -->
+  <style>
+    /* 共通図解コンテナ */
+    .diagram-section {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* 与信バーチャート */
+    .credit-bar-container {
+      width: 100%;
+      max-width: 500px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .credit-bar-wrapper {
+      position: relative;
+      height: 60px;
+      background: #eef;
+      border: 2px solid #333;
+      border-radius: 6px;
+      overflow: hidden;
+      display: flex;
+    }
+    .bar-used {
+      width: 70%;
+      background: #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: #333;
+      border-right: 2px dashed #666;
+    }
+    .bar-free {
+      flex: 1;
+      background: #27ae60;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: #fff;
+    }
+    
+    .bar-label-top {
+      display: flex;
+      justify-content: space-between;
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+
+    /* 取引フロー図 */
+    .transaction-flow {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      max-width: 500px;
+      border-left: 4px solid #ddd;
+      padding-left: 1.5rem;
+      gap: 1.5rem;
+      position: relative;
+    }
+    .flow-event {
+      position: relative;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 1rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .flow-event::before {
+      content: "";
+      position: absolute;
+      left: -29px; /* 線の上 */
+      top: 1.2rem;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #fff;
+      border: 4px solid #999;
+    }
+    .event-active::before {
+      border-color: #0056b3;
+      background: #0056b3;
+    }
+    .event-title {
+      font-weight: bold;
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      justify-content: space-between;
+    }
+    .credit-status {
+      font-family: monospace;
+      background: #f4f4f4;
+      padding: 0.5rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+    .status-up { color: #27ae60; font-weight: bold; }
+    .status-down { color: #d00; font-weight: bold; }
+    .status-keep { color: #666; }
+
+    /* 比較テーブル */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      margin: 1rem 0;
+    }
+    .comparison-table th, .comparison-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+    .comparison-table th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+      width: 25%;
+    }
+
+    /* 手形・売掛金の図 */
+    .receivable-cards {
+      display: flex;
+      gap: 1rem;
+      width: 100%;
+      justify-content: center;
+    }
+    .r-card {
+      flex: 1;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+      background: #fff;
+    }
+    .rc-title {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 0.5rem;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 0.3rem;
+    }
+
+    /* ポイント強調 */
+    .key-point {
+      background-color: #f4f4f4;
+      border-left: 4px solid #333;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .key-point strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1em;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 600px) {
+      .receivable-cards {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a href="../../index.html" class="site-title">IT passport study map</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-30">
+            2026.01.30 / ストラテジ系
+          </time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">与信限度額と与信余力の解説</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list">
+            <li class="tag">#与信管理</li>
+            <li class="tag">#ITパスポート</li>
+            <li class="tag">#信用管理</li>
+            <li class="tag">#計算問題</li>
+            <li class="tag">#売掛金</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>企業間取引では、商品を先に渡して代金は後払いにする「掛取引（かけとりひき）」が一般的です。<br>
+        しかし、相手が倒産して回収できなくなるリスク（貸倒れ）を防ぐため、取引できる金額には上限があります。</p>
+        <p>この上限管理で使われる「与信限度額」と「与信余力」の関係を解説します。</p>
+
+        <div class="key-point">
+          <strong>1行要約</strong><br>
+          与信限度額は「ツケ払いできる上限額」、与信余力は「あといくらツケ払いできるかの残り枠」のこと。
+        </div>
+
+        <h2>1. 図で見る「限度額」と「余力」</h2>
+        <p>コップの容量と、中に入っている水の量で考えると分かりやすいです。</p>
+
+        <div class="diagram-section">
+          <div class="credit-bar-container">
+            <div class="bar-label-top">
+              <span>使用中 (売掛金)</span>
+              <span>限度額 (Max)</span>
+            </div>
+            
+            <div class="credit-bar-wrapper">
+              <div class="bar-used">
+                未回収: 70万円
+              </div>
+              <div class="bar-free">
+                余力: 30万円
+              </div>
+            </div>
+            
+            <p style="text-align:right; font-size:0.8rem; margin-top:0.2rem;">
+              全体: 100万円
+            </p>
+          </div>
+        </div>
+
+        <h3>計算式</h3>
+        <p>非常にシンプルですが、試験でよく問われます。</p>
+        <div style="background:#fff; border:2px solid #333; padding:1rem; text-align:center; font-weight:bold; margin:1rem 0;">
+          与信余力 ＝ 与信限度額 － 現在の債権残高
+        </div>
+        <p>※債権残高には、まだ現金を回収していない「売掛金」や「受取手形」が含まれます。</p>
+
+        <h2>2. 取引の流れと余力の変化</h2>
+        <p>「いつ減って、いつ戻るのか」が試験のひっかけポイントです。<br>
+        以下の例で確認しましょう。（限度額：100万円、開始時残高：0円）</p>
+
+        <div class="diagram-section">
+          <div class="transaction-flow">
+            
+            <!-- 受注 -->
+            <div class="flow-event">
+              <div class="event-title">① 受注 (30万円)</div>
+              <div>注文を受けただけの状態。まだ商品は渡していない。</div>
+              <div class="credit-status">
+                余力： <span class="status-keep">100万円 (変化なし)</span>
+              </div>
+            </div>
+
+            <!-- 売上計上 -->
+            <div class="flow-event event-active">
+              <div class="event-title">② 売上計上 (30万円)</div>
+              <div>商品を納品し、売掛金が発生した。</div>
+              <div class="credit-status">
+                余力： 100 － 30 ＝ <span class="status-down">70万円 (減る)</span>
+              </div>
+            </div>
+
+            <!-- 現金回収 -->
+            <div class="flow-event event-active">
+              <div class="event-title">③ 現金回収 (30万円)</div>
+              <div>代金が振り込まれ、売掛金が消滅した。</div>
+              <div class="credit-status">
+                余力： 70 ＋ 30 ＝ <span class="status-up">100万円 (戻る)</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="key-point">
+          <strong>重要ポイント</strong>
+          <ul>
+            <li><strong>受注時点：</strong> まだ債権ではないので、原則として余力は減りません。（※企業ルールによるが試験ではこの解釈が多い）</li>
+            <li><strong>売上計上：</strong> 債権発生。ここで余力が減ります。</li>
+            <li><strong>回収：</strong> 債権消滅。ここで余力が回復します。</li>
+          </ul>
+        </div>
+
+        <h2>3. 「手形」と「売掛金」の違い</h2>
+        <p>代金の回収方法には「現金振込」だけでなく「手形（約束手形）」があります。<br>
+        手形を受け取った場合、まだ現金化できていないため、<strong>与信余力は回復しません</strong>。</p>
+
+        <div class="diagram-section" style="background:transparent; border:none; padding:0;">
+          <div class="receivable-cards">
+            <div class="r-card">
+              <span class="rc-title">売掛金</span>
+              <div>請求書払い。<br>支払期日は契約による。<br>回収リスクは中程度。</div>
+            </div>
+            <div class="r-card" style="border-color:#0056b3; background:#eef6ff;">
+              <span class="rc-title" style="color:#0056b3;">受取手形</span>
+              <div>「〇月〇日に払います」という証書。<br><strong>期日が来るまで現金にならない。</strong><br>それまでは余力も戻らない。</div>
+            </div>
+          </div>
+        </div>
+
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>アクション</th>
+              <th>債権の種類</th>
+              <th>与信余力</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>売上計上</td>
+              <td>売掛金 発生</td>
+              <td><strong>減る</strong></td>
+            </tr>
+            <tr>
+              <td>手形受取</td>
+              <td>売掛金→手形</td>
+              <td><strong>変わらない</strong> (まだ未回収)</td>
+            </tr>
+            <tr>
+              <td>手形満期</td>
+              <td>手形→現金</td>
+              <td><strong>回復する</strong></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>まとめ</h2>
+        <ul>
+          <li><strong>与信余力：</strong> あといくら売れるかの「空き枠」。</li>
+          <li><strong>減るタイミング：</strong> 売上を計上したとき。</li>
+          <li><strong>戻るタイミング：</strong> 現金化したとき（手形は満期日まで戻らない）。</li>
+        </ul>
+
+        <!-- GEN: REFERENCES -->
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> IT passport study map. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
+
