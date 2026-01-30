@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- GEN: META -->
+  <title>プロバイダと権利侵害の関係 - IT passport study map</title>
+  <meta name="description" content="ネット上の権利侵害において、なぜプロバイダが対応窓口になるのか？プロバイダ責任制限法の仕組みと、発信者情報開示請求の流れを図解で解説します。" />
+  <meta name="robots" content="index,follow" />
+
+  <!-- Optional: OGP -->
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="プロバイダと権利侵害の関係" />
+  <meta property="og:description" content="ネット上の権利侵害において、なぜプロバイダが対応窓口になるのか？プロバイダ責任制限法の仕組みと、発信者情報開示請求の流れを図解で解説します。" />
+  
+  <!-- Assets: 記事は docs/posts/<id>/index.html → ../../ 固定 -->
+  <link rel="stylesheet" href="../../assets/styles.css" />
+
+  <!-- GEN: EXTRA_CSS（図解・補助CSS） -->
+  <style>
+    /* 共通図解コンテナ */
+    .diagram-section {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* 登場人物と関係図 */
+    .relation-flow {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 400px;
+      position: relative;
+    }
+    
+    .person-box {
+      background: #fff;
+      border: 2px solid #333;
+      padding: 0.8rem 2rem;
+      border-radius: 6px;
+      text-align: center;
+      font-weight: bold;
+      position: relative;
+      width: 100%;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .pb-poster { border-color: #666; color: #666; } /* 投稿者（不明） */
+    .pb-bbs { border-color: #e67e22; color: #e67e22; } /* 掲示板 */
+    .pb-isp { border-color: #0056b3; color: #0056b3; background: #eef6ff; } /* プロバイダ */
+    
+    .flow-arrow {
+      font-size: 1.5rem;
+      color: #999;
+      font-weight: bold;
+      margin: -5px 0;
+      z-index: 1;
+    }
+    .flow-label {
+      font-size: 0.8rem;
+      color: #666;
+      background: #fff;
+      padding: 2px 8px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+      margin: -10px 0;
+      z-index: 2;
+    }
+
+    /* 被害者の叫び */
+    .victim-box {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: #fff0f0;
+      border: 2px solid #d00;
+      border-radius: 8px;
+      color: #d00;
+      font-weight: bold;
+      position: relative;
+    }
+    .victim-box::before {
+      content: "被害者";
+      position: absolute;
+      top: -12px;
+      left: 20px;
+      background: #d00;
+      color: #fff;
+      font-size: 0.8rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    .stop-line {
+      position: absolute;
+      right: -60px;
+      top: 50%;
+      width: 50px;
+      height: 4px;
+      background: #d00;
+    }
+    .stop-line::after {
+      content: "止めて！";
+      position: absolute;
+      top: -20px;
+      right: 0;
+      font-size: 0.8rem;
+      color: #d00;
+    }
+
+    /* 対応フロー図 */
+    .action-tree {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 500px;
+    }
+    .action-box {
+      background: #fff;
+      border: 1px solid #ccc;
+      padding: 1rem;
+      border-radius: 6px;
+      width: 100%;
+      margin-bottom: 1rem;
+      position: relative;
+    }
+    .ab-title {
+      font-weight: bold;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 0.5rem;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+    
+    .branch-container {
+      display: flex;
+      gap: 1rem;
+      width: 100%;
+    }
+    .branch-item {
+      flex: 1;
+      background: #fff;
+      border: 2px solid #0056b3;
+      border-radius: 6px;
+      padding: 0.8rem;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+    .bi-delete { background: #fffaf0; border-color: #e67e22; color: #e67e22; }
+    .bi-info { background: #eef6ff; border-color: #0056b3; color: #0056b3; }
+
+    /* 比較テーブル */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      margin: 1rem 0;
+    }
+    .comparison-table th, .comparison-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+    .comparison-table th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+      width: 30%;
+    }
+    .comparison-table td:nth-child(3) { background: #f0f8ff; font-weight:bold; } /* プロバイダ */
+
+    /* ポイント強調 */
+    .key-point {
+      background-color: #f4f4f4;
+      border-left: 4px solid #333;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .key-point strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1em;
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 600px) {
+      .branch-container {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a href="../../index.html" class="site-title">IT passport study map</a>
+      <nav class="site-nav">
+        <ul>
+          <li><a href="../../index.html">Back to List</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <article class="article-content">
+        <header class="article-header">
+          <!-- GEN: POST_META -->
+          <time class="post-meta" datetime="2026-01-30">
+            2026.01.30 / テクノロジ系
+          </time>
+
+          <!-- GEN: TITLE -->
+          <h1 class="article-title">プロバイダと権利侵害の関係</h1>
+
+          <!-- GEN: TAGS -->
+          <ul class="tag-list">
+            <li class="tag">#プロバイダ</li>
+            <li class="tag">#権利侵害</li>
+            <li class="tag">#法律</li>
+            <li class="tag">#ITパスポート</li>
+            <li class="tag">#ネットセキュリティ</li>
+          </ul>
+        </header>
+
+        <!-- GEN: BODY -->
+        <p>インターネット上の掲示板やSNSで誹謗中傷やプライバシー侵害が起きたとき、被害者が最初に頼るべき相手は誰でしょうか？<br>
+        加害者が匿名の場合、特定は困難です。そこで重要な役割を果たすのが、通信インフラを握っている<strong>「プロバイダ」</strong>です。</p>
+
+        <div class="key-point">
+          <strong>1行要約</strong><br>
+          プロバイダは「加害者」ではないが、通信を管理しているため「被害を止めたり、加害者を特定する情報を持っている」唯一の存在である。
+        </div>
+
+        <h2>1. なぜプロバイダが関係するのか？（構造図）</h2>
+        <p>ネットの書き込みは、必ずプロバイダの設備を通って行われます。<br>
+        掲示板の運営者が海外にいたり連絡がつかない場合でも、プロバイダなら国内法で対応できるケースが多いのです。</p>
+
+        <div class="diagram-section">
+          <div class="relation-flow">
+            
+            <div class="person-box pb-poster">
+              投稿者（加害者）
+              <br><span style="font-size:0.8rem; font-weight:normal;">匿名・特定困難</span>
+            </div>
+
+            <div class="flow-arrow">⬇</div>
+            <span class="flow-label">書き込み</span>
+            <div class="flow-arrow">⬇</div>
+
+            <div class="person-box pb-bbs">
+              電子掲示板（サーバ）
+              <br><span style="font-size:0.8rem; font-weight:normal;">運営者不明・海外など</span>
+            </div>
+
+            <div class="flow-arrow">⬇</div>
+            <span class="flow-label">通信の提供</span>
+            <div class="flow-arrow">⬇</div>
+
+            <div class="person-box pb-isp">
+              <strong>プロバイダ</strong>
+              <br><span style="font-size:0.8rem; font-weight:normal;">ログ保有・停止権限あり</span>
+              
+              <!-- 停止ライン -->
+              <div class="stop-line" style="position:absolute; right:-20px; top:50%; width:40px; height:4px; background:#d00;"></div>
+            </div>
+
+            <div class="flow-arrow">⬇</div>
+            
+            <div style="font-weight:bold; color:#666;">インターネット公開</div>
+
+          </div>
+
+          <div class="victim-box" style="margin-top:-20px; margin-left:auto; transform:translateX(20px);">
+            被害が発生中！<br>
+            <span style="font-size:0.8rem; font-weight:normal;">誰に言えばいい？</span>
+          </div>
+        </div>
+
+        <h2>2. プロバイダ責任制限法による対応</h2>
+        <p>プロバイダは「ただ通信を仲介しただけ」ですが、被害を放置すれば責任を問われる可能性があります。<br>
+        そこで、「どのような条件なら責任を免れるか」「どのような条件なら情報を開示していいか」を定めたのが<strong>プロバイダ責任制限法</strong>です。</p>
+
+        <div class="diagram-section">
+          <div class="action-tree">
+            <div class="action-box">
+              <span class="ab-title">被害者からの申告</span>
+              「私の権利が侵害されています。対応してください。」
+            </div>
+            
+            <div class="arrow-down" style="text-align:center; font-size:1.5rem; color:#999; margin:-0.5rem 0 0.5rem;">⬇</div>
+
+            <div class="branch-container">
+              <!-- 削除 -->
+              <div class="branch-item bi-delete">
+                <strong>送信防止措置（削除）</strong>
+                <hr style="border:0; border-top:1px dashed #e67e22; margin:0.5rem 0;">
+                <div style="text-align:left; font-size:0.85rem;">
+                  ・権利侵害が明らかな場合<br>
+                  ・発信者に照会しても反論がない場合<br>
+                  👉 削除しても責任を問われない
+                </div>
+              </div>
+
+              <!-- 開示 -->
+              <div class="branch-item bi-info">
+                <strong>発信者情報開示請求</strong>
+                <hr style="border:0; border-top:1px dashed #0056b3; margin:0.5rem 0;">
+                <div style="text-align:left; font-size:0.85rem;">
+                  ・権利侵害が明白<br>
+                  ・正当な理由がある<br>
+                  👉 住所・氏名などを開示できる
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h2>3. 掲示板管理者とプロバイダの違い</h2>
+        <p>試験対策として、両者の立ち位置の違いを整理します。</p>
+
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>項目</th>
+              <th>掲示板管理者</th>
+              <th>プロバイダ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>役割</strong></td>
+              <td>場所の提供</td>
+              <td><strong>通信の提供・接続</strong></td>
+            </tr>
+            <tr>
+              <td><strong>保有情報</strong></td>
+              <td>投稿内容、IPアドレス</td>
+              <td><strong>契約者情報（氏名・住所）</strong></td>
+            </tr>
+            <tr>
+              <td><strong>対応の確実性</strong></td>
+              <td>低い（匿名・海外多し）</td>
+              <td><strong>高い</strong>（国内法適用）</td>
+            </tr>
+            <tr>
+              <td><strong>法的義務</strong></td>
+              <td>管理責任</td>
+              <td><strong>プロバイダ責任制限法</strong></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>まとめ</h2>
+        <p>ITパスポート試験で「プロバイダ」や「権利侵害」が出たら、以下のポイントを思い出してください。</p>
+        <ul>
+          <li><strong>プロバイダは犯人ではない</strong>が、被害を止める力（削除・遮断）を持っている。</li>
+          <li><strong>発信者情報開示請求</strong>に応じる義務と権限が法律で整理されている。</li>
+          <li>目的は「被害者の救済」と「表現の自由（プロバイダの免責）」のバランス。</li>
+        </ul>
+
+        <!-- GEN: REFERENCES -->
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; <span id="year"></span> IT passport study map. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- GEN: EXTRA_JS -->
+  <script>
+    // 共通：年表示
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
